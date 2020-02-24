@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:v-on="http://www.w3.org/1999/xhtml">
+<head>
+    <script type="text/javascript" src="/js/jquery.min.css" th:src="@{/js/jquery.min.js}"></script>
+    <script type="text/javascript" src="/js/bootstrap.min.css" th:src="@{/js/bootstrap.min.js}"></script>
+    <link rel="stylesheet" href="/webapp/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}">
+    <link rel="stylesheet" href="/css/teacher.css" th:href="@{/css/teacher.css}">
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div th:replace="~{fragments/header_stu :: header}"></div>
+<div th:replace="~{fragments/menu_stu::menu}"></div>
+<div class="lab-content">
+    <iframe src="/student/handIn/" scrolling="yes" class="right-iframe" frameborder="0">
+    </iframe>
+</div>
+<script th:inline="javascript">
+    var framecontent = $('.right-iframe');
+    framecontent.attr('src', '/student/handIn/' + [[${userModel.stuinfo.stuid}]]);
+    console.log([[${userModel.stuinfo.stuid}]]);
+    $('.handIn').click(function () {
+        framecontent.attr('src', '/student/handIn/' + [[${userModel.stuinfo.stuid}]])
+    });
+    $('.exchange').click(function () {
+        framecontent.attr('src', '/student/exchange')
+    });
+    $('.mydata').click(function () {
+        framecontent.attr('src', '/student/myData')
+    });
+    $('.workSituation').click(function () {
+        framecontent.attr('src', '/student/workSituation')
+    });
+</script>
+</body>
+</html>

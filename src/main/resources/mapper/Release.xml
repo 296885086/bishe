@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ljq.bishe.mapper.ReleaseMapper">
+    <insert id="workinsert" parameterType="Homework">
+      insert into homework ( workname,uploaddate,enddate,filepath,course,uploadclass ) values (#{workname},#{uploaddate},#{enddate},#{filepath},#{course},#{uploadclass});
+    </insert>
+    <select id="worklist" resultType="Homework">
+        select h.* from homework h,course c where h.uploadclass = c.courseclass and c.teaid = #{teaid};
+    </select>
+    <delete id="workdelete">
+        delete from homework where workid=#{workid};
+    </delete>
+    <select id="getUploadStudent" resultType="String">
+        select sl.stuid from scorelist sl,course c where sl.courseid = c.courseid and c.coursename = #{course} and c.courseclass = #{courseClass};
+    </select>
+    <delete id="deleteUploadStudent">
+        delete from score where workid in (select workid from homework WHERE course=#{course} and uploadclass=#{uploadClass});
+    </delete>
+    <insert id="addWork">
+        insert into score(stuid,score,workid,state) values (#{stuid},0,(select workid from homework WHERE course
+         =#{course} and uploadclass=#{uploadClass}),'未上交');
+    </insert>
+</mapper>

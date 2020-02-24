@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ljq.bishe.mapper.HandInMapper">
+    <select id="getLearningCourse" resultType="Student">
+        select coursename,courseclass from selectcourse where stuid=#{stuid};
+    </select>
+    <select id="workInfo" resultType="Homework">
+        select h.*,s.state from homework h,score s where h.workid=s.workid and s.stuid=#{stuid};
+    </select>
+</mapper>

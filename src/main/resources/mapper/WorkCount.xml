@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ljq.bishe.mapper.WorkCountMapper">
+  <select id="courseList" resultType="String">
+  SELECT DISTINCT coursename FROM course WHERE teaid=#{teaid};
+  </select>
+  <select id="courseList1" resultType="String">
+    SELECT courseclass FROM course WHERE teaid=#{teaid} and coursename=#{coursename};
+  </select>
+  <select id="courseClassList" resultType="Course">
+    SELECT coursename,courseclass FROM course WHERE teaid=#{teaid};
+  </select>
+  <select id="scoreList" resultType="ScoreList">
+    select sl.*,stu.stuname from scorelist sl,course c,student stu
+    <if test="courseclass != 'all'">
+      where sl.courseid = c.courseid and stu.stuid=sl.stuid and c.teaid=#{teaid} and c.courseclass=#{courseclass} and c.coursename=#{coursename};
+    </if>
+    <if test="courseclass == 'all'">
+      where sl.courseid = c.courseid and stu.stuid=sl.stuid and c.coursename=#{coursename} and c.teaid=#{teaid};
+    </if>
+  </select>
+</mapper>

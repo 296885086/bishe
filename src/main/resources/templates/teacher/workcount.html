@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:v-on="http://www.w3.org/1999/xhtml">
+<head>
+    <script type="text/javascript" src="/js/jquery.min.css" th:src="@{/js/jquery.min.js}"></script>
+    <script type="text/javascript" src="/js/bootstrap.min.css" th:src="@{/js/bootstrap.min.js}"></script>
+    <script type="text/javascript" src="/js/highcharts.js" th:src="@{/js/highcharts.js}"></script>
+    <link rel="stylesheet" href="/webapp/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}">
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        .chart{
+            position: relative;
+            left: 50px;
+            width: 550px; height: 400px; margin: 0 auto
+        }
+        #chartform{
+            position: fixed;
+            width: 180px;
+        }
+        .noupload{
+            width: 600px;
+            position: relative;
+            left: 280px;
+        }
+    </style>
+</head>
+
+<body>
+<div class="container">
+    <form role="form">
+        <div id="chartform" class="form-group">
+            <label for="name">选择科目：</label>
+            <select id="selectCourse" class="form-control">
+                <option>请选择</option>
+                <option th:each="wc:${course}" th:text="${wc}"></option>
+            </select>
+            <label for="name">选择教学班：</label>
+            <select id="selectCourseClass" class="form-control">
+                <option>请选择</option>
+            </select>
+            <button id="selectclass" type="button" class="btn btn-primary">确定</button>
+        </div>
+    </form>
+    <div class="chart" id="container1"></div>
+    <div class="chart" id="container2"></div>
+    <div class="table-responsive noupload">
+        <table class="table">
+            <caption>未上交名单</caption>
+            <thead>
+            <tr>
+                <th>姓名</th>
+                <th>学号</th>
+                <th>科目</th>
+                <th>教学班</th>
+                <th>第几次</th></tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+</div>
+<script language="JavaScript" type="text/javascript" th:inline="javascript">
+
+    $(document).ready(function () {
+        draw();
+    });
+
+    function draw() {
+        var chart = {
+            type: 'column'
+        };
+        var title = {
+            text: name
+        };
+        var subtitle = {
+            text: '作业上交数量'
+        };
+        var xAxis = {
+            categories: x,
+            crosshair: true
+        }
+        var yAxis = {
+            min: 0,
+            title: {
+                text: '作业数量 (份)'
+            }
+        };
+        var tooltip = {
+            headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+            pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+            '<td style="padding:0"><b>{point.y:.1f} 份</b></td></tr>',
+            footerFormat: '</table>',
+            shared: true,
+            useHTML: true
+        };
+        var plotOptions = {
+            column: {
+                pointPadding: 0.2,
+                borderWidth: 0
+            }
+        };
+        var credits = {
+            enabled: false
+        };
+
+        var series = con;
+
+        var json = {};
+        json.chart = chart;
+        json.title = title;
+        json.subtitle = subtitle;
+        json.tooltip = tooltip;
+        json.xAxis = xAxis;
+        json.yAxis = yAxis;
+        json.series = series;
+        json.plotOptions = plotOptions;
+        json.credits = credits;
+        $('#container1').highcharts(json);
+    }
+
+    $('#selectCourse').change(function () {
+        $('#selectCourseClass').empty();
+        var course = $(this).children('option:selected').val();
+        var courseClass = [[${courseClass}]];
+        $('#selectCourseClass').append('<option value="all">全部</option>');
+        courseClass.forEach(myFunction);
+
+        function myFunction(value, index, array) {
+            if (course === value.coursename) {
+                $('#selectCourseClass').append('<option value="' + value.courseclass + '">' + value.courseclass + '</option>');
+            }
+        }
+    });
+
+    var name = '选择科目';
+    var x = [];//作业列表
+    var con = [{}];//班级作业数据
+    $('#selectclass').click(function () {
+        var course = $('#selectCourse').children('option:selected').val();
+        var courseClass = $('#selectCourseClass').children('option:selected').val();
+        var teaid = [[${teaid}]];
+        $(".noupload table tbody").empty();
+        $.ajax({
+            url: '/teacher/selectclass',
+            type: 'GET',
+            data: {
+                'course': course,
+                'courseClass': courseClass,
+                'teaid': teaid
+            },
+            dataType: 'json',
+            success: function (data) {
+                console.log(data);
+                var arrScore = [];//存放班级对应的成绩
+
+                //把成绩列转成数组
+                for (var i = 0; i < data[0].length; i++) {
+                    arrScore.push({stuid:data[0][i]["stuid"],name:data[0][i]["stuname"],courseclass: data[0][i]["courseclass"], score: data[0][i]["score"].split(",")});
+                }
+                console.log(arrScore);
+                //未上交名单
+                for (var q = 0; q < arrScore.length;q++){
+                    for (var p = 0; p < arrScore[0]["score"].length; p++){
+                        if (arrScore[q]["score"][p] === "未上交"){
+                            $(".noupload table tbody").append(
+                                "<tr><td>" + arrScore[q]["name"] +"</td>" +
+                                "<td>" + arrScore[q]["stuid"] + "</td>" +
+                                "<td>" + course+"</td>" +
+                                "<td>" + arrScore[q]["courseclass"]  +"</td>" +
+                                "<td>第"+ (p+1) +"次</td></tr>");
+                        }
+                    }
+                }
+                //作业列表
+                for (var k = 0; k < arrScore[0]["score"].length; k++) {
+                    x.push("作业" + (k + 1));
+                }
+                con = [];
+                //全部班级
+                if (courseClass === "all") {
+                    for (var j = 0; j < data[2].length; j++) {//班级遍历
+                        var scoreArr = [];
+                        var scoreData = [];//存放作业上交量
+                        for (var l = 0; l < arrScore.length;l++) {//遍历作业成绩
+                            if (data[2][j] === arrScore[l]["courseclass"]){
+                                scoreArr.push(arrScore[l]["score"]);
+                            }
+                        }
+                        for (var k = 0;k < scoreArr[0].length;k++){
+                            var workTime = 0;
+                            for (var m = 0;m < scoreArr.length;m++ ){
+                                if (scoreArr[m][k] !== "未上交")
+                                    workTime ++;
+                            }
+                                scoreData.push(workTime);
+                        }
+                        con.push({name: data[2][j],data:scoreData});
+                    }
+                } else {
+                    var scoreData1 = [];//存放作业上交量
+                    for (var a = 0; a<arrScore[0]["score"].length;a++){
+                        var workTime1 = 0;
+                        for (var b = 0;b<arrScore.length;b++){
+                            if (arrScore[b]["score"][a] !== "未上交")
+                                workTime1 ++;
+                        }
+                        scoreData1.push(workTime1);
+                    }
+                    con.push({name: courseClass,data:scoreData1});
+                }
+                console.log(con);
+                name = data[1];//设置标题
+                draw();
+                x = [];
+
+            }
+        });
+    });
+</script>
+<script language="JavaScript">
+    $(document).ready(function() {
+        var chart = {
+            plotBackgroundColor: null,
+            plotBorderWidth: null,
+            plotShadow: false
+        };
+        var title = {
+            text: 'Browser market shares at a specific website, 2014'
+        };
+        var tooltip = {
+            pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+        };
+        var plotOptions = {
+            pie: {
+                allowPointSelect: true,
+                cursor: 'pointer',
+                dataLabels: {
+                    enabled: false
+                },
+                showInLegend: true
+            }
+        };
+        var series= [{
+            type: 'pie',
+            name: 'Browser share',
+            data: [
+                ['Firefox',   45.0],
+                ['IE',       26.8],
+                {
+                    name: 'Chrome',
+                    y: 12.8,
+                    sliced: true,
+                    selected: true
+                },
+                ['Safari',    8.5],
+                ['Opera',     6.2],
+                ['Others',   0.7]
+            ]
+        }];
+
+        var json = {};
+        json.chart = chart;
+        json.title = title;
+        json.tooltip = tooltip;
+        json.series = series;
+        json.plotOptions = plotOptions;
+        $('#container2').highcharts(json);
+    });
+</script>
+</body>
+</html>

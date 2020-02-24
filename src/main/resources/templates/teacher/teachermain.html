@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:v-on="http://www.w3.org/1999/xhtml">
+<head>
+    <script type="text/javascript" src="/js/jquery.min.css" th:src="@{/js/jquery.min.js}"></script>
+    <script type="text/javascript" src="/js/bootstrap.min.css" th:src="@{/js/bootstrap.min.js}"></script>
+    <link rel="stylesheet" href="/webapp/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}">
+    <link rel="stylesheet" href="/css/teacher.css" th:href="@{/css/teacher.css}">
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div th:replace="~{fragments/header :: header}"></div>
+<div th:replace="~{fragments/menu::menu}"></div>
+<div class="lab-content">
+    <iframe src="" scrolling="yes" class="right-iframe" frameborder="0">
+    </iframe>
+</div>
+<script th:inline="javascript">
+    var framecontent = $('.right-iframe');
+    console.log([[${userModel.teainfo.teaid}]]);
+    framecontent.attr('src', '/teacher/fragment/' + [[${userModel.teainfo.teaid}]])
+    $('.studata').click(function () {
+        framecontent.attr('src', '/teacher/studata/' + [[${userModel.teainfo.teaid}]])
+    });
+    $('.uploadwork').click(function () {
+        framecontent.attr('src', '/teacher/fragment/'+ [[${userModel.teainfo.teaid}]])
+    });
+    $('.teachertalk').click(function () {
+        framecontent.attr('src', '/teacher/teachertalk')
+    });
+    $('.workcount').click(function () {
+        framecontent.attr('src', '/teacher/workcount/'  + [[${userModel.teainfo.teaid}]])
+    });
+</script>
+</body>
+</html>

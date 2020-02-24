@@ -1,0 +1,179 @@
+.home a{
+    float: left;
+    font-size: 18px;
+    padding-left: 20px;
+    line-height: 45px;
+    width: 200px;
+    text-decoration:none;
+    color: white;
+}
+
+.left-menu ul{
+    list-style-type: none;
+    width: 220px;
+    height: 100%;
+    background: #EEEEEE;
+    position: fixed;
+    padding-left: 0px;
+}
+.left-menu li{
+    position: relative;
+    height: 38px;
+    cursor: pointer;
+}
+.left-menu li:hover{
+    background: cadetblue;
+}
+.left-menu li a{
+    color: #0f0f0f;
+    position: relative;
+    top: 10px;
+    left: 20px;
+}
+.left-menu li a:hover{
+    text-decoration: none;
+    color: #0f0f0f;
+}
+.left-menu{
+    position: absolute;
+    top: 52px;
+    bottom: 42px;
+    left: 0;
+    z-index: 2;
+    padding-top: 10px;
+    background-color: #EEEEEE;
+    width: 220px;
+    max-width: 220px;
+    overflow: hidden;
+}
+.nav,.navbar-nav{
+    position: absolute;
+    right: 90px;
+}
+.lab-content{
+    position: absolute;
+    top: 52px;
+    right: 0;
+    bottom: 0px;
+    left: 220px;
+    overflow: hidden;
+    z-index: 1;
+}
+.right-iframe{
+    width: 100%;
+    height: 100%;
+}
+.uploadbody {
+    background-color: snow;
+}
+
+
+.date.upload {
+    position: relative;
+    top: 29px;
+    right: 95px;
+}
+
+.date.end {
+    top: 78px;
+    position: absolute;
+}
+
+.end .text-right {
+    position: relative;
+    right: 94px;
+}
+
+.end .text-left {
+    position: relative;
+    right: 94px;
+}
+
+#uploadfile {
+    position: relative;
+    left: 12px;
+    top: 12px;
+    width: 49%;
+}
+#uploadfile input{
+    position: relative;
+    bottom: 28px;
+    left: 97px;
+}
+.table.table-hover {
+    position: relative;
+    left: 69px;
+    width: 80%;
+    bottom: 64px;
+    top:0px;
+}
+.table.table-hover td,th{
+    text-align: left;
+}
+.uploadform {
+    position: relative;
+    border-bottom-style: ridge;
+    min-width: 103px;
+    height: 216px;
+    width: 80%;
+    border-width: 2px;
+    left: 64px;
+    top: 4px;
+}
+.uploadform button{
+    position: relative;
+    left: 108px;
+    width: 112px;
+    top: -20px;
+}
+.page{
+    position: relative;
+    width: 44%;
+    margin: auto;
+}
+.modal-body .uploadform{
+    bottom: 23px;
+    border-bottom-style: none;
+    left: 0px;
+}
+.modal-body .uploadform button{
+    position: relative;
+    top: 11px;
+    left: 390px
+}
+.modal-body .date.upload{
+    right: 32px;
+}
+.modal-body .date.upload input{
+    width: 100px;
+}
+.modal-body .date.end{
+    left: 105px;
+}
+.modal-body .date.end input{
+    width: 100px;
+}
+.modal-body .col-xs-3{
+    width: 40%;
+}
+.modal-body #uploadfile{
+    left: 67px;
+}
+/*导出学生数据*/
+#findgroup {
+    width: 30%;
+    position: relative;
+    top: -34px;
+    left: 282px;
+}
+#findcon {
+    position: relative;
+    left: 49px;
+}
+#stupage {
+    position: relative;
+    left: 36%;
+}
+.glyphicon-list:hover{
+    cursor: pointer;
+}

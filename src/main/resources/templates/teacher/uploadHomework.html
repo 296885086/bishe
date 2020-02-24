@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <script type="text/javascript" src="/js/jquery.min.css" th:src="@{/js/jquery.min.js}"></script>
+    <script type="text/javascript" src="/js/bootstrap.min.css" th:src="@{/js/bootstrap.min.js}"></script>
+    <script type="text/javascript" src="/js/bootstrap.min.css" th:src="@{/js/bootstrap-datetimepicker.min.js}"></script>
+    <script type="text/javascript" src="/js/bootstrap.min.css" th:src="@{/js/bootstrap-datetimepicker.zh-CN.js}"></script>
+    <link rel="stylesheet" href="/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}">
+    <link rel="stylesheet" href="/css/fragment.css" th:href="@{/css/fragment.css}">
+    <link rel="stylesheet" href="/css/bootstrap-datetimepicker.min.css" th:href="@{/css/bootstrap-datetimepicker.min.css}">
+    <link  rel="stylesheet" href="/css/teacher.css" th:href="@{/css/teacher.css}">
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body class="uploadbody">
+<div class="container">
+<div th:replace="~{fragments/uploadwork::uploadwork}"></div>
+<table class="table table-hover">
+    <thead>
+    <tr>
+        <th>作业名称</th>
+        <th>发布班级</th>
+        <th>发布时间</th>
+        <th>截止上交时间</th>
+        <th>上交情况</th>
+        <th>修改/删除</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="c:${page.list}">
+        <td th:text="${c.workname}"></td>
+        <td th:text="${c.uploadclass}"> </td>
+        <td th:text="${c.uploaddate}"></td>
+        <td th:text="${c.enddate}"></td>
+        <td>123</td>
+        <td><a href="#" class="update" data-toggle="modal" data-target="#myModal">修改</a>/
+            <a th:href="@{/teacher/workdelete(workid=${c.workid},filepath=${c.filepath},course=${c.course},uploadclass=${c.uploadclass})}">删除</a></td>
+    </tr>
+    </tbody>
+</table>
+<div class="page">
+    <ul class="pagination">
+        <li><a th:href="@{/teacher/fragment(start=${page.pageNum-1})}">&laquo;</a></li>
+        <li class="active"><a href="#">1</a></li>
+        <li><a href="#">2</a></li>
+        <li><a href="#">3</a></li>
+        <li><a href="#">4</a></li>
+        <li><a href="#">5</a></li>
+        <li><a th:href="@{/teacher/fragment(start=${page.pageNum+1})}">&raquo;</a></li>
+    </ul>
+</div>
+<!-- 模态框（Modal） -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h4 class="modal-title" id="myModalLabel">
+                    作业发布信息修改
+                </h4>
+            </div>
+            <div class="modal-body">
+                <div th:replace="~{fragments/uploadwork :: uploadwork}"></div>
+            </div>
+            <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+            </button>
+        </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
+</div>
+<script th:inline="javascript">
+    $('.form_date').datetimepicker({
+        language: 'zh-CN',
+        format: 'yyyy-mm-dd',
+        weekStart: 0,
+        todayBtn: 1,
+        autoclose: 1,
+        todaHighlight: 1,
+        startView: 2,
+        minView: 'month',
+        forceParse: 0,
+        startDate: new Date(),
+    });
+    console.log([[${page}]]);
+    $('.update').click(function () {
+        var id = $(this).parents("td");
+        var enddate = id.prev().prev();
+        console.log(enddate.text());
+        var uploaddate = enddate.prev();
+        console.log(uploaddate.text());
+        $('.modal-body #uploaddate').attr('value',uploaddate.text());
+        $('.modal-body #enddate').attr('value',enddate.text());
+    });
+
+    $('#selectCourse').change(function () {
+        $('#selectCourseClass').empty();
+        var course = $(this).children('option:selected').val();
+        var courseClass = [[${courseClass}]];
+        $('#selectCourseClass').append('<option value="all">全部</option>');
+        courseClass.forEach(myFunction);
+        function myFunction(value, index, array) {
+            if (course === value.coursename) {
+                $('#selectCourseClass').append('<option th:value="' + value.courseclass + '">' + value.courseclass + '</option>');
+            }
+        }
+    });
+    $('.modal-body #selectCourse').change(function () {
+        $('.modal-body #selectCourseClass').empty();
+        var course = $(this).children('option:selected').val();
+        var courseClass = [[${courseClass}]];
+        $('.modal-body #selectCourseClass').append('<option value="all">全部</option>');
+        courseClass.forEach(myFunction);
+        function myFunction(value, index, array) {
+            if (course === value.coursename) {
+                $('.modal-body #selectCourseClass').append('<option value="' + value.courseclass + '">' + value.courseclass + '</option>');
+            }
+        }
+    });
+</script>
+</body>
+</html>

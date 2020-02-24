@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <meta charset="UTF-8">
+    <title>Thymeleaf in action</title>
+    <link>
+</head>
+<body>
+<div th:fragment="uploadwork">
+    <form class="uploadform" method="post" th:object="${homework}" th:action="@{/teacher/upload}"
+          enctype="multipart/form-data">
+        <div class="date upload">
+        <span class="left col-xs-3 text-right">
+            <label for="">发布时间：</label>
+        </span>
+            <div class="left col-xs-6 text-left">
+                <div class="input-group date form_date col-md-5" data-date="" data-date-format=""
+                     data-link-field="dtp_input">
+                    <input th:field="*{uploaddate}" class="form-control" size="16" type="text" value="" style="width: 100px;" readonly>
+                    <span class="input-group-addon">
+                    <span class="glyphicon glyphicon-remove"></span>
+                </span>
+                    <span class="input-group-addon">
+                    <span class="glyphicon glyphicon-calendar"></span>
+                </span>
+                </div>
+            </div>
+        </div>
+        <div class="date end ">
+            <div class="left col-xs-3 text-right">
+                <label for="">截止上交时间：</label>
+            </div>
+            <div class="left col-xs-6 text-left">
+                <div class="input-group date form_date col-md-5" data-date="" data-date-format=""
+                     data-link-field="dtp_input">
+                    <input th:field="*{enddate}" class="form-control" size="16"  style="width: 100px;" type="text" value="" readonly>
+                    <span class="input-group-addon">
+                    <span class="glyphicon glyphicon-remove"></span>
+                </span>
+                    <span class="input-group-addon">
+                    <span class="glyphicon glyphicon-calendar"></span>
+                </span>
+                </div>
+            </div>
+        </div>
+        <div class="form-group" style="position: relative;width: 140px;left: 350px;bottom: 16px;top: 0;">
+            <div>
+                <select id="selectCourse" class="form-control" th:field="*{course}">
+                    <option th:value="select">请选择科目</option>
+                    <option th:each="wc:${course}" th:value="${wc}"  th:text="${wc}"></option>
+                </select>
+            </div>
+            <div style="position: relative;top: 10px;">
+                <select id="selectCourseClass" class="form-control" th:field="*{uploadclass}">
+                    <option th:value="select">请选择班级</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group" id="uploadfile">
+            <label for="inputfile">作业选择:</label>
+            <input type="file" id="inputfile" name="file">
+        </div>
+        <button id="submitbtn" type="submit" class="btn btn-primary">发布</button>
+    </form>
+
+</div>
+</body>
+</html>
