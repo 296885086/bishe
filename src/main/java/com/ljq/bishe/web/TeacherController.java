@@ -73,15 +73,21 @@ public class TeacherController {
         //获取项目路径
         String projectpath = Class.class.getClass().getResource("/").getPath();
         String projectpath1 = projectpath.substring(1, projectpath.indexOf("/target"));
-        String destFileName = projectpath1 + "/src/main/resources/static/homework/" + homework.getCourse() +File.separator +homework.getUploadclass()+ File.separator + fileName;
-        String fileFolderPath = projectpath1 + "/src/main/resources/static/homework/" + homework.getCourse() + File.separator +homework.getUploadclass();
+        String destFileName = projectpath1 + "/src/main/resources/static/homework/" + teacherId + File.separator + homework.getCourse() + File.separator +homework.getUploadclass()+ File.separator + fileName;
+        String fileFolderPath = projectpath1 + "/src/main/resources/static/homework/" + teacherId + File.separator + homework.getCourse() + File.separator +homework.getUploadclass();
+        String teaFolderPath = projectpath1 + "/src/main/resources/static/homework/" + teacherId;
+
         homework.setFilepath(destFileName);
-        File fileFolder = new File(fileFolderPath);
+        File teaFolder = new File(teaFolderPath);
+        if (!teaFolder.exists()){
+            teaFolder.mkdirs();
+        }
+        File fileFolder = new File(fileFolderPath);//文件夹
         if (!fileFolder.exists()){
             fileFolder.mkdirs();
         }
         File destFile = new File(destFileName);
-        destFile.getParentFile().mkdirs();
+        destFile.getParentFile().mkdirs();//创建文件
         rs.workinsert(homework);
         try {
             file.transferTo(destFile);
@@ -105,17 +111,18 @@ public class TeacherController {
         file.delete();
         File[] fileList = folder.listFiles();//文件夹为空删除
         if (fileList.length == 0){
-            folder.delete();
+            folder.delete();//删除文件夹
         }
         File[] fileList1 = mainFolder.listFiles();
         if (fileList1.length == 0){
-            mainFolder.delete();
+            mainFolder.delete();//删除文件
         }
-        rs.workdelete(String.valueOf(homework.getWorkid()));
         List gus = rs.getUploadStudent(homework.getCourse(),homework.getUploadclass());
         for (int i = 0; i < gus.size();i++){
+            //删除学生作业信息
             rs.deleteUploadStudent(String.valueOf(gus.get(i)),homework.getCourse(),homework.getUploadclass());
         }
+        rs.workdelete(String.valueOf(homework.getWorkid()));//删除作业信息
         return "redirect:/teacher/fragment/" + teacherId;
     }
 

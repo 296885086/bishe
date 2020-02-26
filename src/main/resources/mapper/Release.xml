@@ -14,10 +14,10 @@
         delete from homework where workid=#{workid};
     </delete>
     <select id="getUploadStudent" resultType="String">
-        select sl.stuid from scorelist sl,course c where sl.courseid = c.courseid and c.coursename = #{course} and c.courseclass = #{courseClass};
+        select stuid from selectcourse where coursename=#{course} and courseclass = #{courseClass};
     </select>
     <delete id="deleteUploadStudent">
-        delete from score where workid in (select workid from homework WHERE course=#{course} and uploadclass=#{uploadClass});
+        delete from score where workid in (select workid from homework WHERE course=#{course} and uploadclass=#{uploadClass}) and stuid=#{stuid};
     </delete>
     <insert id="addWork">
         insert into score(stuid,score,workid,state) values (#{stuid},0,(select workid from homework WHERE course

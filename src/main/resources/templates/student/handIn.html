@@ -59,6 +59,7 @@
     console.log(hl);
     hl.forEach(myFunction1);
 
+    //遍历作业信息
     function myFunction1(value, index, array) {
         var path = value.filepath;
         var index = path.lastIndexOf("\\");
@@ -74,6 +75,7 @@
             '<td><a href="../../homework/'+ value.course+'/'+ value.uploadclass+'/'+ workAllName +'">下载</a></td></tr>');
     }
 
+    //选择科目
     $('#selectCourse').change(function () {
         $('#selectCourseClass').empty();
         var course = $(this).children('option:selected').val();
@@ -86,6 +88,8 @@
             }
         }
     });
+
+    //上交作业
     $('#handIn').click(function () {
         var course = $('#selectCourse').children('option:selected').val();
         var courseClass = $('#selectCourseClass').children('option:selected').val();
@@ -105,9 +109,10 @@
             contentType: false,
             data: fd,
             success:function(info){
-
+                alert(info);
+                parent.location.reload();
             },error:function (e) {
-                alert('上交失败');
+                alert('上交失败！！');
             }
         })
     })

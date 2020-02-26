@@ -20,4 +20,14 @@ public class HandInServiceImpl implements HandInService{
     public List getLearningCourse(String stuid) {
         return hip.getLearningCourse(stuid);
     }
+
+    @Override
+    public void handIn(String stuid, String course, String courseClass) {
+        hip.handIn(stuid,course,courseClass);
+    }
+
+    @Override
+    public String getHandInPath(String stuid, String course, String courseClass) {
+        return hip.getHandInPath(stuid,course,courseClass);
+    }
 }

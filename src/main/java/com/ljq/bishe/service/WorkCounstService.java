@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface WorkCounstService {
     public ArrayList courseList(String teaid);
-    public ArrayList courseList1(@Param("teaid")String teaid, @Param("coursename")String coursename);
+    public ArrayList courseList1(String teaid, String coursename);
     public ArrayList<Course> courseClassList(String teaid);
     public int columnCount();
     public List<ScoreList> scoreList(String teaid,String course,String courseClass);
