@@ -9,6 +9,7 @@ import com.ljq.bishe.pojo.Student;
 import com.ljq.bishe.service.ReleaseService;
 import com.ljq.bishe.service.StudataService;
 import com.ljq.bishe.service.WorkCounstService;
+import com.ljq.bishe.service.WorkScoreService;
 import net.sf.json.JSONArray;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -35,7 +36,8 @@ public class TeacherController {
     WorkCounstService wc;
      @Autowired
      StudataService ss;
-
+    @Autowired
+    WorkScoreService ws;
     String teacherId = null;
     /*
     * 作业列表*/
@@ -160,6 +162,39 @@ public class TeacherController {
         model.addAttribute("teaid",teaid);
         return "teacher/workcount";
     }
+    /**
+     *学生作业审核
+     */
+    @GetMapping("/workaudit")
+    public String workaudit(){
+        return "teacher/workaudit";
+    }
+    /**
+     *学生作业评分
+     */
+    @GetMapping("/workscore")
+    public String workscore(Model m){
+        Homework homework = new Homework();
+        m.addAttribute("homework", homework);
+        ArrayList course = wc.courseList(teacherId);
+        List<Course> courseClass = wc.courseClassList(teacherId);
+        m.addAttribute("course",course);//科目
+        m.addAttribute("courseClass",courseClass);//班级
+        m.addAttribute("homework", homework);
+        return "teacher/workscore";
+    }
+
+    /**
+     * 查找学生作业*/
+    @PostMapping("/findWorkScore")
+    @ResponseBody
+    public String findWorkScore(@RequestParam("course") String courseName,
+                                @RequestParam("courseClass") String courseClass,
+                                @RequestParam("homeworkState") String state){
+        String msg = "查找成功！";
+        List workScoreList = ws.findStudentScore(courseName,courseClass,state,teacherId);
+        return msg;
+    }
     /*
     * 学生作业情况统计
     * */
@@ -206,8 +241,6 @@ public class TeacherController {
             }
             filepath.add(filename);
             List<Student> es = ss.exportdata(y);
-            /*esa.addAll(es);*/
-            /*String filepath = "d:/测试.xlsx";*/
             File file = new File(destFileName);
             Workbook book = new XSSFWorkbook();
             Sheet sheet = book.createSheet(y);//创建表格
@@ -271,5 +304,6 @@ public class TeacherController {
         ins.close();
         response.getWriter().write("导入成功！");
     }
+
 }
 

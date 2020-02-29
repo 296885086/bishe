@@ -43,10 +43,20 @@ public class StudentController {
                              @RequestParam("handInFile") MultipartFile handInFile){
         String handInPath = handInService.getHandInPath(stuId,course,courseClass) ;//上交作业路径
         int lastIndex = handInPath.lastIndexOf("\\");
-        String handInPath2 = handInPath.substring(0,lastIndex) + File.separator +  handInFile.getOriginalFilename();
+        String handInPath2 = handInPath.substring(0,lastIndex) + File.separator + stuId +  File.separator + handInFile.getOriginalFilename();
+        String studentFolderPath = handInPath.substring(0,lastIndex) + File.separator + stuId;
+        File studentFolder = new File(studentFolderPath);
+        if (!studentFolder.exists()){
+            studentFolder.mkdirs();
+        }
         File file = new File(handInPath2);
         try {
-            handInFile.transferTo(file);
+            if (!file.exists()){
+                handInFile.transferTo(file);
+            }else{
+
+            }
+
         } catch (IOException e) {
             e.printStackTrace();
         }

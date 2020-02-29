@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script type="text/javascript" src="/js/jquery.min.css" th:src="@{/js/jquery.min.js}"></script>
+    <script type="text/javascript" src="/js/bootstrap.min.css" th:src="@{/js/bootstrap.min.js}"></script>
+    <script type="text/javascript" src="/js/bootstrap.min.css" th:src="@{/js/bootstrap-datetimepicker.min.js}"></script>
+    <script type="text/javascript" src="/js/bootstrap.min.css"
+            th:src="@{/js/bootstrap-datetimepicker.zh-CN.js}"></script>
+    <link rel="stylesheet" href="/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}">
+    <link rel="stylesheet" href="/css/bootstrap-datetimepicker.min.css"
+          th:href="@{/css/bootstrap-datetimepicker.min.css}">
+    <link rel="stylesheet" href="/css/teacher.css" th:href="@{/css/teacher.css}">
+</head>
+<body>
+<div class="container">
+    <form role="form">
+        <div class="form-group" style="top: 16px; position: relative;height:76px;">
+            <div style="width: 15%">
+           <label for="name">选择科目</label>
+                <select id="selectCourse" class="form-control" >
+                    <option th:value="select">请选择科目</option>
+                    <option th:each="wc:${course}" th:value="${wc}"  th:text="${wc}"></option>
+                </select>
+            </div>
+            <div style="width: 15%;position: relative; bottom: 60px;left: 152px;">
+           <label for="name">选择教学班</label>
+                <select id="selectCourseClass" class="form-control">
+                    <option th:value="select">请选择班级</option>
+                </select>
+            </div>
+            <div style="width: 20%;position: relative;bottom: 119px;left: 304px;">
+                <label for="name">选择作业名称</label>
+                <select class="form-control">
+                    <option>1</option>
+                    <option>2</option>
+                </select>
+            </div>
+            <div style="width: 10%;position: relative;bottom: 177px;left: 502px;">
+                <label for="name">作业状态</label>
+                <select class="form-control" id="homeworkState" >
+                    <option>已上交</option>
+                    <option>未上交</option>
+                </select>
+            </div>
+            <button id="findBtn" class="btn btn-info" data-loading-text="查找中..."
+                    type="button" style=" position: relative;left: 618px;bottom: 211px;">查找
+            </button>
+        </div>
+    </form>
+    <table class="table table-bordered">
+        <caption>学生作业信息</caption>
+        <thead>
+        <tr>
+            <th>学号</th>
+            <th>姓名</th>
+            <th>作业名称</th>
+            <th>分数</th>
+            <th>操作</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>Tanmay</td>
+            <td>Bangalore</td>
+            <td>560001</td>
+            <td>Bangalore</td>
+            <td>
+                <a href="#">评分</a>    /  <a href="#">下载</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<script th:inline="javascript">
+    $(function() {
+        $("#findBtn").click(function(){
+            var course = $('#selectCourse').children('option:selected').val();
+            var courseClass = $('#selectCourseClass').children('option:selected').val();
+            var homeworkState =$('#homeworkState').children('option:selected').val();
+            var fd = new FormData();
+            fd.append("course",course);
+            fd.append("courseClass",courseClass);
+            fd.append("homeworkState",homeworkState);
+            $.ajax({
+                url:'/teacher/findWorkScore',
+                type:'POST',
+                processData: false,
+                contentType: false,
+                data: fd,
+                success:function(info){
+                    alert(info);
+                    parent.location.reload();
+                },error:function (e) {
+                    alert('查找失败！！');
+                }
+            });
+
+            //状态加载
+            $(this).button('loading').delay(1000).queue(function() {
+              $(this).button('reset');
+               $(this).dequeue();
+            });
+        });
+    });
+
+    //下拉选择班级和科目
+    $('#selectCourse').change(function () {
+        $('#selectCourseClass').empty();
+        var course = $(this).children('option:selected').val();
+        var courseClass = [[${courseClass}]];
+        //$('#selectCourseClass').append('<option value="all">全部</option>');
+        courseClass.forEach(myFunction);
+        function myFunction(value, index, array) {
+            if (course === value.coursename) {
+                $('#selectCourseClass').append('<option th:value="' + value.courseclass + '">' + value.courseclass + '</option>');
+            }
+        }
+    });
+</script>
+</body>
+</html>
