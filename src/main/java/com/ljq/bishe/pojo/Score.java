@@ -1,27 +1,20 @@
 package com.ljq.bishe.pojo;
 
 public class Score {
-    private String stuId;
-    private String stuName;
+    private String stuid;
+    private String stuname;
     private String score;
     private String state;
-    private String stuWorkPath;
-
-    public String getStuId() {
-        return stuId;
+    private String filepath;
+    private String workname;
+    public String getStuid() {
+        return stuid;
     }
 
-    public void setStuId(String stuId) {
-        this.stuId = stuId;
+    public void setStuid(String stuid) {
+        this.stuid = stuid;
     }
 
-    public String getStuName() {
-        return stuName;
-    }
-
-    public void setStuName(String stuName) {
-        this.stuName = stuName;
-    }
 
     public String getScore() {
         return score;
@@ -39,11 +32,27 @@ public class Score {
         this.state = state;
     }
 
-    public String getStuWorkPath() {
-        return stuWorkPath;
+    public String getFilepath() {
+        return filepath;
     }
 
-    public void setStuWorkPath(String stuWorkPath) {
-        this.stuWorkPath = stuWorkPath;
+    public void setFilepath(String filepath) {
+        this.filepath = filepath;
+    }
+
+    public String getStuname() {
+        return stuname;
+    }
+
+    public void setStuname(String stuname) {
+        this.stuname = stuname;
+    }
+
+    public String getWorkname() {
+        return workname;
+    }
+
+    public void setWorkname(String workname) {
+        this.workname = workname;
     }
 }

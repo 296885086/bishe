@@ -9,6 +9,7 @@ public class Homework {
     private String course;
     private String filepath;
     private String state;
+    private String teaid;
     public String getUploaddate() {
         return uploaddate;
     }
@@ -73,5 +74,13 @@ public class Homework {
 
     public void setState(String state) {
         this.state = state;
+    }
+
+    public String getTeaid() {
+        return teaid;
+    }
+
+    public void setTeaid(String teaid) {
+        this.teaid = teaid;
     }
 }

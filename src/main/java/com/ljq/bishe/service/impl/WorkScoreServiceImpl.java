@@ -16,4 +16,14 @@ public class WorkScoreServiceImpl implements WorkScoreService{
     public List<Score> findStudentScore(String course, String courseClass,String state,String teaid) {
         return ws.findStudentScore(course,courseClass,state,teaid);
     }
+
+    @Override
+    public List<Score> findAllScore(String teaid) {
+        return ws.findAllScore(teaid);
+    }
+
+    @Override
+    public List findWorkname(String teaid) {
+        return ws.findWorkname(teaid);
+    }
 }

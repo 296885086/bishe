@@ -4,8 +4,16 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.ljq.bishe.mapper.WorkScoreMapper">
-  <select id="findStudentScore">
-    select s.*,h.filepath from score s,selectcourse sc,homework h
-   where sc.stuid=s.stuid and sc.courseclass=#{course} and coursename=#{courseClass} and s.state=#{state} and s.workid=h.workid;
+  <select id="findStudentScore" resultType="Score">
+    select s.*,h.filepath,stu.stuname,h.workname from score s,selectcourse sc,homework h,student stu
+    where s.stuid = sc.stuid and sc.teaid=#{teaid} and h.workid = s.workid and stu.stuid=s.stuid and coursename=#{course} and
+    courseclass=#{courseClass} and state=#{state};
+ </select>
+  <select id="findAllScore" resultType="Score">
+    select s.*,h.filepath,stu.stuname,h.workname from score s,selectcourse sc,homework h,student stu
+    where s.stuid = sc.stuid and sc.teaid=#{teaid} and h.workid = s.workid and stu.stuid=s.stuid;
   </select>
+    <select id="findWorkname" resultType="Homework">
+        select workname,course,uploadclass from homework where teaid=#{teaid};
+    </select>
 </mapper>

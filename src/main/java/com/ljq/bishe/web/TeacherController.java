@@ -71,7 +71,7 @@ public class TeacherController {
         String uploadClass = homework.getUploadclass();
         int index = fileName.indexOf(".");
         homework.setWorkname(fileName.substring(0, index));
-
+        homework.setTeaid(teacherId);
         //获取项目路径
         String projectpath = Class.class.getClass().getResource("/").getPath();
         String projectpath1 = projectpath.substring(1, projectpath.indexOf("/target"));
@@ -174,13 +174,14 @@ public class TeacherController {
      */
     @GetMapping("/workscore")
     public String workscore(Model m){
-        Homework homework = new Homework();
-        m.addAttribute("homework", homework);
         ArrayList course = wc.courseList(teacherId);
         List<Course> courseClass = wc.courseClassList(teacherId);
+        List allScore = ws.findAllScore(teacherId);
+        List worknameList = ws.findWorkname(teacherId);
         m.addAttribute("course",course);//科目
         m.addAttribute("courseClass",courseClass);//班级
-        m.addAttribute("homework", homework);
+        m.addAttribute("allScore", allScore);
+        m.addAttribute("worknameList", worknameList);
         return "teacher/workscore";
     }
 
@@ -188,12 +189,11 @@ public class TeacherController {
      * 查找学生作业*/
     @PostMapping("/findWorkScore")
     @ResponseBody
-    public String findWorkScore(@RequestParam("course") String courseName,
+    public List findWorkScore(@RequestParam("course") String courseName,
                                 @RequestParam("courseClass") String courseClass,
                                 @RequestParam("homeworkState") String state){
-        String msg = "查找成功！";
         List workScoreList = ws.findStudentScore(courseName,courseClass,state,teacherId);
-        return msg;
+        return workScoreList;
     }
     /*
     * 学生作业情况统计

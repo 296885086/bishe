@@ -8,8 +8,10 @@ import java.util.List;
 
 @Mapper
 public interface WorkScoreMapper {
-    public List<Score> findStudentScore(@Param("course")String course,
-                                        @Param("courseClass")String courseClass,
-                                        @Param("teaid") String teaid,
-                                        @Param("state")String state);
+    public List<Score> findStudentScore(@Param("course") String course,
+                                        @Param("courseClass") String courseClass,
+                                        @Param("state") String state,
+                                        @Param("teaid") String teaid);
+    public List<Score> findAllScore(String teaid);
+    public List findWorkname(String teaid);
 }
