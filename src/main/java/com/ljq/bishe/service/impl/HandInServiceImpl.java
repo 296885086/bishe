@@ -22,12 +22,17 @@ public class HandInServiceImpl implements HandInService{
     }
 
     @Override
-    public void handIn(String stuid, String course, String courseClass) {
-        hip.handIn(stuid,course,courseClass);
+    public void handIn(String stuid, String course, String courseClass, String workName,String uploadWorkName) {
+        hip.handIn(stuid,course,courseClass,workName,uploadWorkName);
     }
 
     @Override
-    public String getHandInPath(String stuid, String course, String courseClass) {
-        return hip.getHandInPath(stuid,course,courseClass);
+    public String getHandInPath(String stuid, String course, String courseClass,String workName) {
+        return hip.getHandInPath(stuid,course,courseClass,workName);
+    }
+
+    @Override
+    public List getWorkName(String stuid) {
+        return hip.getWorkName(stuid);
     }
 }

@@ -17,19 +17,39 @@
 </div>
 <script th:inline="javascript">
     var framecontent = $('.right-iframe');
+    $('.handIn').css({"background-color":"cadetblue"});
     framecontent.attr('src', '/student/handIn/' + [[${userModel.stuinfo.stuid}]]);
-    console.log([[${userModel.stuinfo.stuid}]]);
     $('.handIn').click(function () {
         framecontent.attr('src', '/student/handIn/' + [[${userModel.stuinfo.stuid}]])
+        $(this).css({"background-color":"cadetblue"});
+        var brotherLi =  $(this).siblings();
+        brotherLi.each(function () {
+            $(this).css({"background-color":""});
+        });
     });
     $('.exchange').click(function () {
         framecontent.attr('src', '/student/exchange')
+        $(this).css({"background-color":"cadetblue"});
+        var brotherLi =  $(this).siblings();
+        brotherLi.each(function () {
+            $(this).css({"background-color":""});
+        });
     });
     $('.mydata').click(function () {
         framecontent.attr('src', '/student/myData')
+        $(this).css({"background-color":"cadetblue"});
+        var brotherLi =  $(this).siblings();
+        brotherLi.each(function () {
+            $(this).css({"background-color":""});
+        });
     });
     $('.workSituation').click(function () {
         framecontent.attr('src', '/student/workSituation')
+        $(this).css({"background-color":"cadetblue"});
+        var brotherLi =  $(this).siblings();
+        brotherLi.each(function () {
+            $(this).css({"background-color":""});
+        });
     });
 </script>
 </body>

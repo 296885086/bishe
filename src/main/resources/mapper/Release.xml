@@ -19,8 +19,9 @@
     <delete id="deleteUploadStudent">
         delete from score where workid in (select workid from homework WHERE course=#{course} and uploadclass=#{uploadClass}) and stuid=#{stuid};
     </delete>
-    <insert id="addWork">
-        insert into score(stuid,score,workid,state) values (#{stuid},0,(select workid from homework WHERE course
-         =#{course} and uploadclass=#{uploadClass}),'未上交');
+    <insert id="addWork" parameterType="String">
+        insert into score(stuid,score,workid,state,selectcourseid) values (#{stuid},0,(select workid from homework WHERE course
+         =#{course} and uploadclass=#{uploadClass} and filepath=#{filePath}),'未上交',(select selectcourseid from selectcourse where stuid=#{stuid}
+         and coursename=#{course} and courseclass=#{uploadClass}));
     </insert>
 </mapper>

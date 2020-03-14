@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ljq.bishe.mapper.MyDataMapper">
+    <select id="allMyDdata" resultType="Score" parameterType="String">
+        select s.stuname,c.*,h.workname from score c
+        left join student s on s.stuid = c.stuid
+        left join homework h on h.workid = c.workid
+        where c.stuid = #{stuid}
+    </select>
+    <update id="saveQuestion">
+        update score set question=#{question} where stuid=#{stuid} and workid=#{workid}
+    </update>
+    <select id="findMyData" resultType="Score">
+        select s.stuname,c.*,h.workname from score c
+        left join student s on s.stuid = c.stuid
+         left join homework h on h.workid = c.workid
+          where c.stuid = #{stuid} and  c.state=#{homeworkState} and c.selectcourseid in
+          (select selectcourseid from selectcourse where coursename=#{course} and courseclass=#{courseClass});
+    </select>
+</mapper>

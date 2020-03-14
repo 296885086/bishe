@@ -1,90 +1,51 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
-    <script type="text/javascript" src="/js/jquery.min.css" th:src="@{/js/jquery.min.js}"></script>
-    <script type="text/javascript" src="/js/bootstrap.min.css" th:src="@{/js/bootstrap.min.js}"></script>
-    <script type="text/javascript" src="/js/bootstrap.min.css" th:src="@{/js/bootstrap-datetimepicker.min.js}"></script>
-    <script type="text/javascript" src="/js/bootstrap.min.css" th:src="@{/js/bootstrap-datetimepicker.zh-CN.js}"></script>
-    <link rel="stylesheet" href="/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}">
-    <link rel="stylesheet" href="/css/bootstrap-datetimepicker.min.css" th:href="@{/css/bootstrap-datetimepicker.min.css}">
-    <link  rel="stylesheet" href="/css/teacher.css" th:href="@{/css/teacher.css}">
+    <style>
+        .keleyitable {
+            width: 800px;
+        }
+
+        .keleyitable table, td, th {
+            border: 1px solid green;margin-top:10px;
+        }
+        .klytd {width:100px;text-align:right
+        }
+        .hvttd {
+            width:500px}
+    </style>
 </head>
 <body>
-<div class="container">
-    <form action="" class="form-horizontal">
-        <fieldset>
-            <legend>Test</legend>
-            <div class="control-group">
-                <label class="control-label">DateTime Picking</label>
-                <div class="controls input-append date form_datetime" data-date="1979-09-16T05:25:07Z" data-date-format="dd MM yyyy - HH:ii p" data-link-field="dtp_input1">
-                    <input size="16" type="text" value="" readonly>
-                    <span class="add-on"><i class="icon-remove"></i></span>
-                    <span class="add-on"><i class="icon-th"></i></span>
-                </div>
-                <input type="hidden" id="dtp_input1" value="" /><br/>
-            </div>
-            <div class="control-group">
-                <label class="control-label">Date Picking</label>
-                <div class="controls input-append date form_date" data-date="" data-date-format="dd MM yyyy" data-link-field="dtp_input2" data-link-format="yyyy-mm-dd">
-                    <input size="16" type="text" value="" readonly>
-                    <span class="add-on"><i class="icon-remove"></i></span>
-                    <span class="add-on"><i class="icon-th"></i></span>
-                </div>
-                <input type="hidden" id="dtp_input2" value="" /><br/>
-            </div>
-            <div class="control-group">
-                <label class="control-label">Time Picking</label>
-                <div class="controls input-append date form_time" data-date="" data-date-format="hh:ii" data-link-field="dtp_input3" data-link-format="hh:ii">
-                    <input size="16" type="text" value="" readonly>
-                    <span class="add-on"><i class="icon-remove"></i></span>
-                    <span class="add-on"><i class="icon-th"></i></span>
-                </div>
-                <input type="hidden" id="dtp_input3" value="" /><br/>
-            </div>
-        </fieldset>
-    </form>
+<div style="margin:0px auto;" class="keleyitable"><h2>留言列表</h2>
+    <table>
+        <tr><td class="klytd">留言时间：</td><td class="hvttd">2014-12-20</td></tr>
+        <tr><td class="klytd">留言人：</td><td class ="hvttd">柯乐义</td></tr>
+        <tr><td class="klytd">标题：</td><td class ="hvttd">HoverTree 项目将要使用什么语言编写呢？</td></tr>
+        <tr><td class="klytd">内容：</td><td class ="hvttd">是VB.NET还是C#，还是其他呢？</td></tr>
+        <tr><td class="klytd">回复：</td><td class="hvttd">你好，HoverTree项目将使用C#作为编程语言。使用SQL Server数据库。.net版本是4.0。开发工具使用<a href="http://keleyi.com/a/bjad/nvy3vslt.htm">Visual Studio 2013社区版。</a></td></tr>
+    </table>
+
+    <table>
+        <tr><td class="klytd">留言时间：</td><td class="hvttd">2014-12-21</td></tr>
+        <tr><td class="klytd">留言人：</td><td class="hvttd">Tom</td></tr>
+        <tr><td class="klytd">标题：</td><td class="hvttd">Is HoverTree a jQuery plugin?</td></tr>
+        <tr><td class="klytd">内容：</td><td class="hvttd"></td></tr>
+        <tr><td class="klytd">回复：</td><td class="hvttd">Yes,please go to <a href="http://keleyi.com/jq/hovertree/">http://keleyi.com/jq/hovertree/</a> .And it's a asp.net open source project too.</td></tr>
+    </table>
+
+    <table>
+        <tr><td class="klytd">留言时间：</td><td class="hvttd"></td></tr>
+        <tr><td class="klytd">留言人：</td><td class="hvttd"></td></tr>
+        <tr><td class="klytd">标题：</td><td class="hvttd"></td></tr>
+        <tr><td class="klytd">内容：</td><td class="hvttd"></td></tr>
+        <tr><td class="klytd">回复：</td><td class="hvttd"></td></tr>
+    </table>
+
 </div>
-<script type="text/javascript">
-    $('.form_datetime').datetimepicker({
-        //language:  'fr',
-        language : 'zh-CN',
-        //format : 'yyyy-mm-dd hh:ii:ss',//日期格式。可以将日期格式，定成年月日时分秒。
-        format : 'yyyy-mm-dd hh:00:00',//日期格式。可以将日期格式，定成年月日时，分秒为0。
-        weekStart: 1,
-        todayBtn:  1,
-        autoclose: 1,
-        todayHighlight: 1,
-        startView: 2,
-        forceParse: 0,
-        showMeridian: 1
-    });
-    $('.form_date').datetimepicker({
-        language : 'zh-CN',
-        //format : 'yyyy-mm-dd hh:ii:ss',//日期格式
-        //language:  'fr',
-        weekStart: 1,
-        todayBtn:  1,
-        autoclose: 1,
-        todayHighlight: 1,
-        startView: 2,
-        minView: 2,
-        forceParse: 0
-    });
-    $('.form_time').datetimepicker({
-        //language:  'fr',
-        language : 'zh-CN',
-        //format : 'yyyy-mm-dd hh:ii:ss',//日期格式
-        weekStart: 1,
-        todayBtn:  1,
-        autoclose: 1,
-        todayHighlight: 1,
-        startView: 1,
-        minView: 0,
-        maxView: 1,
-        forceParse: 0
-    });
-</script>
+
+<div style="width:800px;margin:10px auto;font-family:Arial, Helvetica, sans-serif;text-align:center;">HoverTree &copy; 2014 keleyi.com </div>
+<!--最近打算开发一个留言板,asp.net的开源项目，http://hovertree.codeplex.com -->
 </body>
 </html>

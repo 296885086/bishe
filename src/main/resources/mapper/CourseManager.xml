@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ljq.bishe.mapper.CourseManagerMapper">
+    <select id="teaCourseManger" parameterType="String" resultType="Course">
+        select *  from course where teaid=#{teaid}
+    </select>
+    <select id="totalStudent" parameterType="String" resultType="Course">
+        select c.coursename,count(s.stuid) as totalstudent,c.courseclass from selectcourse s,course c
+        where s.coursename = c.coursename and s.courseclass = c.courseclass and c.teaid=#{teaid} group by c.courseclass,c.coursename
+    </select>
+    <select id="stuCourseManger" parameterType="String" resultType="SelectCourse">
+        select sc.*,s.stuname from selectcourse sc,student s where sc.teaid=#{teaid} and sc.stuid = s.stuid
+    </select>
+    <insert id="writeAddCourse" parameterType="String">
+        insert into course (coursename,courseclass,teaid) VALUES (#{courseName},#{courseClass},#{teaid})
+    </insert>
+    <insert id="writeAddStuCourse" parameterType="String">
+        insert into selectcourse (stuid,coursename,courseclass,teaid) VALUES (#{stuId},#{courseName},#{courseClass},#{teaid})
+    </insert>
+</mapper>

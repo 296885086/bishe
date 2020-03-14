@@ -5,17 +5,12 @@
     <title>Title</title>
     <script type="text/javascript" src="/js/jquery.min.css" th:src="@{/js/jquery.min.js}"></script>
     <script type="text/javascript" src="/js/bootstrap.min.css" th:src="@{/js/bootstrap.min.js}"></script>
-    <script type="text/javascript" src="/js/bootstrap.min.css" th:src="@{/js/bootstrap-datetimepicker.min.js}"></script>
-    <script type="text/javascript" src="/js/bootstrap.min.css"
-            th:src="@{/js/bootstrap-datetimepicker.zh-CN.js}"></script>
     <link rel="stylesheet" href="/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}">
-    <link rel="stylesheet" href="/css/bootstrap-datetimepicker.min.css"
-          th:href="@{/css/bootstrap-datetimepicker.min.css}">
-    <link rel="stylesheet" href="/css/teacher.css" th:href="@{/css/teacher.css}">
 </head>
 <body>
 <div class="container">
     <form role="form">
+
         <div class="form-group" style="top: 16px; position: relative;height:76px;">
             <div style="width: 15%">
            <label for="name">选择科目</label>
@@ -33,7 +28,7 @@
             <div style="width: 20%;position: relative;bottom: 119px;left: 304px;">
                 <label for="name">选择作业名称</label>
                 <select class="form-control" id="selectWorkname">
-
+                    <option th:value="select">请选择作业名称</option>
                 </select>
             </div>
             <div style="width: 10%;position: relative;bottom: 177px;left: 502px;">
@@ -48,6 +43,7 @@
             </button>
         </div>
     </form>
+
     <table class="table table-bordered" id="workInfo">
         <caption>学生作业信息</caption>
         <thead>
@@ -61,29 +57,48 @@
         </tr>
         </thead>
         <tbody>
-
         </tbody>
     </table>
+
+    ​ <!-- 模态框（Modal） -->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="importModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"
+                            aria-hidden="true">×
+                    </button>
+                    <h4 class="modal-title" id="importModalLabel">
+                        作业评分
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="name">标签</label>
+                        <input style="display: none;" id="workid">
+                        <input style="display: none;" id="stuid">
+                        <input style="display: none;" id="liIndex">
+                        <input type="text" class="form-control" id="saveScore" placeholder="输入作业分数">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default"
+                            data-dismiss="modal">关闭
+                    </button>
+                    <button id="giveScore" type="button" class="btn btn-primary">
+                        确定评分
+                    </button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
 </div>
+
 <script th:inline="javascript">
     var al = [[${allScore}]];
     $('#workInfo tbody').empty();
     al.forEach(myFunction);
-
-        //遍历作业信息
-        function myFunction(value, index, array) {
-            var path = value.filepath;
-            var index = path.lastIndexOf("\\");
-            var workAllName=path.slice((index+1));
-            console.log(workAllName);
-            $('#workInfo tbody').append('<tr>' +
-                '<td>' + value.stuid + '</td>' +
-                '<td>' + value.stuname + '</td>' +
-                '<td>' + value.workname + '</td>' +
-                '<td>' + value.score + '</td>' +
-                '<td>' + value.state + '</td>' +
-                '<td><a href="../../homework/'+ value.course+'/'+ value.uploadclass+'/'+  value.stuid  +  workAllName +'">下载</a>  /  <a href="">评分</a></td></tr>');
-        }
 
     $(function() {
         $("#findBtn").click(function(){
@@ -103,24 +118,9 @@
                 success:function(data){
                     $('#workInfo tbody').empty();
                     if(data == ''){
-                        alert("以查找到0个人");
+                        alert("已查找到0个人");
                     }else {
                         data.forEach(myFunction);
-
-                        //遍历作业信息
-                        function myFunction(value, index, array) {
-                            var path = value.filepath;
-                            var index = path.lastIndexOf("\\");
-                            var workAllName=path.slice((index+1));
-                            console.log(workAllName);
-                            $('#workInfo tbody').append('<tr>' +
-                                '<td>' + value.stuid + '</td>' +
-                                '<td>' + value.stuname + '</td>' +
-                                '<td>' + value.workname + '</td>' +
-                                '<td>' + value.score + '</td>' +
-                                '<td>' + value.state + '</td>' +
-                                '<td><a href="../../homework/'+ value.course+'/'+ value.uploadclass+'/'+  value.stuid  +  workAllName +'">下载</a>  /  <a href="">评分</a></td></tr>');
-                        }
                     }
                 },error:function (e) {
                     alert('查找失败！！');
@@ -151,12 +151,9 @@
 
     //下拉选择作业名称
     $('#selectCourseClass').change(function () {
-        debugger
-        console.log([[${worknameList}]]);
         $('#selectWorkname').empty();
         var courseClass = $(this).children('option:selected').val();
         var workName = [[${worknameList}]];
-        $('#selectWorkname').append('<option value="all">全部</option>');
         workName.forEach(myFunction);
         function myFunction(value, index, array) {
             if ( courseClass === value.uploadclass) {
@@ -164,6 +161,69 @@
             }
         }
     });
+
+    //去评分
+    function goGiveScore(score,workid,stuid,index) {
+        $("#saveScore").val(score);
+        $("#stuid").val(stuid);
+        $("#workid").val(workid);
+        $("#liIndex").val(index);
+    }
+
+    //遍历作业信息
+    function myFunction(value, index, array) {
+        var path = value.filepath;
+        var workName = value.uploadworkname;
+        var startIndex = path.lastIndexOf("homework");
+        var nameIndex = path.lastIndexOf("\\");
+        var halfPath = path.slice((startIndex + 8),nameIndex);
+        var fullPath = '../../homework' + halfPath + '/' + value.stuid + '/' + workName;
+        var fullPath1 = fullPath.replace(/\\/g,'/');
+        var appendChile = '<tr><td>'+
+            value.stuid + '</td><td>'+
+            value.stuname + '</td><td>' + value.workname + '</td><td id="'+ index +'" >'+ value.score + '</td><td>'+value.state+'</td>';
+        if (workName !== null){
+            appendChile = appendChile + '<td><a  href="'+ fullPath1+ '">下载</a>  /  <a data-toggle="modal" data-target="#myModal" onclick="goGiveScore('+
+                value.score +','+ value.workid + ',' +value.stuid + ',' + index +
+                ')"  href="">评分</a></td></tr>';
+        }else {
+            appendChile = appendChile + '<td>下载  /  评分</td></tr>';
+        }
+        $('#workInfo tbody').append(appendChile);
+    }
+
+    //评分
+    $("#giveScore").click(function () {
+
+        //关闭模态框
+        $(function() {
+            $('#myModal').modal('hide')
+        });
+
+        //修改分数
+        var modifyScore = $("#saveScore").val();
+        var workid = $("#workid").val();
+        var stuid = $("#stuid").val();
+        var liIndex = "#" + $("#liIndex").val();
+        var fd = new FormData();
+        fd.append("modifyScore",modifyScore);
+        fd.append("workid",workid);
+        fd.append("stuid",stuid);
+        $.ajax({
+            url:'/teacher/modifyScore',
+            type:'POST',
+            processData: false,
+            contentType: false,
+            data: fd,
+            success:function(data){
+                debugger
+                $(liIndex).text(data);
+            },error:function (e) {
+                alert('查找失败！！');
+            }
+        });
+    });
+
 </script>
 </body>
 </html>

@@ -11,22 +11,28 @@
 <div class="container">
     <div class="row">
         <div class="col-sm-12">
-            <div class="col-sm-3">
-                <div class="form-group">
-                    <div>
-                        上交科目:
-                        <select id="selectCourse" class="form-control">
+            <div class="col-sm-12">
+                <div class="form-group" style="top: 16px; position: relative;height:76px;">
+                    <div style="width: 15%">
+                        <label for="name">选择科目</label>
+                        <select id="selectCourse" class="form-control" >
                             <option>请选择科目</option>
                             <option th:each="glc:${glc}" th:text="${glc.coursename}"></option>
                         </select>
                     </div>
-                    <div>
-                        上交班级:
+                    <div style="width: 15%;position: relative; bottom: 60px;left: 152px;">
+                        <label for="name">选择教学班</label>
                         <select id="selectCourseClass" class="form-control">
                             <option>请选择班级</option>
                         </select>
                     </div>
-                    <div class="form-group" id="handInWork">
+                    <div style="width: 20%;position: relative;bottom: 119px;left: 304px;">
+                        <label for="name">选择作业名称</label>
+                        <select class="form-control" id="selectWorkname">
+                            <option>请选择作业名称</option>
+                        </select>
+                    </div>
+                    <div class="form-group" id="handInWork" style="position: relative;bottom: 177px;left: 513px;">
                         <label for="selectFile">作业选择:</label>
                         <input type="file" id="selectFile" name="file">
                     </div>
@@ -72,7 +78,7 @@
             '<td>' + value.uploaddate + '</td>' +
             '<td>' + value.enddate + '</td>' +
             '<td>' + value.state + '</td>' +
-            '<td><a href="../../homework/'+ value.course+'/'+ value.uploadclass+'/'+ workAllName +'">下载</a></td></tr>');
+            '<td><a href="../../homework/'+  value.teaid + '/' + value.course+'/'  + value.uploadclass+'/'+ workAllName +'">下载</a></td></tr>');
     }
 
     //选择科目
@@ -80,11 +86,26 @@
         $('#selectCourseClass').empty();
         var course = $(this).children('option:selected').val();
         var courseClass = [[${glc}]];
+        $('#selectCourseClass').append('<option value="all">全部</option>');
         courseClass.forEach(myFunction);
-
         function myFunction(value, index, array) {
             if (course === value.coursename) {
                 $('#selectCourseClass').append('<option value="' + value.courseclass + '">' + value.courseclass + '</option>');
+            }
+        }
+    });
+
+    //下拉选择作业名称
+    $('#selectCourseClass').change(function () {
+        console.log([[${gwn}]]);
+        $('#selectWorkname').empty();
+        var courseClass = $(this).children('option:selected').val();
+        var workName = [[${gwn}]];
+        $('#selectWorkname').append('<option value="all">全部</option>');
+        workName.forEach(myFunction);
+        function myFunction(value, index, array) {
+            if ( courseClass === value.uploadclass) {
+                $('#selectWorkname').append('<option th:value="' + value.workname + '">' + value.workname + '</option>');
             }
         }
     });
@@ -93,6 +114,7 @@
     $('#handIn').click(function () {
         var course = $('#selectCourse').children('option:selected').val();
         var courseClass = $('#selectCourseClass').children('option:selected').val();
+        var workName = $('#selectWorkname').children('option:selected').val();
         var today = new Date();
         var handInDate = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
         var fd = new FormData();
@@ -101,6 +123,7 @@
         fd.append("course",course);
         fd.append("courseClass",courseClass);
         fd.append("handInDate",handInDate);
+        fd.append("workName",workName);
         $.ajax({
             url:'/student/handInFile',
             type:'POST',
@@ -115,7 +138,8 @@
                 alert('上交失败！！');
             }
         })
-    })
+    });
+
 </script>
 </body>
 </html>

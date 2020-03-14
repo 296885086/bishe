@@ -5,6 +5,7 @@ public class Course {
     private String courseclass;
     private String teaid;
     private String coursename;
+    private int totalstudent;
     public String getCoursename() {
         return coursename;
     }
@@ -35,5 +36,14 @@ public class Course {
 
     public void setTeaid(String teaid) {
         this.teaid = teaid;
+    }
+
+
+    public int getTotalstudent() {
+        return totalstudent;
+    }
+
+    public void setTotalstudent(int totalstudent) {
+        this.totalstudent = totalstudent;
     }
 }

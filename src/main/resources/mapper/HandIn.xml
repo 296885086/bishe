@@ -11,11 +11,16 @@
         select h.*,s.state from homework h,score s where h.workid=s.workid and s.stuid=#{stuid};
     </select>
     <update id="handIn" parameterType="String">
-      update score set state='已上交' where workid in
-      (select workid from homework WHERE course=#{course} and uploadclass=#{courseClass}) and stuid=#{stuid};
+      update score set state='已上交',uploadworkname=#{uploadWorkName} where workid in
+      (select workid from homework WHERE course=#{course} and uploadclass=#{courseClass}  and workname=#{workName}) and stuid=#{stuid};
     </update>
     <select id="getHandInPath" resultType="String">
         select h.filepath from score s,homework h where s.workid=h.workid
-         and h.uploadclass=#{courseClass} and h.course=#{course} and s.stuid=#{stuid};
+         and h.uploadclass=#{courseClass} and h.course=#{course} and s.stuid=#{stuid} and h.workname=#{workName};
+    </select>
+    <select id="getWorkName" resultType="Homework">
+      select h.workname,h.course,h.uploadclass from score s
+      left join homework h on s.workid = h.workid
+      where s.stuid=#{stuid};
     </select>
 </mapper>

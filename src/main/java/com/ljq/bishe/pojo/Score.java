@@ -7,6 +7,9 @@ public class Score {
     private String state;
     private String filepath;
     private String workname;
+    private String uploadworkname;
+    private String workid;
+    private String question;
     public String getStuid() {
         return stuid;
     }
@@ -54,5 +57,29 @@ public class Score {
 
     public void setWorkname(String workname) {
         this.workname = workname;
+    }
+
+    public String getUploadworkname() {
+        return uploadworkname;
+    }
+
+    public void setUploadworkname(String uploadworkname) {
+        this.uploadworkname = uploadworkname;
+    }
+
+    public String getWorkid() {
+        return workid;
+    }
+
+    public void setWorkid(String workid) {
+        this.workid = workid;
+    }
+
+    public String getQuestion() {
+        return question;
+    }
+
+    public void setQuestion(String question) {
+        this.question = question;
     }
 }

@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en"  xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" >
+    <title>Title</title>
+    <script type="text/javascript" src="/js/jquery.min.css" th:src="@{/js/jquery.min.js}"></script>
+    <script type="text/javascript" src="/js/bootstrap.min.css" th:src="@{/js/bootstrap.min.js}"></script>
+    <link rel="stylesheet" href="/webapp/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}">
+    <style>
+        .flex-container {
+            position: relative;
+            top: 10px;
+            display: -webkit-flex;
+            display: flex;
+            -webkit-align-items: flex-start;
+            align-items: flex-start;
+        }
+        .flex-item {
+            margin-left: 10px;
+        }
+        .coursetable{
+            position: relative;
+            top: 20px;
+        }
+        a{
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+<div class="container" style="position: relative;top: 15px;">
+    <div class="flex-container">
+        <div class="btn-group flex-item ">
+            <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">添加学生课程
+                <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu" role="menu">
+                <li><a class="addImport" data-toggle="modal" data-target="#importCourse">导入文件添加</a></li>
+                <li><a class="addWrite" data-toggle="modal" data-target="#addCourse">输入添加</a></li>
+            </ul>
+        </div>
+        <div class="flex-item">
+            <button type="button" class="btn btn-success">导出学生课程</button>
+        </div>
+    </div>
+    <div class="coursetable">
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>学号</th>
+                <th>姓名</th>
+                <th>课程名称</th>
+                <th>课程教学班</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+
+</div>
+​ <!-- 模态框（Modal） -->
+<div class="modal fade" id="addCourse" tabindex="-1" role="dialog" aria-labelledby="importModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"
+                        aria-hidden="true">×
+                </button>
+                <h4 class="modal-title" id="importModalLabel">
+                    添加课程信息
+                </h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="stuId">输入学生学号</label>
+                    <input type="text" class="form-control" id="stuId" placeholder="输入学号">
+                    <label for="courseClass">输入学生姓名</label>
+                    <input type="text" class="form-control" id="stuName" placeholder="输入课程教学班">
+                    <label for="courseName">输入课程信息</label>
+                    <input type="text" class="form-control" id="courseName" placeholder="输入课程名称">
+                    <label for="courseClass">输入课程教学班</label>
+                    <input type="text" class="form-control" id="courseClass" placeholder="输入课程教学班">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default"
+                        data-dismiss="modal">关闭
+                </button>
+                <button id="sureAdd" type="button" class="btn btn-primary">
+                    确定增加
+                </button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+​ <!-- 模态框（Modal） -->
+<div class="modal fade" id="importCourse" tabindex="-1" role="dialog" aria-labelledby="importModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"
+                        aria-hidden="true">×
+                </button>
+                <h4 class="modal-title" >
+                    添加课程信息
+                </h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="importFile">选择导入文件</label>
+                    <input type="file" id="importFile">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default"
+                        data-dismiss="modal">关闭
+                </button>
+                <button id="sureImport" type="button" class="btn btn-primary">
+                    确定导入
+                </button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+<script th:inline="javascript">
+    var selectCourseList = [[${selectCourseList}]];
+    selectCourseList.forEach(myFunction);
+
+    //遍历课程信息
+    function myFunction(value, index, array) {
+        var appendChile = '<tr><td>'+
+            value.stuid + '</td><td>'+
+            value.stuname + '</td><td>'+ value.coursename + '</td><td>'+
+            value.courseclass + '</td><td><a>删除</a>  /  <a>修改</a></td></tr>';
+        $('.coursetable tbody').append(appendChile);
+    }
+
+    $("#sureImport").click(function () {
+
+        //关闭模态框
+        $(function() {
+            $('#importCourse').modal('hide')
+        });
+    });
+
+    $("#sureAdd").click(function () {
+
+        //关闭模态框
+        $(function() {
+            $('#addCourse').modal('hide')
+        });
+        var stuId = $("#stuId").val();
+        var stuName = $("#stuName").val();
+        var courseName = $("#courseName").val();
+        var courseClass = $("#courseClass").val();
+        var fd = new FormData();
+        fd.append("stuId",stuId);
+        fd.append("stuName",stuName);
+        fd.append("courseClass",courseClass);
+        fd.append("courseName",courseName);
+        $.ajax({
+            url:'/teacher/writeAddStuCourse',
+            type:'POST',
+            processData: false,
+            contentType: false,
+            data: fd,
+            success:function(data){
+                if(data == "success"){
+                    alert("保存成功！");
+                    location.reload();
+                }
+            },
+            error:function (e) {
+                alert('保存失败！！');
+            }
+        });
+    });
+
+    $("#sureImport").click(function () {
+        if (validateRule() == false) {
+            return false;
+        }
+        //关闭模态框
+        $(function() {
+            $('#addCourse').modal('hide')
+        });
+        var fd = new FormData();
+        var importFile = $('#importFile')[0].files[0];
+        fd.append("importFile", importFile)
+        $.ajax({
+            url:'/teacher/importAddStuCourse',
+            enctype: "multipart/form-data",
+            type:'POST',
+            processData: false,
+            contentType: false,
+            data: fd,
+            success:function(data){
+                if(data == "success"){
+                    alert("保存成功！");
+                    location.reload();
+                }
+            },
+            error:function (e) {
+                alert('保存失败！！');
+            }
+        });
+    });
+
+    //判断上传的问题是否为excel
+    function validateRule() {
+        var file = $("#importFile").val();
+        var index = file.lastIndexOf(".");
+        var ext = file.substring(index + 1, file.length);
+        if (file == '' || file == null) {
+            alert("请选择所要上传的文件！");
+            return false;
+        } else if (ext != "xls" && ext != "xlsx") {
+            alert("上传的文件格式不正确，请选择Excel文件(*.xls/*.xlsx)！");
+            return false;
+        }
+        return true;
+    }
+</script>
+</body>
+</html>

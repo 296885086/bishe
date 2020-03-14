@@ -14,4 +14,7 @@ public interface WorkScoreMapper {
                                         @Param("teaid") String teaid);
     public List<Score> findAllScore(String teaid);
     public List findWorkname(String teaid);
+    public void modifyScore(@Param("score") String score,
+                            @Param("workid") String workid,
+                            @Param("stuid") String stuid);
 }

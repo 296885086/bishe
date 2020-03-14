@@ -10,10 +10,14 @@
     courseclass=#{courseClass} and state=#{state};
  </select>
   <select id="findAllScore" resultType="Score">
-    select s.*,h.filepath,stu.stuname,h.workname from score s,selectcourse sc,homework h,student stu
+    select s.*,h.filepath,stu.stuname,h.workname
+    from score s,selectcourse sc,homework h,student stu
     where s.stuid = sc.stuid and sc.teaid=#{teaid} and h.workid = s.workid and stu.stuid=s.stuid;
   </select>
     <select id="findWorkname" resultType="Homework">
         select workname,course,uploadclass from homework where teaid=#{teaid};
     </select>
+    <update id="modifyScore">
+        update score set score=#{score} where workid=#{workid} and stuid=#{stuid}
+    </update>
 </mapper>

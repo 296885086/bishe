@@ -1,10 +1,194 @@
 <!DOCTYPE html>
-<html lang="en" >
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <script type="text/javascript" src="/js/jquery.min.css" th:src="@{/js/jquery.min.js}"></script>
+    <script type="text/javascript" src="/js/bootstrap.min.css" th:src="@{/js/bootstrap.min.js}"></script>
+    <link rel="stylesheet" href="/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}">
 </head>
 <body>
-我的作业数据
+<div class="container">
+    <form role="form">
+
+        <div class="form-group" style="top: 16px; position: relative;height:76px;">
+            <div style="width: 15%">
+                <label for="name">选择科目</label>
+                <select id="selectCourse" class="form-control" >
+                    <option>请选择科目</option>
+                    <option th:each="glc:${glc}" th:text="${glc.coursename}"></option>
+                </select>
+            </div>
+            <div style="width: 15%;position: relative; bottom: 60px;left: 152px;">
+                <label for="name">选择教学班</label>
+                <select id="selectCourseClass" class="form-control">
+                    <option th:value="select">请选择班级</option>
+                </select>
+            </div>
+            <div style="width: 10%;position: relative;bottom: 118px;left: 300px;">
+                <label for="name">作业状态</label>
+                <select class="form-control" id="homeworkState" >
+                    <option>全部</option>
+                    <option>已上交</option>
+                    <option>未上交</option>
+                </select>
+            </div>
+            <button id="findMyWork" class="btn btn-info" data-loading-text="查找中..."
+                    type="button" style=" position: relative;left: 410px;bottom: 154px;">查找
+            </button>
+        </div>
+    </form>
+
+    <table class="table table-bordered" id="myData">
+        <caption>学生作业信息</caption>
+        <thead>
+        <tr>
+            <th>学号</th>
+            <th>姓名</th>
+            <th>作业名称</th>
+            <th>分数</th>
+            <th>状态</th>
+            <th>操作</th>
+        </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+</div>
+
+​ <!-- 模态框（Modal） -->
+<div class="modal fade" id="myQuestion" tabindex="-1" role="dialog" aria-labelledby="importModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"
+                        aria-hidden="true">×
+                </button>
+                <h4 class="modal-title" id="importModalLabel">
+                    作业评分
+                </h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="name">输入问题</label>
+                    <input style="display: none;" id="workid">
+                    <input style="display: none;" id="stuid">
+                    <input type="text" class="form-control" id="question" placeholder="输入问题">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default"
+                        data-dismiss="modal">关闭
+                </button>
+                <button id="pullQusetion" type="button" class="btn btn-primary">
+                    提交问题
+                </button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+<script th:inline="javascript">
+    var gamd = [[${gamd}]];
+    $('#myData tbody').empty();
+    gamd.forEach(myFunction);
+
+    //遍历作业信息
+    function myFunction(value, index, array) {
+        var question = "'" + value.question + "'";
+        var appendChile = '<tr><td>'+
+            value.stuid + '</td><td>'+
+            value.stuname + '</td><td>' + value.workname +
+            '</td><td id="'+ index +'" >'+ value.score +
+            '</td><td>'+ value.state +'</td><td>' +
+            '<a data-toggle="modal" data-target="#myQuestion" onclick="giveQuestion('+
+            value.workid + ',' +value.stuid + ',' + question +
+            ')"  style="cursor:pointer;">反馈</a></td></tr>';
+        $('#myData tbody').append(appendChile);
+
+    }
+
+    //选择科目
+    $('#selectCourse').change(function () {
+        $('#selectCourseClass').empty();
+        var course = $(this).children('option:selected').val();
+        var courseClass = [[${glc}]];
+        $('#selectCourseClass').append('<option value="all">全部</option>');
+        courseClass.forEach(myFunction);
+        function myFunction(value, index, array) {
+            if (course === value.coursename) {
+                $('#selectCourseClass').append('<option value="' + value.courseclass + '">' + value.courseclass + '</option>');
+            }
+        }
+    });
+
+    //去写问题
+    function giveQuestion(workid,stuid,question) {
+        debugger
+        if (question == "null"){
+            question = ' ';
+        }
+        $("#workid").val(workid);
+        $("#stuid").val(stuid);
+        $("#question").val(question);
+    }
+
+    //提交问题
+    $("#pullQusetion").click(function () {
+
+        //关闭模态框
+        $(function() {
+            $('#myQuestion').modal('hide')
+        });
+
+        //修改问题
+        var question = $("#question").val();
+        var workid = $("#workid").val();
+        var stuid = $("#stuid").val();
+        var fd = new FormData();
+        fd.append("question",question);
+        fd.append("workid",workid);
+        fd.append("stuid",stuid);
+        $.ajax({
+            url:'/student/saveQuestion',
+            type:'POST',
+            processData: false,
+            contentType: false,
+            data: fd,
+            success:function(data){
+                if(data == "success"){
+                    alert("保存成功！");
+                }
+            },error:function (e) {
+                alert('保存失败！！');
+            }
+        });
+    });
+
+    //筛选作业
+    $("#findMyWork").click(function () {
+        var course = $('#selectCourse').children('option:selected').val();
+        var courseClass = $('#selectCourseClass').children('option:selected').val();
+        var homeworkState =$('#homeworkState').children('option:selected').val();
+        var fd = new FormData();
+        fd.append("course",course);
+        fd.append("courseClass",courseClass);
+        fd.append("homeworkState",homeworkState);
+        $ .ajax({
+            url:'/student/findMyScore',
+            type:'POST',
+            processData: false,
+            contentType: false,
+            data: fd,
+            success:function(data){
+                debugger
+                $('#myData tbody').empty();
+                data.forEach(myFunction);
+            },error:function (e) {
+                alert('查找失败！！');
+            }
+        });
+    })
+</script>
 </body>
 </html>

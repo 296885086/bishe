@@ -19,23 +19,62 @@
     var framecontent = $('.right-iframe');
     console.log([[${userModel.teainfo.teaid}]]);
     framecontent.attr('src', '/teacher/fragment/' + [[${userModel.teainfo.teaid}]])
+    $('.uploadwork').css({"background-color":"cadetblue"});
     $('.studata').click(function () {
-        framecontent.attr('src', '/teacher/studata/' + [[${userModel.teainfo.teaid}]])
+        framecontent.attr('src', '/teacher/studata/' + [[${userModel.teainfo.teaid}]]);
+        $(this).css({"background-color":"cadetblue"});
+        var brotherLi =  $(this).siblings();
+        brotherLi.each(function () {
+            $(this).css({"background-color":""});
+        });
     });
     $('.uploadwork').click(function () {
         framecontent.attr('src', '/teacher/fragment/'+ [[${userModel.teainfo.teaid}]])
+        $(this).css({"background-color":"cadetblue"});
+        var brotherLi =  $(this).siblings();
+        brotherLi.each(function () {
+            $(this).css({"background-color":""});
+        });
     });
     $('.teachertalk').click(function () {
         framecontent.attr('src', '/teacher/teachertalk')
+        $(this).css({"background-color":"cadetblue"});
+        var brotherLi =  $(this).siblings();
+        brotherLi.each(function () {
+            $(this).css({"background-color":""});
+        });
     });
     $('.workcount').click(function () {
         framecontent.attr('src', '/teacher/workcount/'  + [[${userModel.teainfo.teaid}]])
+        $(this).css({"background-color":"cadetblue"});
+        var brotherLi =  $(this).siblings();
+        brotherLi.each(function () {
+            $(this).css({"background-color":""});
+        });
     });
     $('.workaudit').click(function () {
         framecontent.attr('src', '/teacher/workaudit')
+        $(this).css({"background-color":"cadetblue"});
+        var brotherLi =  $(this).siblings();
+        brotherLi.each(function () {
+            $(this).css({"background-color":""});
+        });
     });
     $('.workscore').click(function () {
-        framecontent.attr('src', '/teacher/workscore')
+        framecontent.attr('src', '/teacher/workscore');
+        $(this).css({"background-color":"cadetblue"});
+        var brotherLi =  $(this).siblings();
+        brotherLi.each(function () {
+            $(this).css({"background-color":""});
+        });
+    });
+    $('.courseManager').click(function () {
+        framecontent.attr('src', '/teacher/courseManager');
+        $(this).css({"background-color":"cadetblue"});
+        var brotherLi =  $(this).siblings();
+        brotherLi.each(function () {
+            $(this).css({"background-color":""});
+        });
     });
 </script>
 </body>

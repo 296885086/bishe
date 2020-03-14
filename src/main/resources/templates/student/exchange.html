@@ -1,10 +1,41 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <script type="text/javascript" src="/js/jquery.min.css" th:src="@{/js/jquery.min.js}"></script>
+    <script type="text/javascript" src="/js/bootstrap.min.css" th:src="@{/js/bootstrap.min.js}"></script>
+    <link rel="stylesheet" href="/webapp/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}">
     <title>Title</title>
+    <style>
+        .flex-container {
+            position: relative;
+            top: 10px;
+            display: -webkit-flex;
+            display: flex;
+            -webkit-align-items: flex-start;
+            align-items: flex-start;
+        }
+        .flex-item {
+            margin-left: 10px;
+        }
+    </style>
 </head>
 <body>
-师生交流
+<div class="container">
+    <div class="flex-container">
+        <div class="flex-item"  style="width: 15%">
+            <label for="selectCourse">选择科目</label>
+            <select id="selectCourse" class="form-control" >
+                <option>请选择科目</option>
+            </select>
+        </div>
+        <div class="flex-item" style="position: relative;top: 24px;" >
+            <button type="button" class="btn btn-info">我的留言</button>
+        </div>
+        <div class="flex-item" style="position: relative;top: 24px;" >
+            <button type="button" class="btn btn-success">添加留言</button>
+        </div>
+    </div>
+</div>
 </body>
 </html>

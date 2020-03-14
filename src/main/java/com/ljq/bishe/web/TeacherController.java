@@ -2,14 +2,8 @@ package com.ljq.bishe.web;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.ljq.bishe.pojo.Course;
-import com.ljq.bishe.pojo.Homework;
-import com.ljq.bishe.pojo.ScoreList;
-import com.ljq.bishe.pojo.Student;
-import com.ljq.bishe.service.ReleaseService;
-import com.ljq.bishe.service.StudataService;
-import com.ljq.bishe.service.WorkCounstService;
-import com.ljq.bishe.service.WorkScoreService;
+import com.ljq.bishe.pojo.*;
+import com.ljq.bishe.service.*;
 import net.sf.json.JSONArray;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -32,20 +26,23 @@ import java.util.Map;
 public class TeacherController {
     @Autowired
     ReleaseService rs;
-     @Autowired
+    @Autowired
     WorkCounstService wc;
-     @Autowired
-     StudataService ss;
+    @Autowired
+    StudataService ss;
     @Autowired
     WorkScoreService ws;
+    @Autowired
+    CourseManagerService cms;
     String teacherId = null;
+
     /*
     * 作业列表*/
     @GetMapping("/fragment/{teaid}")
     public String listCategory(Model m, @PathVariable("teaid") String teaid,
                                @RequestParam(value = "start", defaultValue = "0") int start,
                                @RequestParam(value = "size", defaultValue = "5") int size) throws Exception {
-        teacherId=teaid;
+        teacherId = teaid;
         Homework homework = new Homework();
         ArrayList course = wc.courseList(teaid);
         List<Course> courseClass = wc.courseClassList(teaid);
@@ -54,8 +51,8 @@ public class TeacherController {
         PageInfo<Homework> page = new PageInfo<>(worklist);
         m.addAttribute("homework", homework);
         m.addAttribute("page", page);
-        m.addAttribute("course",course);//科目
-        m.addAttribute("courseClass",courseClass);//班级
+        m.addAttribute("course", course);//科目
+        m.addAttribute("courseClass", courseClass);//班级
         return "teacher/uploadHomework";
     }
 
@@ -75,17 +72,17 @@ public class TeacherController {
         //获取项目路径
         String projectpath = Class.class.getClass().getResource("/").getPath();
         String projectpath1 = projectpath.substring(1, projectpath.indexOf("/target"));
-        String destFileName = projectpath1 + "/src/main/resources/static/homework/" + teacherId + File.separator + homework.getCourse() + File.separator +homework.getUploadclass()+ File.separator + fileName;
-        String fileFolderPath = projectpath1 + "/src/main/resources/static/homework/" + teacherId + File.separator + homework.getCourse() + File.separator +homework.getUploadclass();
+        String destFileName = projectpath1 + "/src/main/resources/static/homework/" + teacherId + File.separator + homework.getCourse() + File.separator + homework.getUploadclass() + File.separator + fileName;
+        String fileFolderPath = projectpath1 + "/src/main/resources/static/homework/" + teacherId + File.separator + homework.getCourse() + File.separator + homework.getUploadclass();
         String teaFolderPath = projectpath1 + "/src/main/resources/static/homework/" + teacherId;
 
         homework.setFilepath(destFileName);
         File teaFolder = new File(teaFolderPath);
-        if (!teaFolder.exists()){
+        if (!teaFolder.exists()) {
             teaFolder.mkdirs();
         }
         File fileFolder = new File(fileFolderPath);//文件夹
-        if (!fileFolder.exists()){
+        if (!fileFolder.exists()) {
             fileFolder.mkdirs();
         }
         File destFile = new File(destFileName);
@@ -96,13 +93,14 @@ public class TeacherController {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        List gus = rs.getUploadStudent(course,uploadClass);
-        for (int i = 0; i < gus.size();i++){
-             rs.addWork(String.valueOf(gus.get(i)),course,destFileName,uploadClass);//给学生添加作业信息
+        List gus = rs.getUploadStudent(course, uploadClass);
+        for (int i = 0; i < gus.size(); i++) {
+            rs.addWork(String.valueOf(gus.get(i)), course, destFileName, uploadClass);//给学生添加作业信息
         }
         /*rs.addWork(destFileName);*///给学生添加作业信息
-        return new ModelAndView("redirect:/teacher/fragment/"+ teacherId);
+        return new ModelAndView("redirect:/teacher/fragment/" + teacherId);
     }
+
     /*
     * 删除作业*/
     @GetMapping("/workdelete")
@@ -112,17 +110,17 @@ public class TeacherController {
         File mainFolder = new File(folder.getParent());
         file.delete();
         File[] fileList = folder.listFiles();//文件夹为空删除
-        if (fileList.length == 0){
+        if (fileList.length == 0) {
             folder.delete();//删除文件夹
         }
         File[] fileList1 = mainFolder.listFiles();
-        if (fileList1.length == 0){
+        if (fileList1.length == 0) {
             mainFolder.delete();//删除文件
         }
-        List gus = rs.getUploadStudent(homework.getCourse(),homework.getUploadclass());
-        for (int i = 0; i < gus.size();i++){
+        List gus = rs.getUploadStudent(homework.getCourse(), homework.getUploadclass());
+        for (int i = 0; i < gus.size(); i++) {
             //删除学生作业信息
-            rs.deleteUploadStudent(String.valueOf(gus.get(i)),homework.getCourse(),homework.getUploadclass());
+            rs.deleteUploadStudent(String.valueOf(gus.get(i)), homework.getCourse(), homework.getUploadclass());
         }
         rs.workdelete(String.valueOf(homework.getWorkid()));//删除作业信息
         return "redirect:/teacher/fragment/" + teacherId;
@@ -157,44 +155,60 @@ public class TeacherController {
     public String workcount(@PathVariable("teaid") String teaid, Model model) {
         ArrayList course = wc.courseList(teaid);
         List<Course> courseClass = wc.courseClassList(teaid);
-        model.addAttribute("course",course);//科目
-        model.addAttribute("courseClass",courseClass);//班级
-        model.addAttribute("teaid",teaid);
+        model.addAttribute("course", course);//科目
+        model.addAttribute("courseClass", courseClass);//班级
+        model.addAttribute("teaid", teaid);
         return "teacher/workcount";
     }
+
     /**
-     *学生作业审核
+     * 学生作业审核
      */
     @GetMapping("/workaudit")
-    public String workaudit(){
+    public String workaudit() {
         return "teacher/workaudit";
     }
+
     /**
-     *学生作业评分
+     * 学生作业评分
      */
     @GetMapping("/workscore")
-    public String workscore(Model m){
+    public String workscore(Model m) {
         ArrayList course = wc.courseList(teacherId);
         List<Course> courseClass = wc.courseClassList(teacherId);
         List allScore = ws.findAllScore(teacherId);
         List worknameList = ws.findWorkname(teacherId);
-        m.addAttribute("course",course);//科目
-        m.addAttribute("courseClass",courseClass);//班级
+        m.addAttribute("course", course);//科目
+        m.addAttribute("courseClass", courseClass);//班级
         m.addAttribute("allScore", allScore);
         m.addAttribute("worknameList", worknameList);
         return "teacher/workscore";
     }
 
     /**
-     * 查找学生作业*/
+     * 查找学生作业
+     */
     @PostMapping("/findWorkScore")
     @ResponseBody
     public List findWorkScore(@RequestParam("course") String courseName,
-                                @RequestParam("courseClass") String courseClass,
-                                @RequestParam("homeworkState") String state){
-        List workScoreList = ws.findStudentScore(courseName,courseClass,state,teacherId);
+                              @RequestParam("courseClass") String courseClass,
+                              @RequestParam("homeworkState") String state) {
+        List workScoreList = ws.findStudentScore(courseName, courseClass, state, teacherId);
         return workScoreList;
     }
+
+    /**
+     * 修改学生作业分数
+     */
+    @PostMapping("/modifyScore")
+    @ResponseBody
+    public String modifyScore(@RequestParam("modifyScore") String modifyScore,
+                              @RequestParam("workid") String workid,
+                              @RequestParam("stuid") String stuid) {
+        ws.modifyScore(modifyScore, workid, stuid);
+        return modifyScore;
+    }
+
     /*
     * 学生作业情况统计
     * */
@@ -205,12 +219,12 @@ public class TeacherController {
                             @RequestParam String courseClass) throws Exception {
         String all = "all";
         ArrayList scoreArr = new ArrayList();
-        List<ScoreList> scoreList = wc.scoreList(teaid,course,courseClass);
+        List<ScoreList> scoreList = wc.scoreList(teaid, course, courseClass);
         ArrayList arrayList = new ArrayList();
         arrayList.add(scoreList);
         arrayList.add(course);
-        if (courseClass.equals(all)){
-            List<Course> courseClass1 = wc.courseList1(teaid,course);
+        if (courseClass.equals(all)) {
+            List<Course> courseClass1 = wc.courseList1(teaid, course);
             arrayList.add(courseClass1);
         }
         return arrayList;
@@ -236,7 +250,7 @@ public class TeacherController {
             String filename = y + ".xlsx";
             destFileName = projectpath1 + "/src/main/resources/static/upload/" + filename;
             File testFile = new File(destFileName);
-            if (testFile.exists()){
+            if (testFile.exists()) {
                 testFile.delete();
             }
             filepath.add(filename);
@@ -305,5 +319,105 @@ public class TeacherController {
         response.getWriter().write("导入成功！");
     }
 
+    @GetMapping("/courseManager")
+    public String courseManager() {
+        return "teacher/courseManager";
+    }
+
+    @GetMapping("/stuCourseManager")
+    public String stuCourseManager(Model model) {
+        List<SelectCourse> selectCourseList = cms.stuCourseManger(teacherId);
+        model.addAttribute("selectCourseList", selectCourseList);
+        return "teacher/stuCourseManager";
+    }
+
+    @GetMapping("/teaCourseManager")
+    public String teaCourseManager(Model model) {
+        List<Course> courseList = cms.teaCourseManger(teacherId);
+        List<Course> totalStudent = cms.totalStudent(teacherId);
+        for (int i = 0; i < courseList.size(); i++) {
+            String courseName = courseList.get(i).getCoursename();
+            String courseClass = courseList.get(i).getCourseclass();
+            for (int j = 0; j < totalStudent.size(); j++) {
+                String courseName1 = totalStudent.get(j).getCoursename();
+                String courseClass1 = totalStudent.get(j).getCourseclass();
+                if (courseName.equals(courseName1) && courseClass.equals(courseClass1))
+                    courseList.get(i).setTotalstudent(totalStudent.get(j).getTotalstudent());
+            }
+        }
+
+        model.addAttribute("courseList", courseList);
+        return "teacher/teaCourseManager";
+    }
+
+    @PostMapping("/writeAddCourse")
+    @ResponseBody
+    public String writeAddCourse(@RequestParam String courseClass,
+                                 @RequestParam String courseName) {
+        cms.writeAddCourse(courseClass, courseName, teacherId);
+        String msg = "success";
+        return msg;
+    }
+
+    /*
+    * 增加学生课程信息*/
+    @PostMapping("/writeAddStuCourse")
+    @ResponseBody
+    public String writeAddStuCourse(@RequestParam String courseClass,
+                                    @RequestParam String courseName,
+                                    @RequestParam String stuId) {
+        cms.writeAddStuCourse(courseClass, courseName, teacherId, stuId);
+        String msg = "success";
+        return msg;
+    }
+
+    @PostMapping("/importAddCourse")
+    @ResponseBody
+    public String importAddCourse(@RequestParam("importFile") MultipartFile importFile) throws Exception {
+        //从excel读数据
+        BufferedInputStream ins = new BufferedInputStream(importFile.getInputStream());
+        Workbook readBook = WorkbookFactory.create(ins);
+        Sheet sheet = readBook.getSheetAt(0);
+        int rowNum = sheet.getLastRowNum();//获取最后一行的行数
+        int columnNum = sheet.getPhysicalNumberOfRows();//获取最后一列的列数
+        Course course = new Course();
+        Row row = null;
+        for (int i = 0; i < rowNum; i++) {
+            row = sheet.getRow(i + 1);//获取行
+            /*row.getCell(0).setCellType(CellType.STRING);//转变行的格式*/
+            course.setCoursename(row.getCell(0).getStringCellValue());//获取列的内容，并保存
+            course.setCourseclass(row.getCell(0).getStringCellValue());
+            course.setTeaid(teacherId);
+            cms.writeAddCourse(course.getCourseclass(), course.getCoursename(), teacherId);
+        }
+        readBook.close();
+        ins.close();
+        String msg = "success";
+        return msg;
+    }
+
+    @PostMapping("/importAddStuCourse")
+    @ResponseBody
+    public String importAddStuCourse(@RequestParam("importFile") MultipartFile importFile) throws Exception {
+        //从excel读数据
+        BufferedInputStream ins = new BufferedInputStream(importFile.getInputStream());
+        Workbook readBook = WorkbookFactory.create(ins);
+        Sheet sheet = readBook.getSheetAt(0);
+        int rowNum = sheet.getLastRowNum();//获取最后一行的行数
+        int columnNum = sheet.getPhysicalNumberOfRows();//获取列数
+        SelectCourse selectCourse = new SelectCourse();
+        Row row = null;
+        for (int j = 0; j < rowNum; j++) {
+            row = sheet.getRow(j + 1);//获取行
+            row.getCell(0).setCellType(CellType.STRING);//转变行的格式
+            selectCourse.setStuid(row.getCell(0).getStringCellValue());//获取列的内容，并保存
+            selectCourse.setCourseclass(row.getCell(1).getStringCellValue());
+            selectCourse.setCoursename(row.getCell(2).getStringCellValue());
+            selectCourse.setTeaid(teacherId);
+            cms.writeAddStuCourse(selectCourse.getCourseclass(), selectCourse.getCoursename(), selectCourse.getTeaid(), selectCourse.getStuid());
+        }
+        String msg = "success";
+        return msg;
+    }
 }
 

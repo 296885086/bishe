@@ -26,4 +26,9 @@ public class WorkScoreServiceImpl implements WorkScoreService{
     public List findWorkname(String teaid) {
         return ws.findWorkname(teaid);
     }
+
+    @Override
+    public void modifyScore(String score, String workid, String stuid) {
+        ws.modifyScore(score,workid,stuid);
+    }
 }
