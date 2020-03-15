@@ -3,9 +3,13 @@ package com.ljq.bishe.web;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.ljq.bishe.pojo.Homework;
+import com.ljq.bishe.pojo.Message;
+import com.ljq.bishe.pojo.Reply;
 import com.ljq.bishe.pojo.Score;
+import com.ljq.bishe.service.ExchangeService;
 import com.ljq.bishe.service.MyDataService;
 import com.ljq.bishe.service.impl.HandInServiceImpl;
+import com.sun.org.apache.xerces.internal.xs.LSInputList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,7 +18,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 @RequestMapping("/student")
@@ -24,19 +31,25 @@ public class StudentController {
     HandInServiceImpl handInService;
     @Autowired
     MyDataService myDataService;
+    @Autowired
+    ExchangeService exchangeService;
     String stuId;
+    String stuName;
     @GetMapping("/handIn/{stuid}")
     public String handIn(@PathVariable("stuid") String stuid,Model model,
                          @RequestParam(value = "start", defaultValue = "0") int start,
                          @RequestParam(value = "size", defaultValue = "5") int size){
         stuId = stuid;
+        stuName = handInService.getStuname(stuid);
         List getLearningCourse = handInService.getLearningCourse(stuid);//在学科目
+        List getCourseClass = handInService.getCourseClass(stuid);
 /*      PageHelper.startPage(start, size, "stuid desc");
         List<Homework> worklist = rs.worklist(teaid);*/
         /*PageInfo<Homework> page = new PageInfo<>(worklist);*/
         List homeworkList = handInService.workInfo(stuid);//作业列表
         List workNameList = handInService.getWorkName(stuid);
         model.addAttribute("glc",getLearningCourse);
+        model.addAttribute("gcc",getCourseClass);
         model.addAttribute("hl",homeworkList);
         model.addAttribute("gwn",workNameList);
         return "student/handIn";
@@ -70,9 +83,57 @@ public class StudentController {
         String msg = "上交成功！";
         return msg;
     }
+
+    //师生交流
     @GetMapping("/exchange")
-    public String exchange(){
+    public String exchange(Model model){
+        List<Message> messageList = exchangeService.messageList();
+        List<Reply> replyList = exchangeService.replyList();
+        List getLearningCourse = handInService.getLearningCourse(stuId);//在学科目
+        List getCourseClass = handInService.getCourseClass(stuId);
+        HashMap stuInfo  = new HashMap();
+        stuInfo.put("stuid",stuId);
+        stuInfo.put("stuname",stuName);
+        model.addAttribute("gcc",getCourseClass);
+        model.addAttribute("glc",getLearningCourse);
+        model.addAttribute("messageList",messageList);
+        model.addAttribute("replyList",replyList);
+        model.addAttribute("stuInfo",stuInfo);
         return "student/exchange";
+    }
+
+    //发表言论
+    @PostMapping("/sendMessage")
+    @ResponseBody
+    public String sendMessage(@RequestParam("leavename") String leavename,
+                              @RequestParam("leaveid") String leaveid,
+                              @RequestParam("messagebody") String messagebody){
+        String courseid = "1";
+        Date now = new Date();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//可以方便地修改日期格式
+        String leavedate = dateFormat.format( now );
+        exchangeService.sendMessage(leavename,leaveid,messagebody,"stu",courseid,leavedate);
+        return "123";
+    }
+    //评论
+    @PostMapping("/replyMessage")
+    @ResponseBody
+    public String replyMessage(@RequestParam("messageid") String messageid,
+                               @RequestParam("replybody") String replybody){
+        Date now = new Date();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//可以方便地修改日期格式
+        String replydate = dateFormat.format( now );
+        exchangeService.replyMessage(messageid,replybody,replydate,stuId);
+        return "success";
+    }
+
+    @PostMapping("/findMessage")
+    @ResponseBody
+    public List findMessage(@RequestParam("course") String course,
+                              @RequestParam("courseClass") String courseClass,
+                              Model model){
+        List<Message> findMessageList = exchangeService.findMessage(course,courseClass,stuId);
+        return findMessageList;
     }
 
     /*
@@ -110,9 +171,10 @@ public class StudentController {
     }
 
     @GetMapping("/workSituation")
-
     public String workSituation(){
         return "student/workSituation";
     }
+
+
 }
 

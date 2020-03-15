@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ljq.bishe.mapper.ExchangeMapper">
+    <select id="messageList" resultType="Message">
+        select * from message;
+    </select>
+    <select id="replyList" resultType="Reply">
+        select * from reply;
+    </select>
+    <insert id="sendMessage" parameterType="String">
+      insert into message (leaveid,leavename,messagebody,leavedate,messagetype,courseid,totalreply,praisenumber) VALUES
+      (#{leaveid},#{leavename},#{messagebody},#{leavedate},#{messagetype},#{courseid},0,0)
+    </insert>
+    <insert id="replyMessage" parameterType="String">
+        insert into reply (messageid,replybody,replydate,replyname) VALUES
+        (#{messageid},#{replybody},#{replydate},(select stuname from student where stuid = #{stuid}))
+    </insert>
+    <select id="findMessage" parameterType="String" resultType="Message">
+        select m.* from message m left join course c on m.courseid = c.courseid
+        where c.coursename=#{coursename} and c.courseclass=#{courseclass} and c.teaid in
+       (select teaid from selectcourse where stuid = #{stuid} and coursename=#{coursename} and courseclass=#{courseclass});
+    </select>
+</mapper>

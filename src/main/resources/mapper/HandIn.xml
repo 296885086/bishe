@@ -5,6 +5,9 @@
 
 <mapper namespace="com.ljq.bishe.mapper.HandInMapper">
     <select id="getLearningCourse" resultType="Student">
+        select DISTINCT coursename from selectcourse where stuid=#{stuid};
+    </select>
+    <select id="getCourseClass" resultType="Student">
         select coursename,courseclass from selectcourse where stuid=#{stuid};
     </select>
     <select id="workInfo" resultType="Homework">
@@ -22,5 +25,8 @@
       select h.workname,h.course,h.uploadclass from score s
       left join homework h on s.workid = h.workid
       where s.stuid=#{stuid};
+    </select>
+    <select id="getStuname" resultType="String" parameterType="String">
+        select DISTINCT stuname from student where stuid=#{stuid};
     </select>
 </mapper>

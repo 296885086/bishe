@@ -6,39 +6,59 @@
     <link rel="stylesheet" href="/webapp/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}">
     <meta charset="UTF-8">
     <title>Title</title>
+    <style>
+        .flex-container {
+            position: relative;
+            top: 19px;
+            display: -webkit-flex;
+            display: flex;
+            -webkit-align-items: flex-start;
+            align-items: flex-start;
+            border-bottom-style: ridge;
+            border-bottom-width: 1px;
+            height: 98px;
+        }
+
+        .flex-item {
+            margin-left: 10px;
+        }
+    </style>
 </head>
 <body>
 <div class="container">
     <div class="row">
         <div class="col-sm-12">
-            <div class="col-sm-12">
-                <div class="form-group" style="top: 16px; position: relative;height:76px;">
-                    <div style="width: 15%">
-                        <label for="name">选择科目</label>
-                        <select id="selectCourse" class="form-control" >
+                <div class="form-group flex-container">
+                    <div class="flex-item" style="width: 13%">
+                        <label for="selectCourse">选择科目</label>
+                        <select  id="selectCourse" class="form-control">
                             <option>请选择科目</option>
                             <option th:each="glc:${glc}" th:text="${glc.coursename}"></option>
                         </select>
                     </div>
-                    <div style="width: 15%;position: relative; bottom: 60px;left: 152px;">
-                        <label for="name">选择教学班</label>
-                        <select id="selectCourseClass" class="form-control">
+                    <div class="flex-item" style="width: 13%">
+                        <label for="selectCourseClass">选择教学班</label>
+                        <select  id="selectCourseClass" class="form-control">
                             <option>请选择班级</option>
                         </select>
                     </div>
-                    <div style="width: 20%;position: relative;bottom: 119px;left: 304px;">
-                        <label for="name">选择作业名称</label>
-                        <select class="form-control" id="selectWorkname">
+                    <div  class="flex-item" style="width: 20%">
+                        <label for="selectWorkname">选择作业名称</label>
+                        <select  class="form-control" id="selectWorkname">
                             <option>请选择作业名称</option>
                         </select>
                     </div>
-                    <div class="form-group" id="handInWork" style="position: relative;bottom: 177px;left: 513px;">
+                    <div  class="form-group flex-item" id="handInWork" >
                         <label for="selectFile">作业选择:</label>
                         <input type="file" id="selectFile" name="file">
                     </div>
+                    <div class="flex-item" style="position: relative;top: 15px;right: 10px">
+                        <button type="button" class="btn btn-info" id="handIn">上交</button>
+                    </div>
+
                 </div>
-                <button type="button" class="btn btn-info" id="handIn">上交</button>
-            </div>
+
+
         </div>
         <div class="col-sm-12" id="workInfo">
             <table class="table table-striped">
@@ -85,7 +105,7 @@
     $('#selectCourse').change(function () {
         $('#selectCourseClass').empty();
         var course = $(this).children('option:selected').val();
-        var courseClass = [[${glc}]];
+        var courseClass = [[${gcc}]];
         $('#selectCourseClass').append('<option value="all">全部</option>');
         courseClass.forEach(myFunction);
         function myFunction(value, index, array) {
@@ -133,7 +153,7 @@
             data: fd,
             success:function(info){
                 alert(info);
-                parent.location.reload();
+                location.reload();
             },error:function (e) {
                 alert('上交失败！！');
             }

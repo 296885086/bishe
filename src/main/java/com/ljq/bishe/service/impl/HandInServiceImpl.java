@@ -22,6 +22,11 @@ public class HandInServiceImpl implements HandInService{
     }
 
     @Override
+    public List getCourseClass(String stuid) {
+        return hip.getCourseClass(stuid);
+    }
+
+    @Override
     public void handIn(String stuid, String course, String courseClass, String workName,String uploadWorkName) {
         hip.handIn(stuid,course,courseClass,workName,uploadWorkName);
     }
@@ -34,5 +39,8 @@ public class HandInServiceImpl implements HandInService{
     @Override
     public List getWorkName(String stuid) {
         return hip.getWorkName(stuid);
+    }
+    public String getStuname(String stuid){
+        return  hip.getStuname(stuid);
     }
 }
