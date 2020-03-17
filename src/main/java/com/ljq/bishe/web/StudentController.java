@@ -87,7 +87,7 @@ public class StudentController {
     //师生交流
     @GetMapping("/exchange")
     public String exchange(Model model){
-        List<Message> messageList = exchangeService.messageList();
+        List<Message> messageList = exchangeService.messageList(stuId);
         List<Reply> replyList = exchangeService.replyList();
         List getLearningCourse = handInService.getLearningCourse(stuId);//在学科目
         List getCourseClass = handInService.getCourseClass(stuId);
@@ -113,8 +113,9 @@ public class StudentController {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//可以方便地修改日期格式
         String leavedate = dateFormat.format( now );
         exchangeService.sendMessage(leavename,leaveid,messagebody,"stu",courseid,leavedate);
-        return "123";
+        return "success";
     }
+
     //评论
     @PostMapping("/replyMessage")
     @ResponseBody
@@ -134,6 +135,15 @@ public class StudentController {
                               Model model){
         List<Message> findMessageList = exchangeService.findMessage(course,courseClass,stuId);
         return findMessageList;
+    }
+
+    /*
+    * 我的留言*/
+    @PostMapping("/myMessage")
+    @ResponseBody
+    public  List myMessage(){
+        List<Message> myMessageList = exchangeService.myMessage(stuId);
+        return myMessageList;
     }
 
     /*

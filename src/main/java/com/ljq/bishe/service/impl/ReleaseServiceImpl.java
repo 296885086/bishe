@@ -12,6 +12,12 @@ import java.util.List;
 public class ReleaseServiceImpl implements ReleaseService {
     @Autowired
     ReleaseMapper releaseMapper;
+
+    @Override
+    public String getTeaName(String teaid) {
+        return releaseMapper.getTeaName(teaid);
+    }
+
     @Override
     public int workinsert(Homework homework) {
         return releaseMapper.workinsert(homework);

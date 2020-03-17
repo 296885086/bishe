@@ -229,7 +229,7 @@
         </div>
 
         <div class="flex-item" style="position: relative;top: 24px;">
-            <button type="button" class="btn btn-info">我的留言</button>
+            <button type="button" v-on:click="myMessage" class="btn btn-info">我的留言</button>
         </div>
         <div class="flex-item" style="position: relative;top: 24px;">
             <button type="button" class="btn btn-success" data-toggle="modal" data-target="#sendMessage">添加留言</button>
@@ -368,16 +368,9 @@
                 this.replylist = [[${replyList}]];
                 this.leavename = [[${stuInfo}]].stuname;
                 this.leaveid = [[${stuInfo}]].stuid;
-                for (var i = 0; i < this.replylist.length; i++) {
-                    var appendChild = '<div class="replyCt"><div class="replayTit"><span class="hf_name">' + this.replylist[i].replyname +
-                        '</span><span class="hf_time">' + this.replylist[i].replydate +
-                        '</span></div><div class="padleft20"><p class="hf_pct">' + this.replylist[i].replybody + '</p></div>';
-                    var replyid = '#message' + this.replylist[i].messageid + ' .ReplyList .clearfix';
-                    $(replyid).append(appendChild);
-                }
             },
 
-
+            //回复按钮
             replyMessage: function (index) {
                 if ($('#reply' + index).hasClass("show")) {
                     // 执行隐藏
@@ -387,6 +380,8 @@
                     $('#reply' + index).show().addClass("show");
                 }
             },
+
+            //回复留言
             replyBtn: function (e) {
                 var messageid = $(e.currentTarget).siblings('input').val();
                 var replybody = $(e.currentTarget).siblings('#replybody').val();
@@ -407,6 +402,7 @@
                 })
             },
 
+            //查找留言
             findMessage:function () {
                 var course = $('#selectCourse').children('option:selected').val();
                 var courseClass = $('#selectCourseClass').children('option:selected').val();
@@ -425,6 +421,23 @@
                     },
                     error:function (e) {
                         alert('上交失败！！');
+                    }
+                })
+            },
+
+            //我的留言
+            myMessage:function(){
+                $.ajax({
+                    url:'/teacher/myMessage',
+                    type:'POST',
+                    enctype: "multipart/form-data",
+                    processData: false,
+                    contentType: false,
+                    success:function(data){
+                        vm.messagelist = data;
+                    },
+                    error:function (e) {
+                        alert('查找失败！！');
                     }
                 })
             }
@@ -451,6 +464,7 @@
     });
 
     //vue渲染完成后
+    //回复显示
     Vue.nextTick(function () {
         debugger
         for (var i = 0; i < vm.replylist.length; i++) {
@@ -461,8 +475,6 @@
             $(replyid).append(appendChild);
         }
     })
-
-
 </script>
 </body>
 </html>

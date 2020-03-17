@@ -8,6 +8,7 @@ import java.util.List;
 
 @Mapper
 public interface ReleaseMapper {
+    public String getTeaName(String teaid);
     public int workinsert(Homework homework);
     public List<Homework> worklist(String teaid);
     public void workdelete(String workid);

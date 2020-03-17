@@ -17,9 +17,8 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @RequestMapping("/teacher")
 @Controller
@@ -34,8 +33,10 @@ public class TeacherController {
     WorkScoreService ws;
     @Autowired
     CourseManagerService cms;
+    @Autowired
+    ExchangeService exchangeService;
     String teacherId = null;
-
+    String teacherName = null;
     /*
     * 作业列表*/
     @GetMapping("/fragment/{teaid}")
@@ -43,6 +44,7 @@ public class TeacherController {
                                @RequestParam(value = "start", defaultValue = "0") int start,
                                @RequestParam(value = "size", defaultValue = "5") int size) throws Exception {
         teacherId = teaid;
+        teacherName = rs.getTeaName(teaid);
         Homework homework = new Homework();
         ArrayList course = wc.courseList(teaid);
         List<Course> courseClass = wc.courseClassList(teaid);
@@ -142,12 +144,68 @@ public class TeacherController {
         return "teacher/studata";
     }
 
-    /*
-    * 师生交流*/
-    @GetMapping("/teachertalk")
-    public String teachertalk() {
-        return "teacher/teachertalk";
+    //师生交流
+    @GetMapping("/exchange")
+    public String exchange(Model model){
+        List<Message> teaMessageList = exchangeService.teaMessageList(teacherId);
+        List<Reply> teaReplyList = exchangeService.teaReplyList();
+        ArrayList course = wc.courseList(teacherId);
+        List<Course> courseClass = wc.courseClassList(teacherId);
+        HashMap teaInfo  = new HashMap();
+        teaInfo.put("teaid",teacherId);
+        teaInfo.put("teaname",teacherName);
+        model.addAttribute("course", course);//科目
+        model.addAttribute("courseClass", courseClass);//班级
+        model.addAttribute("teaMessageList",teaMessageList);
+        model.addAttribute("teaReplyList",teaReplyList);
+        model.addAttribute("teaInfo",teaInfo);
+        return "teacher/exchange";
     }
+
+    //发表言论
+    @PostMapping("/sendMessage")
+    @ResponseBody
+    public String sendMessage(@RequestParam("leavename") String leavename,
+                              @RequestParam("leaveid") String leaveid,
+                              @RequestParam("messagebody") String messagebody){
+        String courseid = "1";
+        Date now = new Date();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//可以方便地修改日期格式
+        String leavedate = dateFormat.format( now );
+        exchangeService.teaSendMessage(leavename,leaveid,messagebody,"tea",courseid,leavedate);
+        return "success";
+    }
+
+    //回复留言
+    @PostMapping("/replyMessage")
+    @ResponseBody
+    public String replyMessage(@RequestParam("messageid") String messageid,
+                               @RequestParam("replybody") String replybody){
+        Date now = new Date();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//可以方便地修改日期格式
+        String replydate = dateFormat.format( now );
+        exchangeService.teaReplyMessage(messageid,replybody,replydate,teacherId);
+        return "success";
+    }
+
+    //查找留言
+    @PostMapping("/findMessage")
+    @ResponseBody
+    public List findMessage(@RequestParam("course") String course,
+                            @RequestParam("courseClass") String courseClass){
+        List<Message> findMessageList = exchangeService.teaFindMessage(course,courseClass,teacherId);
+        return findMessageList;
+    }
+
+    /*
+    * 我的留言*/
+    @PostMapping("/myMessage")
+    @ResponseBody
+    public  List myMessage(){
+        List<Message> myMessageList = exchangeService.teaMyMessage(teacherId);
+        return myMessageList;
+    }
+
 
     /*
     * 作业情况统计*/
@@ -161,15 +219,15 @@ public class TeacherController {
         return "teacher/workcount";
     }
 
-    /**
-     * 学生作业审核
-     */
+
+    /* 学生作业审核
+     **/
     @GetMapping("/workaudit")
     public String workaudit() {
         return "teacher/workaudit";
     }
 
-    /**
+    /*
      * 学生作业评分
      */
     @GetMapping("/workscore")
@@ -185,7 +243,7 @@ public class TeacherController {
         return "teacher/workscore";
     }
 
-    /**
+    /*
      * 查找学生作业
      */
     @PostMapping("/findWorkScore")
@@ -197,9 +255,9 @@ public class TeacherController {
         return workScoreList;
     }
 
-    /**
-     * 修改学生作业分数
-     */
+    /*
+     *修改学生作业分数
+     **/
     @PostMapping("/modifyScore")
     @ResponseBody
     public String modifyScore(@RequestParam("modifyScore") String modifyScore,
@@ -324,6 +382,8 @@ public class TeacherController {
         return "teacher/courseManager";
     }
 
+    /*
+   * 课程信息管理页面*/
     @GetMapping("/stuCourseManager")
     public String stuCourseManager(Model model) {
         List<SelectCourse> selectCourseList = cms.stuCourseManger(teacherId);
@@ -331,6 +391,8 @@ public class TeacherController {
         return "teacher/stuCourseManager";
     }
 
+    /*
+    * 课程信息管理页面*/
     @GetMapping("/teaCourseManager")
     public String teaCourseManager(Model model) {
         List<Course> courseList = cms.teaCourseManger(teacherId);
@@ -350,6 +412,9 @@ public class TeacherController {
         return "teacher/teaCourseManager";
     }
 
+    /**
+     *手动增加课程信息
+     */
     @PostMapping("/writeAddCourse")
     @ResponseBody
     public String writeAddCourse(@RequestParam String courseClass,
@@ -371,6 +436,8 @@ public class TeacherController {
         return msg;
     }
 
+    /*
+    * 导入添加课程信息*/
     @PostMapping("/importAddCourse")
     @ResponseBody
     public String importAddCourse(@RequestParam("importFile") MultipartFile importFile) throws Exception {
@@ -396,6 +463,8 @@ public class TeacherController {
         return msg;
     }
 
+    /*
+   * 导入添加课程信息*/
     @PostMapping("/importAddStuCourse")
     @ResponseBody
     public String importAddStuCourse(@RequestParam("importFile") MultipartFile importFile) throws Exception {

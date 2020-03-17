@@ -4,6 +4,9 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.ljq.bishe.mapper.ReleaseMapper">
+    <select id="getTeaName" resultType="String" parameterType="String">
+      SELECT  teaname from teacher where teaid=#{teaid}
+    </select>
     <insert id="workinsert" parameterType="Homework">
       insert into homework ( workname,uploaddate,enddate,filepath,course,uploadclass,teaid ) values (#{workname},#{uploaddate},#{enddate},#{filepath},#{course},#{uploadclass},#{teaid});
     </insert>
