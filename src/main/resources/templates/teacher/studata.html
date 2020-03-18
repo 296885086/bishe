@@ -100,7 +100,7 @@
                 </div><!-- /.modal-content -->
             </div><!-- /.modal-dialog -->
         </div><!-- /.modal -->
-        <table class="table table-condensed">
+        <table class="table table-striped">
             <caption>学生信息汇总</caption>
             <thead>
             <tr>
@@ -109,8 +109,6 @@
                 <th>性别</th>
                 <th>班别</th>
                 <th>课程名称</th>
-                <th>课程代码</th>
-                <th>教学班</th>
                 <th>删除/修改</th>
             </tr>
             </thead>
@@ -121,8 +119,6 @@
                 <td th:text="${c.stusex}"></td>
                 <td th:text="${c.stuclass}"></td>
                 <td th:text="${c.stuphone}"></td>
-                <td th:text="${c.coursename}"></td>
-                <td th:text="${c.courseclass}"></td>
                 <td><a href="#">修改</a>/
                     <a href="#">删除</a></td>
             </tr>

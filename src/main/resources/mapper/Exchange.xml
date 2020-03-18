@@ -19,11 +19,14 @@
     </select>
     <insert id="teaSendMessage" parameterType="String">
         insert into message (leaveid,leavename,messagebody,leavedate,messagetype,courseid,totalreply,praisenumber) VALUES
-        (#{leaveid},#{leavename},#{messagebody},#{leavedate},#{messagetype},#{courseid},0,0)
+        (#{leaveid},#{leavename},#{messagebody},#{leavedate},#{messagetype},
+        (SELECT courseid from course where coursename=#{course} and courseclass=#{courseClass}),0,0)
     </insert>
     <insert id="sendMessage" parameterType="String">
       insert into message (leaveid,leavename,messagebody,leavedate,messagetype,courseid,totalreply,praisenumber) VALUES
-      (#{leaveid},#{leavename},#{messagebody},#{leavedate},#{messagetype},#{courseid},0,0)
+      (#{leaveid},#{leavename},#{messagebody},#{leavedate},#{messagetype},
+      (select c.courseid from course c where c.coursename=#{course} and c.courseclass=#{courseClass}  and teaid in
+      (select teaid from selectcourse sc where sc.coursename=#{course} and sc.courseclass=#{courseClass} and sc.stuid=#{stuid})),0,0)
     </insert>
     <insert id="teaReplyMessage" parameterType="String">
         insert into reply (messageid,replybody,replydate,replyname) VALUES

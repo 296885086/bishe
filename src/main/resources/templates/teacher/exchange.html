@@ -310,15 +310,14 @@
                                       placeholder="输入留言内容"></textarea>
                         </label>
                         <label>
-                            <span>留言科目 :</span>
-                            <select name="selection">
-                                <option value="Job Inquiry">java基础知识</option>
-                                <option value="General Question">html</option>
+                            <span>选择科目</span>
+                            <select id="selectCourseAdd"  >
+                                <option>请选择科目</option>
+                                <option th:each="c:${course}" th:text="${c}"></option>
                             </select>
-                            <span>留言教学班 :</span>
-                            <select name="selection">
-                                <option value="Job Inquiry">QM</option>
-                                <option value="General Question">MN</option>
+                            <span >选择教学班</span>
+                            <select id="selectCourseClassAdd">
+                                <option>请选教学班</option>
                             </select>
                         </label>
                         <label>
@@ -348,10 +347,14 @@
 
             //发表留言
             sendMessageBtn: function () {
+                let course = $('#selectCourseAdd').children('option:selected').val();
+                let courseClass = $('#selectCourseClassAdd').children('option:selected').val();
                 var fd = new FormData();
                 fd.append("leavename", vm.leavename);
                 fd.append("leaveid", vm.leaveid);
                 fd.append("messagebody", vm.messagebody);
+                fd.append("course", course);
+                fd.append("courseClass", courseClass);
                 $.ajax({
                     url: '/teacher/sendMessage',
                     data: fd,
@@ -465,6 +468,21 @@
         function myFunction(value, index, array) {
             if (course === value.coursename) {
                 $('#selectCourseClass').append('<option value="' + value.courseclass + '">' + value.courseclass + '</option>');
+            }
+        }
+    });
+
+    //选择科目
+    $('#selectCourseAdd').change(function () {
+        $('#selectCourseClassAdd').empty();
+        var course = $(this).children('option:selected').val();
+        var courseClass = [[${courseClass}]];
+        $('#selectCourseClassAdd').append('<option value="all">全部</option>');
+        courseClass.forEach(myFunction);
+
+        function myFunction(value, index, array) {
+            if (course === value.coursename) {
+                $('#selectCourseClassAdd').append('<option value="' + value.courseclass + '">' + value.courseclass + '</option>');
             }
         }
     });

@@ -17,14 +17,16 @@ public interface ExchangeMapper {
                             @Param("leaveid")String leaveid,
                             @Param("messagebody") String messagebody,
                             @Param("messagetype") String messagetype,
-                            @Param("courseid") String courseid,
-                            @Param("leavedate") String leavedate);
+                            @Param("leavedate") String leavedate,
+                            @Param("course") String course,
+                            @Param("courseClass") String courseClass,@Param("stuid") String stuid);
     public void teaSendMessage(@Param("leavename") String leavename,
-                            @Param("leaveid")String leaveid,
-                            @Param("messagebody") String messagebody,
-                            @Param("messagetype") String messagetype,
-                            @Param("courseid") String courseid,
-                            @Param("leavedate") String leavedate);
+                                @Param("leaveid")String leaveid,
+                                @Param("messagebody") String messagebody,
+                                @Param("messagetype") String messagetype,
+                               @Param("leavedate") String leavedate,
+                               @Param("course") String course,
+                               @Param("courseClass") String courseClass);
     public void teaReplyMessage(@Param("messageid") String messageid,
                              @Param("replybody") String replybody,
                              @Param("replydate") String replydate,

@@ -35,13 +35,13 @@ public class ExchangeServiceImpl implements ExchangeService {
     }
 
     @Override
-    public void teaSendMessage(String leavename, String leaveid, String messagebody, String messagetype, String courseid, String leavedate) {
-        exchangeMapper.teaSendMessage(leavename,leaveid,messagebody,messagetype,courseid,leavedate);
+    public void teaSendMessage(String leavename, String leaveid, String messagebody, String messagetype, String leavedate,String course,String courseClass) {
+        exchangeMapper.teaSendMessage(leavename,leaveid,messagebody,messagetype,leavedate,course,courseClass);
     }
 
     @Override
-    public void sendMessage(String leavename,String leaveid,String messagebody,String messagetype,String courseid,String leavedate) {
-        exchangeMapper.sendMessage(leavename,leaveid,messagebody,messagetype,courseid,leavedate);
+    public void sendMessage(String leavename,String leaveid,String messagebody,String messagetype,String leavedate,String course,String courseClass,String stuid) {
+        exchangeMapper.sendMessage(leavename,leaveid,messagebody,messagetype,leavedate,course,courseClass,stuid);
     }
 
     @Override

@@ -167,12 +167,13 @@ public class TeacherController {
     @ResponseBody
     public String sendMessage(@RequestParam("leavename") String leavename,
                               @RequestParam("leaveid") String leaveid,
-                              @RequestParam("messagebody") String messagebody){
-        String courseid = "1";
+                              @RequestParam("messagebody") String messagebody,
+                              @RequestParam("course") String course,
+                              @RequestParam("courseClass") String courseClass){
         Date now = new Date();
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//可以方便地修改日期格式
         String leavedate = dateFormat.format( now );
-        exchangeService.teaSendMessage(leavename,leaveid,messagebody,"tea",courseid,leavedate);
+        exchangeService.teaSendMessage(leavename,leaveid,messagebody,"tea",leavedate,course,courseClass);
         return "success";
     }
 
@@ -362,13 +363,13 @@ public class TeacherController {
             row = sheet.getRow(i + 1);
             row.getCell(0).setCellType(CellType.STRING);
             row.getCell(4).setCellType(CellType.STRING);
+            row.getCell(5).setCellType(CellType.STRING);
             student.setStuid(row.getCell(0).getStringCellValue());
             student.setStuname(row.getCell(1).getStringCellValue());
             student.setStusex(row.getCell(2).getStringCellValue());
             student.setStuclass(row.getCell(3).getStringCellValue());
             student.setStuphone(row.getCell(4).getStringCellValue());
-            student.setCourseclass(row.getCell(6).getStringCellValue());
-            student.setStupassword(row.getCell(7).getStringCellValue());
+            student.setStupassword(row.getCell(5).getStringCellValue());
             studentList.add(student);
             ss.importdata(student);
         }
@@ -453,7 +454,7 @@ public class TeacherController {
             row = sheet.getRow(i + 1);//获取行
             /*row.getCell(0).setCellType(CellType.STRING);//转变行的格式*/
             course.setCoursename(row.getCell(0).getStringCellValue());//获取列的内容，并保存
-            course.setCourseclass(row.getCell(0).getStringCellValue());
+            course.setCourseclass(row.getCell(1).getStringCellValue());
             course.setTeaid(teacherId);
             cms.writeAddCourse(course.getCourseclass(), course.getCoursename(), teacherId);
         }

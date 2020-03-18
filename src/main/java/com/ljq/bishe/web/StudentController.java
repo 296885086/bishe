@@ -107,12 +107,13 @@ public class StudentController {
     @ResponseBody
     public String sendMessage(@RequestParam("leavename") String leavename,
                               @RequestParam("leaveid") String leaveid,
-                              @RequestParam("messagebody") String messagebody){
-        String courseid = "1";
+                              @RequestParam("messagebody") String messagebody,
+                              @RequestParam("course") String course,
+                              @RequestParam("courseClass") String courseClass){
         Date now = new Date();
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//可以方便地修改日期格式
         String leavedate = dateFormat.format( now );
-        exchangeService.sendMessage(leavename,leaveid,messagebody,"stu",courseid,leavedate);
+        exchangeService.sendMessage(leavename,leaveid,messagebody,"stu",leavedate,course,courseClass,stuId);
         return "success";
     }
 
@@ -128,6 +129,7 @@ public class StudentController {
         return "success";
     }
 
+    //查找留言
     @PostMapping("/findMessage")
     @ResponseBody
     public List findMessage(@RequestParam("course") String course,

@@ -10,8 +10,8 @@ public interface ExchangeService {
     public List<Reply> replyList();
     public List<Message> teaMessageList(String teaid);
     public List<Reply> teaReplyList();
-    public void teaSendMessage( String leavename,String leaveid,String messagebody,String messagetype,String courseid,String leavedate);
-    public void sendMessage( String leavename,String leaveid,String messagebody,String messagetype,String courseid,String leavedate);
+    public void teaSendMessage( String leavename,String leaveid,String messagebody,String messagetype,String leavedate,String course,String courseClass);
+    public void sendMessage( String leavename,String leaveid,String messagebody,String messagetype,String leavedate,String course,String courseClass,String stuid);
     public void teaReplyMessage(String messageid,String replybody,String replydate,String teaid);
     public void replyMessage(String messageid,String replybody,String replydate,String stuid);
     public List<Message> teaFindMessage(String coursename,String courseclass, String teaid);
