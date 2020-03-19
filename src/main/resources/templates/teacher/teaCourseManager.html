@@ -130,7 +130,7 @@
     function myFunction(value, index, array) {
         var appendChile = '<tr><td>'+
             value.coursename + '</td><td>'+
-            value.courseclass + '</td><td>'+ value.totalstudent + '</td><td><a>删除</a>  /  <a>修改</a></td></tr>';
+            value.courseclass + '</td><td>'+ value.totalstudent + '</td><td><a onclick="deleteCourse('+ value.courseid +')">删除</a>  /  <a>修改</a></td></tr>';
         $('.coursetable tbody').append(appendChile);
     }
 
@@ -213,6 +213,33 @@
             return false;
         }
         return true;
+    }
+
+    //删除课程信息
+    function deleteCourse(courseid){
+        debugger
+        var fd = new FormData();
+        fd.append("courseid", courseid)
+        var r=confirm("确定删除？");
+        if (r==true){
+            $.ajax({
+                url:'/teacher/deletecourse',
+                enctype: "multipart/form-data",
+                type:'POST',
+                processData: false,
+                contentType: false,
+                data:fd ,
+                success:function(data){
+                    if(data == "success"){
+                        alert("删除成功！");
+                        location.reload();
+                    }
+                },
+                error:function (e) {
+                    alert('删除失败！！');
+                }
+            });
+        }
     }
 </script>
 </body>

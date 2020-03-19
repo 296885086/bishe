@@ -17,4 +17,6 @@ public interface CourseManagerMapper {
                                   @Param("courseName")String courseName,
                                   @Param("teaid")String teaid,
                                   @Param("stuId") String stuId);
+    public void deleteCourse( String courseid);
+    public void deleteStuCourse( String selectcourseid);
 }

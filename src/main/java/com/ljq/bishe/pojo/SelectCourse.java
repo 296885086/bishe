@@ -1,6 +1,7 @@
 package com.ljq.bishe.pojo;
 
 public class SelectCourse {
+    private String selectcourseid;
     private String stuid;
     private String stuname;
     private String coursename;
@@ -53,5 +54,13 @@ public class SelectCourse {
 
     public void setStutotal(String stutotal) {
         this.stutotal = stutotal;
+    }
+
+    public String getSelectcourseid() {
+        return selectcourseid;
+    }
+
+    public void setSelectcourseid(String selectcourseid) {
+        this.selectcourseid = selectcourseid;
     }
 }

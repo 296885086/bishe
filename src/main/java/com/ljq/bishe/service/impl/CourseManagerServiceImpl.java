@@ -35,4 +35,14 @@ public class CourseManagerServiceImpl implements CourseManagerService {
     public void writeAddStuCourse(String courseClass, String courseName, String teaid, String stuId) {
         courseManagerMapper.writeAddStuCourse(courseClass,courseName,teaid,stuId);
     }
+
+    @Override
+    public void deleteCourse(String courseid) {
+        courseManagerMapper.deleteCourse(courseid);
+    }
+
+    @Override
+    public void deleteStuCourse(String selectcourseid) {
+        courseManagerMapper.deleteStuCourse(selectcourseid);
+    }
 }

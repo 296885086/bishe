@@ -155,7 +155,9 @@ public class StudentController {
         List workNameList = handInService.getWorkName(stuId);
         List getLearningCourse = handInService.getLearningCourse(stuId);//在学科目
         List getAllMyData = myDataService.allMyDdata(stuId);
+        List getCourseClass = handInService.getCourseClass(stuId);
         model.addAttribute("glc",getLearningCourse);
+        model.addAttribute("gcc",getCourseClass);
         model.addAttribute("gwn",workNameList);
         model.addAttribute("gamd",getAllMyData);
         return "student/myData";

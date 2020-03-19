@@ -6,36 +6,61 @@
     <script type="text/javascript" src="/js/jquery.min.css" th:src="@{/js/jquery.min.js}"></script>
     <script type="text/javascript" src="/js/bootstrap.min.css" th:src="@{/js/bootstrap.min.js}"></script>
     <link rel="stylesheet" href="/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}">
+    <style>
+        .flex-container {
+            position: relative;
+            top: 19px;
+            display: -webkit-flex;
+            display: flex;
+            -webkit-align-items: flex-start;
+            align-items: flex-start;
+            border-bottom-style: ridge;
+            border-bottom-width: 1px;
+            height: 98px;
+        }
+
+        .flex-item {
+            margin-left: 10px;
+        }
+    </style>
 </head>
 <body>
 <div class="container">
     <form role="form">
-
-        <div class="form-group" style="top: 16px; position: relative;height:76px;">
-            <div style="width: 15%">
-                <label for="name">选择科目</label>
-                <select id="selectCourse" class="form-control" >
+        <div class="form-group flex-container">
+            <div class="flex-item" style="width: 13%">
+                <label for="selectCourse">选择科目</label>
+                <select  id="selectCourse" class="form-control">
                     <option>请选择科目</option>
                     <option th:each="glc:${glc}" th:text="${glc.coursename}"></option>
                 </select>
             </div>
-            <div style="width: 15%;position: relative; bottom: 60px;left: 152px;">
-                <label for="name">选择教学班</label>
-                <select id="selectCourseClass" class="form-control">
-                    <option th:value="select">请选择班级</option>
+            <div class="flex-item" style="width: 13%">
+                <label for="selectCourseClass">选择教学班</label>
+                <select  id="selectCourseClass" class="form-control">
+                    <option>请选择班级</option>
                 </select>
             </div>
-            <div style="width: 10%;position: relative;bottom: 118px;left: 300px;">
-                <label for="name">作业状态</label>
+            <div  class="flex-item" style="width: 20%">
+                <label for="selectWorkname">选择作业名称</label>
+                <select  class="form-control" id="selectWorkname">
+                    <option>请选择作业名称</option>
+                </select>
+            </div>
+            <div  class="form-group flex-item" id="handInWork" >
+                <label for="homeworkState">作业状态</label>
                 <select class="form-control" id="homeworkState" >
                     <option>全部</option>
                     <option>已上交</option>
                     <option>未上交</option>
                 </select>
             </div>
-            <button id="findMyWork" class="btn btn-info" data-loading-text="查找中..."
-                    type="button" style=" position: relative;left: 410px;bottom: 154px;">查找
-            </button>
+            <div class="flex-item" style="position: relative;top: 15px;right: 10px">
+                <button id="findMyWork" class="btn btn-info" data-loading-text="查找中..."
+                        type="button" style=" position: relative;top: 10px;left: 10px;">查找
+                </button>
+            </div>
+
         </div>
     </form>
 
@@ -112,7 +137,7 @@
     $('#selectCourse').change(function () {
         $('#selectCourseClass').empty();
         var course = $(this).children('option:selected').val();
-        var courseClass = [[${glc}]];
+        var courseClass = [[${gcc}]];
         $('#selectCourseClass').append('<option value="all">全部</option>');
         courseClass.forEach(myFunction);
         function myFunction(value, index, array) {
@@ -122,6 +147,20 @@
         }
     });
 
+    //下拉选择作业名称
+    $('#selectCourseClass').change(function () {
+        console.log([[${gwn}]]);
+        $('#selectWorkname').empty();
+        var courseClass = $(this).children('option:selected').val();
+        var workName = [[${gwn}]];
+        $('#selectWorkname').append('<option value="all">全部</option>');
+        workName.forEach(myFunction);
+        function myFunction(value, index, array) {
+            if ( courseClass === value.uploadclass) {
+                $('#selectWorkname').append('<option th:value="' + value.workname + '">' + value.workname + '</option>');
+            }
+        }
+    });
     //去写问题
     function giveQuestion(workid,stuid,question) {
         debugger

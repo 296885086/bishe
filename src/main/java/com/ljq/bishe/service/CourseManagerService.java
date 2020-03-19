@@ -10,4 +10,6 @@ public interface CourseManagerService {
     public void writeAddCourse(String courseClass,String courseName,String teaid);
     public List totalStudent(String teaid);
     public void writeAddStuCourse(String courseClass,String courseName,String teaid,String stuId);
+    public void deleteCourse(String courseid);
+    public void deleteStuCourse( String selectcourseid);
 }

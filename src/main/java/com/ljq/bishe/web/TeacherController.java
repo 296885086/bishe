@@ -489,5 +489,23 @@ public class TeacherController {
         String msg = "success";
         return msg;
     }
+
+    /*
+    * 删除课程 */
+    @PostMapping("/deletecourse")
+    @ResponseBody
+    public String deleteCourse(@RequestParam String courseid){
+        cms.deleteCourse(courseid);
+        return "success";
+    }
+
+    /*
+    * 删除学生选课 */
+    @PostMapping("/deletestucourse")
+    @ResponseBody
+    public String deleteStuCourse(@RequestParam String selectcourseid){
+        cms.deleteStuCourse(selectcourseid);
+        return "success";
+    }
 }
 

@@ -20,4 +20,10 @@
     <insert id="writeAddStuCourse" parameterType="String">
         insert into selectcourse (stuid,coursename,courseclass,teaid) VALUES (#{stuId},#{courseName},#{courseClass},#{teaid})
     </insert>
+    <delete id="deleteCourse" parameterType="String">
+        DELETE  FROM course where courseid = #{courseid}
+    </delete>
+    <delete id="deleteStuCourse" parameterType="String">
+        DELETE  FROM selectcourse where selectcourseid = #{selectcourseid}
+    </delete>
 </mapper>

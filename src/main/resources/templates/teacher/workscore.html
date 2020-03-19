@@ -6,43 +6,59 @@
     <script type="text/javascript" src="/js/jquery.min.css" th:src="@{/js/jquery.min.js}"></script>
     <script type="text/javascript" src="/js/bootstrap.min.css" th:src="@{/js/bootstrap.min.js}"></script>
     <link rel="stylesheet" href="/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}">
+    <style>
+        .flex-container {
+            position: relative;
+            top: 19px;
+            display: -webkit-flex;
+            display: flex;
+            -webkit-align-items: flex-start;
+            align-items: flex-start;
+            border-bottom-style: ridge;
+            border-bottom-width: 1px;
+            height: 98px;
+        }
+
+        .flex-item {
+            margin-left: 10px;
+        }
+    </style>
 </head>
 <body>
 <div class="container">
-    <form role="form">
-
-        <div class="form-group" style="top: 16px; position: relative;height:76px;">
-            <div style="width: 15%">
-           <label for="name">选择科目</label>
-                <select id="selectCourse" class="form-control" >
-                    <option th:value="select">请选择科目</option>
-                    <option th:each="wc:${course}" th:value="${wc}"  th:text="${wc}"></option>
-                </select>
-            </div>
-            <div style="width: 15%;position: relative; bottom: 60px;left: 152px;">
-           <label for="name">选择教学班</label>
-                <select id="selectCourseClass" class="form-control">
-                    <option th:value="select">请选择班级</option>
-                </select>
-            </div>
-            <div style="width: 20%;position: relative;bottom: 119px;left: 304px;">
-                <label for="name">选择作业名称</label>
-                <select class="form-control" id="selectWorkname">
-                    <option th:value="select">请选择作业名称</option>
-                </select>
-            </div>
-            <div style="width: 10%;position: relative;bottom: 177px;left: 502px;">
-                <label for="name">作业状态</label>
-                <select class="form-control" id="homeworkState" >
-                    <option>已上交</option>
-                    <option>未上交</option>
-                </select>
-            </div>
+    <div class="form-group flex-container">
+        <div class="flex-item" style="width: 13%">
+            <label for="name">选择科目</label>
+            <select id="selectCourse" class="form-control" >
+                <option th:value="select">请选择科目</option>
+                <option th:each="wc:${course}" th:value="${wc}"  th:text="${wc}"></option>
+            </select>
+        </div>
+        <div class="flex-item" style="width: 13%">
+            <label for="name">选择教学班</label>
+            <select id="selectCourseClass" class="form-control">
+                <option th:value="select">请选择班级</option>
+            </select>
+        </div>
+        <div  class="flex-item" style="width: 20%">
+            <label for="name">选择作业名称</label>
+            <select class="form-control" id="selectWorkname">
+                <option th:value="select">请选择作业名称</option>
+            </select>
+        </div>
+        <div  class="form-group flex-item" id="handInWork" >
+            <label for="homeworkState">作业状态</label>
+            <select class="form-control" id="homeworkState" >
+                <option>已上交</option>
+                <option>未上交</option>
+            </select>
+        </div>
+        <div class="flex-item" style="position: relative;top: 15px;right: 10px">
             <button id="findBtn" class="btn btn-info" data-loading-text="查找中..."
                     type="button" style=" position: relative;left: 618px;bottom: 211px;">查找
             </button>
         </div>
-    </form>
+    </div>
 
     <table class="table table-bordered" id="workInfo">
         <caption>学生作业信息</caption>

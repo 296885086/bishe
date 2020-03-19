@@ -133,10 +133,11 @@
 
     //遍历课程信息
     function myFunction(value, index, array) {
+        debugger
         var appendChile = '<tr><td>'+
             value.stuid + '</td><td>'+
             value.stuname + '</td><td>'+ value.coursename + '</td><td>'+
-            value.courseclass + '</td><td><a>删除</a>  /  <a>修改</a></td></tr>';
+            value.courseclass + '</td><td><a onclick="deleteStuCourse('+ value.selectcourseid  + ')">删除</a>  /  <a>修改</a></td></tr>';
         $('.coursetable tbody').append(appendChile);
     }
 
@@ -224,6 +225,33 @@
             return false;
         }
         return true;
+    }
+
+    //删除学生课程信息
+    function deleteStuCourse(selectcourseid){
+        debugger
+        var fd = new FormData();
+        fd.append("selectcourseid", selectcourseid)
+        var r=confirm("确定删除？");
+        if (r==true){
+            $.ajax({
+                url:'/teacher/deletestucourse',
+                enctype: "multipart/form-data",
+                type:'POST',
+                processData: false,
+                contentType: false,
+                data:fd ,
+                success:function(data){
+                    if(data == "success"){
+                        alert("删除成功！");
+                        location.reload();
+                    }
+                },
+                error:function (e) {
+                    alert('删除失败！！');
+                }
+            });
+        }
     }
 </script>
 </body>
