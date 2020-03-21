@@ -27,4 +27,8 @@
          =#{course} and uploadclass=#{uploadClass} and filepath=#{filePath}),'未上交',(select selectcourseid from selectcourse where stuid=#{stuid}
          and coursename=#{course} and courseclass=#{uploadClass}));
     </insert>
+    
+    <select id="findWork" parameterType="String" resultType="Homework">
+        SELECT * FROM homework WHERE uploadclass=#{courseClass} and course=#{course} and teaid=#{teaid}
+    </select>
 </mapper>

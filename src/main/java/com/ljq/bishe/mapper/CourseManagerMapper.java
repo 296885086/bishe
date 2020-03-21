@@ -19,4 +19,10 @@ public interface CourseManagerMapper {
                                   @Param("stuId") String stuId);
     public void deleteCourse( String courseid);
     public void deleteStuCourse( String selectcourseid);
+    public void editCourse(@Param("courseid") String courseid,
+                           @Param("coursename")String coursename,
+                           @Param("courseclass")String courseclass);
+    public void editStuCourse(@Param("selectcourseid") String selectcourseid,
+                           @Param("coursename")String coursename,
+                           @Param("courseclass")String courseclass);
 }

@@ -122,15 +122,53 @@
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
+<div class="modal fade" id="modifyCourse" tabindex="-1" role="dialog" aria-labelledby="importModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"
+                        aria-hidden="true">×
+                </button>
+                <h4 class="modal-title" id="modifyModelLable">
+                    添加课程信息
+                </h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <input type="text" class="form-control" id="courseid" style="display: none;">
+                    <label for="courseName">输入课程名称</label>
+                    <input type="text" class="form-control" id="editName" placeholder="输入课程名称">
+                    <label for="courseClass">输入课程教学班</label>
+                    <input type="text" class="form-control" id="editClass" placeholder="输入课程教学班">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default"
+                        data-dismiss="modal">关闭
+                </button>
+                <button id="editCourse" type="button" class="btn btn-primary">
+                    确定修改
+                </button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+
 <script th:inline="javascript">
     var courseList = [[${courseList}]];
     courseList.forEach(myFunction);
 
     //遍历课程信息
     function myFunction(value, index, array) {
+        var coursename = "'" + value.coursename + "'";
+        var courseclass = "'" + value.courseclass + "'";
         var appendChile = '<tr><td>'+
             value.coursename + '</td><td>'+
-            value.courseclass + '</td><td>'+ value.totalstudent + '</td><td><a onclick="deleteCourse('+ value.courseid +')">删除</a>  /  <a>修改</a></td></tr>';
+            value.courseclass + '</td><td>'+ value.totalstudent +
+            '</td><td><a onclick="deleteCourse('+ value.courseid +')">删除</a>  /  <a data-toggle="modal" data-target="#modifyCourse" onclick="goEditCourse('+ value.courseid +
+            ',' + coursename + ',' + courseclass +')">修改</a></td></tr>';
         $('.coursetable tbody').append(appendChile);
     }
 
@@ -217,7 +255,6 @@
 
     //删除课程信息
     function deleteCourse(courseid){
-        debugger
         var fd = new FormData();
         fd.append("courseid", courseid)
         var r=confirm("确定删除？");
@@ -241,6 +278,43 @@
             });
         }
     }
+
+    function goEditCourse(id,coursename,courseclass) {
+        $("#editName").val(coursename);
+        $("#editClass").val(courseclass);
+        $("#courseid").val(id);
+    }
+
+    //修改课程信息
+    $("#editCourse").click(function () {
+        var coursename = $("#editName").val();
+        var courseclass = $("#editClass").val();
+        var courseid = $("#courseid").val();
+        var fd = new FormData();
+        fd.append("coursename", coursename);
+        fd.append("courseclass", courseclass);
+        fd.append("courseid", courseid);
+        var r = confirm("确定修改？");
+        if (r == true){
+            $.ajax({
+                url:'/teacher/editcourse',
+                enctype: "multipart/form-data",
+                type:'POST',
+                processData: false,
+                contentType: false,
+                data:fd ,
+                success:function(data){
+                    if(data == "success"){
+                        alert("修改成功！");
+                        location.reload();
+                    }
+                },
+                error:function (e) {
+                    alert('修改失败！！');
+                }
+            });
+        }
+    });
 </script>
 </body>
 </html>

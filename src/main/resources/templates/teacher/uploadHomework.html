@@ -11,33 +11,75 @@
     <link  rel="stylesheet" href="/css/teacher.css" th:href="@{/css/teacher.css}">
     <meta charset="UTF-8">
     <title>Title</title>
+    <style>
+        .flex-container {
+            position: relative;
+            top: 10px;
+            display: -webkit-flex;
+            display: flex;
+            -webkit-align-items: flex-start;
+            align-items: flex-start;
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+        .flex-item {
+            margin-left: 10px;
+        }
+        .coursetable{
+            position: relative;
+            top: 20px;
+        }
+        a{
+            cursor: pointer;
+        }
+    </style>
 </head>
 <body class="uploadbody">
 <div class="container">
 <div th:replace="~{fragments/uploadwork::uploadwork}"></div>
-<table class="table table-hover">
-    <thead>
-    <tr>
-        <th>作业名称</th>
-        <th>发布班级</th>
-        <th>发布时间</th>
-        <th>截止上交时间</th>
-        <th>上交情况</th>
-        <th>修改/删除</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="c:${page.list}">
-        <td th:text="${c.workname}"></td>
-        <td th:text="${c.uploadclass}"> </td>
-        <td th:text="${c.uploaddate}"></td>
-        <td th:text="${c.enddate}"></td>
-        <td>123</td>
-        <td><a href="#" class="update" data-toggle="modal" data-target="#myModal">修改</a>/
-            <a th:href="@{/teacher/workdelete(workid=${c.workid},filepath=${c.filepath},course=${c.course},uploadclass=${c.uploadclass})}">删除</a></td>
-    </tr>
-    </tbody>
-</table>
+    <div class="flex-container">
+        <div class="flex-item" style="width: 15%">
+            <label for="selectWorkCourse">选择科目</label>
+            <select id="selectWorkCourse" class="form-control" >
+                <option>请选择科目</option>
+                <option th:each="c:${course}" th:text="${c}"></option>
+            </select>
+        </div>
+        <div class="flex-item" style="width: 15%">
+            <label for="selectWorkCourseClass">选择教学班</label>
+            <select id="selectWorkCourseClass" class="form-control">
+                <option>请选教学班</option>
+            </select>
+        </div>
+        <div class="flex-item" style="position: relative;top: 24px;">
+            <button type="button" id="findWork" class="btn btn-success">查找</button>
+        </div>
+    </div>
+    <table class="table table-bordered" id="homeworkInfo">
+        <thead>
+        <tr>
+            <th>作业名称</th>
+            <th>课程名称</th>
+            <th>发布班级</th>
+            <th>发布时间</th>
+            <th>截止上交时间</th>
+            <th>上交情况</th>
+            <th>修改/删除</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="c:${page.list}">
+            <td th:text="${c.workname}"></td>
+            <td th:text="${c.course}"></td>
+            <td th:text="${c.uploadclass}"> </td>
+            <td th:text="${c.uploaddate}"></td>
+            <td th:text="${c.enddate}"></td>
+            <td>123</td>
+            <td><a href="#" class="update" data-toggle="modal" data-target="#myModal">修改</a> /
+                <a th:href="@{/teacher/workdelete(workid=${c.workid},filepath=${c.filepath},course=${c.course},uploadclass=${c.uploadclass})}">删除</a></td>
+        </tr>
+        </tbody>
+    </table>
 <div class="page">
     <ul class="pagination">
         <li><a th:href="@{/teacher/fragment(start=${page.pageNum-1})}">&laquo;</a></li>
@@ -108,6 +150,19 @@
             }
         }
     });
+    $('#selectWorkCourse').change(function () {
+        $('#selectWorkCourseClass').empty();
+        var course = $(this).children('option:selected').val();
+        var courseClass = [[${courseClass}]];
+        $('#selectCourseClass').append('<option value="all">全部</option>');
+        courseClass.forEach(myFunction);
+        function myFunction(value, index, array) {
+            if (course === value.coursename) {
+                $('#selectWorkCourseClass').append('<option th:value="' + value.courseclass + '">' + value.courseclass + '</option>');
+            }
+        }
+    });
+
     $('.modal-body #selectCourse').change(function () {
         $('.modal-body #selectCourseClass').empty();
         var course = $(this).children('option:selected').val();
@@ -120,6 +175,37 @@
             }
         }
     });
+
+    $("#findWork").click(function () {
+        let course = $('#selectWorkCourse').children('option:selected').val();
+        let courseClass = $('#selectWorkCourseClass').children('option:selected').val();
+        var fd = new FormData();
+        fd.append("course", course);
+        fd.append("courseClass", courseClass);
+        $.ajax({
+            url: '/teacher/findWork',
+            data: fd,
+            type: 'post',
+            processData: false,
+            contentType: false,
+            success: function (data) {
+                $("#homeworkInfo tbody").empty();
+                console.log(data);
+                data.forEach(eachHomework);
+
+                function eachHomework(value, index, array) {
+                    var appendChild = '<tr><td>'+value.workname +'</td><td>'+value.course +'</td><td>'+value.uploadclass +'</td><td>'+value.uploaddate
+                        + '</td><td>'+value.uploaddate +'</td><td>'+value.enddate +'</td><td><a>删除</a> / <a>修改</a></td></tr>';
+                    $("#homeworkInfo tbody").append(appendChild)
+                }
+            },
+            error:function (e) {
+                alert('发表失败！');
+            }
+        })
+    });
+
+
 </script>
 </body>
 </html>

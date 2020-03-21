@@ -48,4 +48,9 @@ public class ReleaseServiceImpl implements ReleaseService {
         releaseMapper.deleteUploadStudent(stuid,course,uploadClass);
     }
 
+    @Override
+    public List<Homework> findWork(String course, String courseClass,String teaid) {
+        return releaseMapper.findWork(course,courseClass,teaid);
+    }
+
 }

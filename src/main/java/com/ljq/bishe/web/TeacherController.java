@@ -103,6 +103,13 @@ public class TeacherController {
         return new ModelAndView("redirect:/teacher/fragment/" + teacherId);
     }
 
+    @PostMapping("/findWork")
+    @ResponseBody
+    public List findWork(@RequestParam("course") String course,
+                           @RequestParam("courseClass") String courseClass){
+        List<Homework> findHomeworkList = rs.findWork(course,courseClass,teacherId);
+        return findHomeworkList;
+    }
     /*
     * 删除作业*/
     @GetMapping("/workdelete")
@@ -505,6 +512,28 @@ public class TeacherController {
     @ResponseBody
     public String deleteStuCourse(@RequestParam String selectcourseid){
         cms.deleteStuCourse(selectcourseid);
+        return "success";
+    }
+
+    /*
+    * 修改课程信息*/
+    @PostMapping("/editcourse")
+    @ResponseBody
+    public String editcourse(@RequestParam String coursename,
+                             @RequestParam String courseclass,
+                             @RequestParam String courseid){
+        cms.editCourse(courseid,coursename,courseclass);
+        return "success";
+    }
+
+    /*
+* 修改学生课程信息*/
+    @PostMapping("/editstucourse")
+    @ResponseBody
+    public String editstucourse(@RequestParam String coursename,
+                             @RequestParam String courseclass,
+                             @RequestParam String selectcourseid){
+        cms.editStuCourse(selectcourseid,coursename,courseclass);
         return "success";
     }
 }

@@ -127,17 +127,58 @@
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
+
+<div class="modal fade" id="modifyCourse" tabindex="-1" role="dialog" aria-labelledby="importModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"
+                        aria-hidden="true">×
+                </button>
+                <h4 class="modal-title" id="modifyModelLable">
+                    修改学生课程信息
+                </h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <input type="text" class="form-control" id="selectcourseid" style="display: none;">
+                    <label for="editStuid">输入学生学号</label>
+                    <input type="text" class="form-control" id="editStuid" placeholder="输入学号"  readonly="readonly">
+                    <label for="editStuName">输入学生姓名</label>
+                    <input type="text" class="form-control" id="editStuName" placeholder="输入学生姓名"  readonly="readonly">
+                    <label for="editCourseName">输入课程名称</label>
+                    <input type="text" class="form-control" id="editCourseName" placeholder="输入课程名称">
+                    <label for="editCourseClass">输入课程教学班</label>
+                    <input type="text" class="form-control" id="editCourseClass" placeholder="输入课程教学班">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default"
+                        data-dismiss="modal">关闭
+                </button>
+                <button id="editStuCourse" type="button" class="btn btn-primary">
+                    确定修改
+                </button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
 <script th:inline="javascript">
     var selectCourseList = [[${selectCourseList}]];
     selectCourseList.forEach(myFunction);
 
     //遍历课程信息
     function myFunction(value, index, array) {
-        debugger
+        var stuname = "'" + value.stuname + "'";
+        var courseclass = "'" + value.courseclass + "'";
+        var coursename = "'" + value.coursename + "'";
         var appendChile = '<tr><td>'+
             value.stuid + '</td><td>'+
             value.stuname + '</td><td>'+ value.coursename + '</td><td>'+
-            value.courseclass + '</td><td><a onclick="deleteStuCourse('+ value.selectcourseid  + ')">删除</a>  /  <a>修改</a></td></tr>';
+            value.courseclass + '</td><td><a onclick="deleteStuCourse('+ value.selectcourseid  + ')">删除</a>  /  <a data-toggle="modal" data-target="#modifyCourse" onclick="goEditStuCourse('+
+            value.stuid+ ','+ value.selectcourseid + ',' + stuname + ',' + coursename + ',' + courseclass +')">修改</a></td></tr>';
         $('.coursetable tbody').append(appendChile);
     }
 
@@ -253,6 +294,46 @@
             });
         }
     }
+
+    //修改学生课程信息
+    function goEditStuCourse(stuid,selectcourseid,stuname,coursename,courseclass) {
+        $("#editCourseName").val(coursename);
+        $("#editCourseClass").val(courseclass);
+        $("#editStuName").val(stuname);
+        $("#selectcourseid").val(selectcourseid);
+        $("#editStuid").val(stuid);
+    }
+
+    //修改学生课程信息
+    $("#editStuCourse").click(function () {
+        var coursename=$("#editCourseName").val();
+        var courseclass=$("#editCourseClass").val();
+        var selectcourseid= $("#selectcourseid").val();
+        var fd = new FormData();
+        fd.append("coursename", coursename);
+        fd.append("courseclass", courseclass);
+        fd.append("selectcourseid", selectcourseid);
+        var r = confirm("确定修改？");
+        if (r == true){
+            $.ajax({
+                url:'/teacher/editstucourse',
+                enctype: "multipart/form-data",
+                type:'POST',
+                processData: false,
+                contentType: false,
+                data:fd ,
+                success:function(data){
+                    if(data == "success"){
+                        alert("修改成功！");
+                        location.reload();
+                    }
+                },
+                error:function (e) {
+                    alert('修改失败！！');
+                }
+            });
+        }
+    });
 </script>
 </body>
 </html>

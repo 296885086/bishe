@@ -15,4 +15,7 @@ public interface ReleaseMapper {
     public void addWork(@Param("stuid")String stuid,@Param("course")String course,@Param("filePath")String filePath,@Param("uploadClass")String uploadClass);
     public List getUploadStudent(@Param("course")String course, @Param("courseClass")String courseClass);
     public void deleteUploadStudent(@Param("stuid")String stuid,@Param("course")String course,@Param("uploadClass")String uploadClass);
+
+    public List<Homework> findWork(@Param("course")String course, @Param("courseClass")String courseClass,
+                                   @Param("teaid")String teaid);
 }

@@ -188,7 +188,5 @@ public class StudentController {
     public String workSituation(){
         return "student/workSituation";
     }
-
-
 }
 

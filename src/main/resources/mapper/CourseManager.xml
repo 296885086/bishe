@@ -26,4 +26,10 @@
     <delete id="deleteStuCourse" parameterType="String">
         DELETE  FROM selectcourse where selectcourseid = #{selectcourseid}
     </delete>
+    <update id="editCourse" parameterType="String">
+        UPDATE course SET coursename=#{coursename},courseclass=#{courseclass} where courseid=#{courseid}
+    </update>
+    <update id="editStuCourse" parameterType="String">
+        UPDATE selectcourse SET coursename=#{coursename},courseclass=#{courseclass} where selectcourseid=#{selectcourseid}
+    </update>
 </mapper>
