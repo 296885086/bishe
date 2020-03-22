@@ -9,7 +9,7 @@
     </select>
     <select id="totalStudent" parameterType="String" resultType="Course">
         select c.coursename,count(s.stuid) as totalstudent,c.courseclass from selectcourse s,course c
-        where s.coursename = c.coursename and s.courseclass = c.courseclass and c.teaid=#{teaid} group by c.courseclass,c.coursename
+        where s.coursename = c.coursename and s.courseclass = c.courseclass and s.teaid=c.teaid and c.teaid=#{teaid} group by c.courseclass,c.coursename
     </select>
     <select id="stuCourseManger" parameterType="String" resultType="SelectCourse">
         select sc.*,s.stuname from selectcourse sc,student s where sc.teaid=#{teaid} and sc.stuid = s.stuid
@@ -32,4 +32,9 @@
     <update id="editStuCourse" parameterType="String">
         UPDATE selectcourse SET coursename=#{coursename},courseclass=#{courseclass} where selectcourseid=#{selectcourseid}
     </update>
+
+    <select id="findStuCourse" parameterType="String" resultType="SelectCourse">
+        select sc.*,s.stuname from selectcourse sc,student s where
+        sc.teaid=#{teaid} and sc.stuid = s.stuid and sc.coursename=#{coursename} and sc.courseclass=#{courseclass}
+    </select>
 </mapper>

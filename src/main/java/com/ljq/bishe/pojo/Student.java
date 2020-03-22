@@ -6,9 +6,8 @@ public class Student {
     private String stusex;
     private String stuclass;
     private String stuphone;
-    private String coursename;
-    private String courseclass;
     private String stupassword;
+    private String teaid;
     public String getStuid() {
         return stuid;
     }
@@ -49,15 +48,6 @@ public class Student {
         this.stuphone = stuphone;
     }
 
-    public String getCourseclass() {
-        return courseclass;
-    }
-
-    public void setCourseclass(String courseclass) {
-        this.courseclass = courseclass;
-    }
-
-
     public String getStupassword() {
         return stupassword;
     }
@@ -66,11 +56,11 @@ public class Student {
         this.stupassword = stupassword;
     }
 
-    public String getCoursename() {
-        return coursename;
+    public String getTeaid() {
+        return teaid;
     }
 
-    public void setCoursename(String coursename) {
-        this.coursename = coursename;
+    public void setTeaid(String teaid) {
+        this.teaid = teaid;
     }
 }

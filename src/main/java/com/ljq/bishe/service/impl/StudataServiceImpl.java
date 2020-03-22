@@ -31,4 +31,9 @@ public class StudataServiceImpl implements StudataService {
     public void importdata(Student student) {
         sm.importdata(student);
     }
+
+    @Override
+    public List<Student> findStuInfo(String conditionInfo, String condition) {
+        return sm.findStuInfo(conditionInfo,condition);
+    }
 }

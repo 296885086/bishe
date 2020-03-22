@@ -112,7 +112,8 @@ public class TeacherController {
     }
     /*
     * 删除作业*/
-    @GetMapping("/workdelete")
+    @PostMapping("/workdelete")
+    @ResponseBody
     public String workdelete(Homework homework) {
         File file = new File(homework.getFilepath());
         File folder = new File(file.getParent());
@@ -132,7 +133,7 @@ public class TeacherController {
             rs.deleteUploadStudent(String.valueOf(gus.get(i)), homework.getCourse(), homework.getUploadclass());
         }
         rs.workdelete(String.valueOf(homework.getWorkid()));//删除作业信息
-        return "redirect:/teacher/fragment/" + teacherId;
+        return "success";
     }
 
     /*
@@ -149,6 +150,17 @@ public class TeacherController {
         ArrayList al = ss.classlist(teaid);
         m.addAttribute("classlist", al);
         return "teacher/studata";
+    }
+
+    /*
+    *查找学生数据
+     */
+    @PostMapping("/findStuInfo")
+    @ResponseBody
+    public List findStuInfo(@RequestParam String conditionInfo,
+                            @RequestParam String condition){
+        List<Student> studentList = ss.findStuInfo(conditionInfo,condition);
+        return studentList;
     }
 
     //师生交流
@@ -343,7 +355,6 @@ public class TeacherController {
                 row.createCell(3).setCellValue(student.getStuclass());
                 row.createCell(4).setCellValue(student.getStuphone());
                 row.createCell(5).setCellValue(student.getStupassword());
-                row.createCell(7).setCellValue(student.getCourseclass());
                 book.write(fos);
                 fos.close();
             }
@@ -377,6 +388,7 @@ public class TeacherController {
             student.setStuclass(row.getCell(3).getStringCellValue());
             student.setStuphone(row.getCell(4).getStringCellValue());
             student.setStupassword(row.getCell(5).getStringCellValue());
+            student.setTeaid(teacherId);
             studentList.add(student);
             ss.importdata(student);
         }
@@ -395,7 +407,11 @@ public class TeacherController {
     @GetMapping("/stuCourseManager")
     public String stuCourseManager(Model model) {
         List<SelectCourse> selectCourseList = cms.stuCourseManger(teacherId);
+        ArrayList course = wc.courseList(teacherId);
+        List<Course> courseClass = wc.courseClassList(teacherId);
         model.addAttribute("selectCourseList", selectCourseList);
+        model.addAttribute("course", course);//科目
+        model.addAttribute("courseClass", courseClass);//班级
         return "teacher/stuCourseManager";
     }
 
@@ -527,7 +543,7 @@ public class TeacherController {
     }
 
     /*
-* 修改学生课程信息*/
+    * 修改学生课程信息*/
     @PostMapping("/editstucourse")
     @ResponseBody
     public String editstucourse(@RequestParam String coursename,
@@ -535,6 +551,16 @@ public class TeacherController {
                              @RequestParam String selectcourseid){
         cms.editStuCourse(selectcourseid,coursename,courseclass);
         return "success";
+    }
+
+    /*
+    * 查找学生课程信息*/
+    @PostMapping("/findStuCourse")
+    @ResponseBody
+    public List findStuCourse(@RequestParam String course,
+                              @RequestParam String courseClass){
+        List<SelectCourse> selectCourseList = cms.findStuCourse(teacherId,course,courseClass);
+        return selectCourseList;
     }
 }
 

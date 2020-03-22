@@ -25,4 +25,7 @@ public interface CourseManagerMapper {
     public void editStuCourse(@Param("selectcourseid") String selectcourseid,
                            @Param("coursename")String coursename,
                            @Param("courseclass")String courseclass);
+
+    public List findStuCourse( @Param("teaid") String teaid,@Param("coursename")String coursename,
+                              @Param("courseclass")String courseclass);
 }

@@ -55,4 +55,11 @@ public class CourseManagerServiceImpl implements CourseManagerService {
     public void editStuCourse(String selectcourseid, String coursename, String courseclass) {
         courseManagerMapper.editStuCourse(selectcourseid,coursename,courseclass);
     }
+
+    @Override
+    public List findStuCourse(String teaid, String coursename, String courseclass) {
+        return courseManagerMapper.findStuCourse(teaid,coursename,courseclass);
+    }
+
+
 }

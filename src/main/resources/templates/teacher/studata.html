@@ -17,18 +17,18 @@
         <div class="container-fluid">
             <button type="button" class="btn btn-success" data-toggle="modal" data-target="#importModal">导入数据</button>
             <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exportModal">导出数据</button>
-            <div id="findcon" class="btn-group">
-                <select class="form-control">
-                    <option th:value="student">学号</option>
-                    <option th:value="teacher">姓名</option>
-                    <option th:value="admin">班级</option>
+            <div  class="btn-group">
+                <select class="form-control" id="findcon">
+                    <option th:value="stuid">学号</option>
+                    <option th:value="stuname">姓名</option>
+                    <option th:value="stuclass">班级</option>
                 </select>
             </div>
             <div id="findgroup">
                 <div class="input-group">
-                    <input type="text" class="form-control" placeholder="输入查询条件">
+                    <input id="findStuInfoCon" type="text" class="form-control" placeholder="输入查询条件">
                     <span class="input-group-btn">
-						<button class="btn btn-default" type="button">
+						<button class="btn btn-default" type="button" id="findStuInfoBtn">
 							查询
 						</button>
 					</span>
@@ -100,7 +100,7 @@
                 </div><!-- /.modal-content -->
             </div><!-- /.modal-dialog -->
         </div><!-- /.modal -->
-        <table class="table table-striped">
+        <table class="table table-striped" id="stuInfo">
             <caption>学生信息汇总</caption>
             <thead>
             <tr>
@@ -108,7 +108,7 @@
                 <th>姓名</th>
                 <th>性别</th>
                 <th>班别</th>
-                <th>课程名称</th>
+                <th>联系电话</th>
                 <th>删除/修改</th>
             </tr>
             </thead>
@@ -155,6 +155,7 @@
                 function myFunction(value, index, array) {
                     $(".download").append('<div><a class="active" id="' + index + '" href="../../upload/' + value.trim() + '">' + value + '</a></div>');
                 }
+
                 cl = [];
             }
         });
@@ -196,6 +197,36 @@
         }
         return true;
     }
+
+    $("#findStuInfoBtn").click(function () {
+        var conditionInfo = $("#findStuInfoCon").val();
+        var condition = $("#findcon").children('option:selected').val();
+        var fd = new FormData();
+        fd.append("conditionInfo",conditionInfo);
+        fd.append("condition",condition);
+        $.ajax({
+            url: '/teacher/findStuInfo',
+            type: 'POST',
+            enctype: "multipart/form-data",
+            processData: false,
+            contentType: false,
+            data: fd,
+            success: function (data) {
+                $("#stuInfo tbody").empty();
+                data.forEach(eachHomework);
+
+                function eachHomework(value, index, array) {
+                    var stuid = "'" + value.stuid + "'";
+                    var stuname = "'" + value.stuname + "'";
+                    var stuclass = "'" + value.stuclass + "'";
+                    var stuphone = "'" + value.stuphone + "'";
+                    var appendChild = '<tr><td>'+value.stuid +'</td><td>'+ value.stuname +'</td><td>'+ value.stusex +'</td><td>'+ value.stuclass
+                        + '</td><td>'+ value.stuphone +'</td><td><a >删除</a> / <a>修改</a></td></tr>';
+                    $("#stuInfo tbody").append(appendChild);
+                }
+            }
+        });
+    });
 </script>
 </body>
 </html>

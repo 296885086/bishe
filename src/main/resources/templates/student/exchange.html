@@ -456,7 +456,6 @@
     });
     //选择科目
     $('#selectCourse').change(function () {
-        debugger
         $('#selectCourseClass').empty();
         var course = $(this).children('option:selected').val();
         var courseClass = [[${gcc}]];
@@ -487,7 +486,6 @@
     //vue渲染完成后
     //回复显示
     Vue.nextTick(function () {
-        debugger
         for (var i = 0; i < vm.replylist.length; i++) {
             var appendChild = '<div class="replyCt"><div class="replayTit"><span class="hf_name">' + vm.replylist[i].replyname +
                 '</span><span class="hf_time">' + vm.replylist[i].replydate +

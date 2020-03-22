@@ -14,6 +14,8 @@
             display: flex;
             -webkit-align-items: flex-start;
             align-items: flex-start;
+            -webkit-align-items: flex-end;
+            align-items: flex-end;
         }
         .flex-item {
             margin-left: 10px;
@@ -41,6 +43,23 @@
         </div>
         <div class="flex-item">
             <button type="button" class="btn btn-success">导出学生课程</button>
+        </div>
+
+        <div class="flex-item" style="width: 15%">
+            <label for="selectCourse">选择科目</label>
+            <select id="selectCourse" class="form-control" >
+                <option>请选择科目</option>
+                <option th:each="c:${course}" th:text="${c}"></option>
+            </select>
+        </div>
+        <div class="flex-item" style="width: 15%">
+            <label for="selectCourseClass">选择教学班</label>
+            <select id="selectCourseClass" class="form-control">
+                <option>请选教学班</option>
+            </select>
+        </div>
+        <div class="flex-item">
+            <button type="button" id="findStuCourse" class="btn btn-success">查找</button>
         </div>
     </div>
     <div class="coursetable">
@@ -167,20 +186,7 @@
 
 <script th:inline="javascript">
     var selectCourseList = [[${selectCourseList}]];
-    selectCourseList.forEach(myFunction);
-
-    //遍历课程信息
-    function myFunction(value, index, array) {
-        var stuname = "'" + value.stuname + "'";
-        var courseclass = "'" + value.courseclass + "'";
-        var coursename = "'" + value.coursename + "'";
-        var appendChile = '<tr><td>'+
-            value.stuid + '</td><td>'+
-            value.stuname + '</td><td>'+ value.coursename + '</td><td>'+
-            value.courseclass + '</td><td><a onclick="deleteStuCourse('+ value.selectcourseid  + ')">删除</a>  /  <a data-toggle="modal" data-target="#modifyCourse" onclick="goEditStuCourse('+
-            value.stuid+ ','+ value.selectcourseid + ',' + stuname + ',' + coursename + ',' + courseclass +')">修改</a></td></tr>';
-        $('.coursetable tbody').append(appendChile);
-    }
+    selectCourseList.forEach(eachStuSelectCourse);
 
     $("#sureImport").click(function () {
 
@@ -334,6 +340,56 @@
             });
         }
     });
+
+    $('#selectCourse').change(function () {
+        $('#selectCourseClass').empty();
+        var course = $(this).children('option:selected').val();
+        var courseClass = [[${courseClass}]];
+        $('#selectCourseClass').append('<option value="all">全部</option>');
+        courseClass.forEach(myFunction);
+        function myFunction(value, index, array) {
+            if (course === value.coursename) {
+                $('#selectCourseClass').append('<option th:value="' + value.courseclass + '">' + value.courseclass + '</option>');
+            }
+        }
+    });
+
+    //查找学生选课数据
+    $("#findStuCourse").click(function () {
+        let course = $('#selectCourse').children('option:selected').val();
+        let courseClass = $('#selectCourseClass').children('option:selected').val();
+        var fd = new FormData();
+        fd.append("course", course);
+        fd.append("courseClass", courseClass);
+        $.ajax({
+            url: '/teacher/findStuCourse',
+            data: fd,
+            type: 'post',
+            processData: false,
+            contentType: false,
+            success: function (data) {
+                $(".coursetable tbody").empty();
+                console.log(data);
+               data.forEach(eachStuSelectCourse);
+            },
+            error:function (e) {
+                alert('发表失败！');
+            }
+        })
+    });
+
+    //遍历课程信息
+    function eachStuSelectCourse(value, index, array) {
+        var stuname = "'" + value.stuname + "'";
+        var courseclass = "'" + value.courseclass + "'";
+        var coursename = "'" + value.coursename + "'";
+        var appendChile = '<tr><td>'+
+            value.stuid + '</td><td>'+
+            value.stuname + '</td><td>'+ value.coursename + '</td><td>'+
+            value.courseclass + '</td><td><a onclick="deleteStuCourse('+ value.selectcourseid  + ')">删除</a>  /  <a data-toggle="modal" data-target="#modifyCourse" onclick="goEditStuCourse('+
+            value.stuid+ ','+ value.selectcourseid + ',' + stuname + ',' + coursename + ',' + courseclass +')">修改</a></td></tr>';
+        $('.coursetable tbody').append(appendChile);
+    }
 </script>
 </body>
 </html>

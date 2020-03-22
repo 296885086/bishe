@@ -63,7 +63,6 @@
             <th>发布班级</th>
             <th>发布时间</th>
             <th>截止上交时间</th>
-            <th>上交情况</th>
             <th>修改/删除</th>
         </tr>
         </thead>
@@ -74,9 +73,9 @@
             <td th:text="${c.uploadclass}"> </td>
             <td th:text="${c.uploaddate}"></td>
             <td th:text="${c.enddate}"></td>
-            <td>123</td>
-            <td><a href="#" class="update" data-toggle="modal" data-target="#myModal">修改</a> /
-                <a th:href="@{/teacher/workdelete(workid=${c.workid},filepath=${c.filepath},course=${c.course},uploadclass=${c.uploadclass})}">删除</a></td>
+            <td><a th:onclick="deleteWork([[${c.workid}]],[[${c.filepath}]],[[${c.course}]],[[${c.uploadclass}]]);">删除</a> /
+                <a href="#" class="update" data-toggle="modal" data-target="#myModal">修改</a>
+                </td>
         </tr>
         </tbody>
     </table>
@@ -128,12 +127,11 @@
         startDate: new Date(),
     });
     console.log([[${page}]]);
+
     $('.update').click(function () {
         var id = $(this).parents("td");
         var enddate = id.prev().prev();
-        console.log(enddate.text());
         var uploaddate = enddate.prev();
-        console.log(uploaddate.text());
         $('.modal-body #uploaddate').attr('value',uploaddate.text());
         $('.modal-body #enddate').attr('value',enddate.text());
     });
@@ -150,6 +148,7 @@
             }
         }
     });
+
     $('#selectWorkCourse').change(function () {
         $('#selectWorkCourseClass').empty();
         var course = $(this).children('option:selected').val();
@@ -194,8 +193,13 @@
                 data.forEach(eachHomework);
 
                 function eachHomework(value, index, array) {
+                    var workid = "'" + value.workid + "'";
+                    var uploadclass = "'" + value.uploadclass + "'";
+                    var filepath = "'" + value.filepath + "'";
+                    var course = "'" + value.course + "'";
                     var appendChild = '<tr><td>'+value.workname +'</td><td>'+value.course +'</td><td>'+value.uploadclass +'</td><td>'+value.uploaddate
-                        + '</td><td>'+value.uploaddate +'</td><td>'+value.enddate +'</td><td><a>删除</a> / <a>修改</a></td></tr>';
+                        + '</td><td>'+value.enddate +'</td><td><a onclick=" deleteWork('+ workid + ',' + filepath
+                        + ',' + course + ','+ uploadclass + ')">删除</a> / <a class="update" data-toggle="modal" data-target="#myModal">修改</a></td></tr>';
                     $("#homeworkInfo tbody").append(appendChild)
                 }
             },
@@ -205,6 +209,33 @@
         })
     });
 
+    function deleteWork(workid,filepath,course,uploadclass) {
+        var fd = new FormData();
+        fd.append("workid",workid);
+        fd.append("filepath",filepath);
+        fd.append("course",course);
+        fd.append("uploadclass",uploadclass);
+        var r = confirm("确定修改？");
+        if (r == true){
+            $.ajax({
+                url:'/teacher/workdelete',
+                enctype: "multipart/form-data",
+                type:'POST',
+                processData: false,
+                contentType: false,
+                data: fd,
+                success:function(data){
+                    if(data == "success"){
+                        alert("删除成功！");
+                        location.reload();
+                    }
+                },
+                error:function (e) {
+                    alert('保存失败！！');
+                }
+            });
+        }
+    }
 
 </script>
 </body>

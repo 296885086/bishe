@@ -14,4 +14,5 @@ public interface CourseManagerService {
     public void deleteStuCourse( String selectcourseid);
     public void editCourse( String courseid,String coursename,String courseclass);
     public void editStuCourse( String selectcourseid,String coursename,String courseclass);
+    public List findStuCourse(String teaid,String coursename,String courseclass);
 }

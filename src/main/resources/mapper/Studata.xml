@@ -5,7 +5,7 @@
 
 <mapper namespace="com.ljq.bishe.mapper.StudataMapper">
     <select id="stulist" resultType="Student">
-       select * from student;
+       select * from student WHERE teaid=#{teaid};
     </select>
     <select id="classlist" resultType="string">
          select DISTINCT  c.courseclass from student s,selectcourse sc,course c where
@@ -15,6 +15,18 @@
         select s.* from student s,selectcourse sC where s.stuid=sC.stuid and sC.courseclass=#{courseclass};
     </select>
     <insert id="importdata" parameterType="Student">
-        INSERT INTO student VALUES (#{stuid},#{stuname},#{stusex},#{stuclass},#{stuphone},#{stupassword});
+        INSERT INTO student (stuid,stuname,stusex,stuclass,stuphone,stupassword,teaid) VALUES (#{stuid},#{stuname},#{stusex},#{stuclass},#{stuphone},#{stupassword},#{teaid});
     </insert>
+    <select id="findStuInfo" resultType="Student" parameterType="String">
+        select * from student
+        <if test="condition == 'stuid'">
+            where stuid = #{conditionInfo}
+        </if>
+        <if test="condition == 'stuname'">
+            where stuname = #{conditionInfo}
+        </if>
+        <if test="condition == 'stuclass'">
+            where stuclass = #{conditionInfo}
+        </if>
+    </select>
 </mapper>

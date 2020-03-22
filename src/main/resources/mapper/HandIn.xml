@@ -4,10 +4,10 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.ljq.bishe.mapper.HandInMapper">
-    <select id="getLearningCourse" resultType="Student">
+    <select id="getLearningCourse" resultType="Course">
         select DISTINCT coursename from selectcourse where stuid=#{stuid};
     </select>
-    <select id="getCourseClass" resultType="Student">
+    <select id="getCourseClass" resultType="Course">
         select coursename,courseclass from selectcourse where stuid=#{stuid};
     </select>
     <select id="workInfo" resultType="Homework">

@@ -6,7 +6,7 @@
 <mapper namespace="com.ljq.bishe.mapper.ExchangeMapper">
     <select id="messageList" resultType="Message">
          select m.* from message m,course c where c.courseid=m.courseid and c.courseid in
-         (select c.courseid from course c,selectcourse sc where sc.courseclass=c.courseclass and c.coursename=sc.coursename and sc.stuid=#{stuid});
+         (select c.courseid from course c,selectcourse sc where sc.courseclass=c.courseclass and c.coursename=sc.coursename and c.teaid=sc.teaid  and sc.stuid=#{stuid});
     </select>
     <select id="replyList" resultType="Reply">
         select * from reply;
@@ -20,7 +20,7 @@
     <insert id="teaSendMessage" parameterType="String">
         insert into message (leaveid,leavename,messagebody,leavedate,messagetype,courseid,totalreply,praisenumber) VALUES
         (#{leaveid},#{leavename},#{messagebody},#{leavedate},#{messagetype},
-        (SELECT courseid from course where coursename=#{course} and courseclass=#{courseClass}),0,0)
+        (SELECT courseid from course where coursename=#{course} and courseclass=#{courseClass} and teaid=#{leaveid}),0,0)
     </insert>
     <insert id="sendMessage" parameterType="String">
       insert into message (leaveid,leavename,messagebody,leavedate,messagetype,courseid,totalreply,praisenumber) VALUES
