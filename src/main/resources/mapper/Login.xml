@@ -10,5 +10,8 @@
     <select id="gettea" resultType="Teacher">
         SELECT * FROM teacher WHERE teaname = #{teaname}
     </select>
-
+    <insert id="register" parameterType="String">
+        INSERT INTO teacher (teaid,teaname,teapassword,teasex,teaphone) VALUES
+         (#{teaid},#{truename},#{password},#{sex},#{teaphone})
+    </insert>
 </mapper>

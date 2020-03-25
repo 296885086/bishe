@@ -9,6 +9,10 @@ import java.util.List;
 @Mapper
 public interface HandInMapper {
     public List<Homework> workInfo(String stuid);
+    public List<Homework> findHomeworkList(@Param("stuid") String stuid,
+                                           @Param("course")String course,
+                                           @Param("courseClass") String courseClass,
+                                           @Param("homeworkStatus") String homeworkStatus);
     public List getLearningCourse(String stuid);
     public List getCourseClass(String stuid);
     public void handIn(@Param("stuid") String stuid,

@@ -17,6 +17,11 @@ public class HandInServiceImpl implements HandInService{
     }
 
     @Override
+    public List<Homework> findHomeworkList(String stuid, String course, String courseClass, String homeworkStatus) {
+        return hip.findHomeworkList(stuid,course,courseClass,homeworkStatus);
+    }
+
+    @Override
     public List getLearningCourse(String stuid) {
         return hip.getLearningCourse(stuid);
     }

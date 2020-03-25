@@ -7,20 +7,26 @@
     <meta charset="UTF-8">
     <title>Title</title>
     <style>
-        .flex-container {
+         .flex-container{
             position: relative;
             top: 19px;
             display: -webkit-flex;
             display: flex;
             -webkit-align-items: flex-start;
             align-items: flex-start;
-            border-bottom-style: ridge;
-            border-bottom-width: 1px;
-            height: 98px;
         }
+         .handin{
+             border-bottom-style: ridge;
+             border-bottom-width: 1px;
+             height: 98px;
+         }
 
         .flex-item {
             margin-left: 10px;
+        }
+        .find{
+            margin-top: 10px;
+            margin-bottom: 30px;
         }
     </style>
 </head>
@@ -28,7 +34,7 @@
 <div class="container">
     <div class="row">
         <div class="col-sm-12">
-                <div class="form-group flex-container">
+                <div class="form-group handin flex-container ">
                     <div class="flex-item" style="width: 13%">
                         <label for="selectCourse">选择科目</label>
                         <select  id="selectCourse" class="form-control">
@@ -55,12 +61,36 @@
                     <div class="flex-item" style="position: relative;top: 15px;right: 10px">
                         <button type="button" class="btn btn-info" id="handIn">上交</button>
                     </div>
-
                 </div>
         </div>
         <div class="col-sm-12" id="workInfo">
+            <div class="form-group find flex-container">
+                <div class="flex-item" style="width: 13%">
+                    <label for="selectFindCourse">选择科目</label>
+                    <select  id="selectFindCourse" class="form-control">
+                        <option>请选择科目</option>
+                        <option th:each="glc:${glc}" th:text="${glc.coursename}"></option>
+                    </select>
+                </div>
+                <div class="flex-item" style="width: 13%">
+                    <label for="selectFindCourseClass">选择教学班</label>
+                    <select  id="selectFindCourseClass" class="form-control">
+                        <option>请选择班级</option>
+                    </select>
+                </div>
+                <div  class="form-group flex-item"  >
+                    <label for="handInStatus">作业状态</label>
+                    <select class="form-control" id="handInStatus" >
+                        <option>全部</option>
+                        <option>已上交</option>
+                        <option>未上交</option>
+                    </select>
+                </div>
+                <div class="flex-item" style="position: relative;top: 25px;left: 20px;">
+                    <button type="button" class="btn btn-info" id="findHandIn">查找</button>
+                </div>
+            </div>
             <table class="table table-striped">
-                <caption>作业信息列表</caption>
                 <thead>
                 <tr>
                     <th>作业名称</th>
@@ -73,6 +103,7 @@
                 </tr>
                 </thead>
                 <tbody>
+
                 </tbody>
             </table>
         </div>
@@ -83,21 +114,7 @@
     console.log(hl);
     hl.forEach(myFunction1);
 
-    //遍历作业信息
-    function myFunction1(value, index, array) {
-        var path = value.filepath;
-        var index = path.lastIndexOf("\\");
-        var workAllName=path.slice((index+1));
-        console.log(workAllName);
-        $('#workInfo tbody').append('<tr>' +
-            '<td>' + value.workname + '</td>' +
-            '<td>' + value.course + '</td>' +
-            '<td>' + value.uploadclass + '</td>' +
-            '<td>' + value.uploaddate + '</td>' +
-            '<td>' + value.enddate + '</td>' +
-            '<td>' + value.state + '</td>' +
-            '<td><a href="../../homework/'+  value.teaid + '/' + value.course+'/'  + value.uploadclass+'/'+ workAllName +'">下载</a></td></tr>');
-    }
+
 
     //选择科目
     $('#selectCourse').change(function () {
@@ -127,6 +144,21 @@
             }
         }
     });
+
+    //查找作业选择科目
+    $('#selectFindCourse').change(function () {
+        $('#selectFindCourseClass').empty();
+        var course = $(this).children('option:selected').val();
+        var courseClass = [[${gcc}]];
+        $('#selectFindCourseClass').append('<option value="all">全部</option>');
+        courseClass.forEach(myFunction);
+        function myFunction(value, index, array) {
+            if (course === value.coursename) {
+                $('#selectFindCourseClass').append('<option value="' + value.courseclass + '">' + value.courseclass + '</option>');
+            }
+        }
+    });
+
 
     //上交作业
     $('#handIn').click(function () {
@@ -158,6 +190,52 @@
         })
     });
 
+    //查找作业
+    $('#findHandIn').click(function () {
+        var course = $('#selectFindCourse').children('option:selected').val();
+        var courseClass = $('#selectFindCourseClass').children('option:selected').val();
+        var homeworkState = $('#handInStatus').children('option:selected').val();
+        var fd = new FormData();
+        fd.append("course",course);
+        fd.append("courseClass",courseClass);
+        fd.append("homeworkState",homeworkState);
+        $.ajax({
+            url:'/student/findHandIn',
+            type:'POST',
+            enctype: "multipart/form-data",
+            processData: false,
+            contentType: false,
+            data: fd,
+            success:function(data){
+                console.log(data);
+                if (data.length != 0){
+                    $('#workInfo tbody').empty();
+                    data.forEach(myFunction1);
+                }else {
+                    alert("查到到0条数据！");
+                }
+            },error:function (e) {
+                alert('上交失败！！');
+            }
+        })
+    });
+
+    //遍历作业信息
+    function myFunction1(value, index, array) {
+        debugger
+        var path = value.filepath;
+        var index = path.lastIndexOf("\\");
+        var workAllName=path.slice((index+1));
+        console.log(workAllName);
+        $('#workInfo tbody').append('<tr>' +
+            '<td>' + value.workname + '</td>' +
+            '<td>' + value.course + '</td>' +
+            '<td>' + value.uploadclass + '</td>' +
+            '<td>' + value.uploaddate + '</td>' +
+            '<td>' + value.enddate + '</td>' +
+            '<td>' + value.state + '</td>' +
+            '<td><a href="../../homework/'+  value.teaid + '/' + value.course+'/'  + value.uploadclass+'/'+ workAllName +'">下载</a></td></tr>');
+    }
 </script>
 </body>
 </html>

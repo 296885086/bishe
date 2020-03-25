@@ -7,6 +7,7 @@ import java.util.List;
 
 public interface HandInService {
     public List<Homework> workInfo(String stuid);
+    public List<Homework> findHomeworkList(String stuid,String course, String courseClass, String homeworkStatus);
     public List getLearningCourse(String stuid);
     public List getCourseClass(String stuid);
     public void handIn(String stuid, String course, String courseClass, String workname,String uploadWorkName);

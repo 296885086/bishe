@@ -18,4 +18,10 @@ public class LoginServiceImpl implements LoginService{
     public Student getstu(String stuname) {
         return loginMapper.getstu(stuname);
     }
+
+    @Override
+    public void register(String teaid, String truename, String password, String sex, String teaphone) {
+        loginMapper.register(teaid,truename,password,sex,teaphone);
+    }
+
 }

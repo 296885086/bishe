@@ -83,4 +83,22 @@ public class LoginController {
         return mv;
     }
 
+    /*
+* 注册页面*/
+    @GetMapping("/register")
+    public ModelAndView register(Model model) {
+        ModelAndView mv = new ModelAndView("register");
+        return mv;
+    }
+
+    @PostMapping("/tearegister")
+    @ResponseBody
+    public String tearegister(@RequestParam String truename,
+                              @RequestParam String password,
+                              @RequestParam String teaPhone,
+                              @RequestParam String teaid,
+                              @RequestParam String sex){
+        loginService.register(teaid,truename,password,sex,teaPhone);
+        return "success";
+    }
 }

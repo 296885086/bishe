@@ -44,6 +44,11 @@
     border-radius: 5px;
     background-color: lawngreen;
 }
+#register button{
+    position: relative;
+    right: 38px;
+}
+
 #loginbtn{
     margin-left: 20px;
 }
@@ -53,16 +58,10 @@
 }
 #logintype{
     position: absolute;
-    margin-left: 114px;
-}
-p{
-    color: red;
+    margin-left: 114px;}
+#registersex{
     position: absolute;
-    top: 47px;
-    left: 88px;
-    width: 200px;
-}
-
+    margin-left: 114px;}
 .form-control{
     width: 200px;
 }

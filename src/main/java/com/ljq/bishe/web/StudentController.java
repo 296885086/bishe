@@ -54,6 +54,19 @@ public class StudentController {
         model.addAttribute("gwn",workNameList);
         return "student/handIn";
     }
+
+    /*
+* 查找需要完成的作业*/
+    @PostMapping("/findHandIn")
+    @ResponseBody
+    public List findHandIn(@RequestParam("course") String course,
+                           @RequestParam("courseClass") String courseClass,
+                           @RequestParam("homeworkState") String homeworkState){
+        List findHomeworkList = handInService.findHomeworkList(stuId,course,courseClass,homeworkState);
+        return findHomeworkList;
+    }
+
+
     @PostMapping("/handInFile")
     @ResponseBody
     public String handInFile(@RequestParam("course") String course,
@@ -163,16 +176,21 @@ public class StudentController {
         return "student/myData";
     }
 
+
+
+
     /*
     * 查找学生作业*/
     @PostMapping("/findMyScore")
     @ResponseBody
     public List findMyScore(@RequestParam("course") String course,
                               @RequestParam("courseClass") String courseClass,
-                              @RequestParam("homeworkState") String homeworkState,Model model){
+                              @RequestParam("homeworkState") String homeworkState){
         List<Score> findMyDataList = myDataService.findMyData(stuId,course,courseClass,homeworkState);
         return findMyDataList;
     }
+
+
 
     @PostMapping("/saveQuestion")
     @ResponseBody

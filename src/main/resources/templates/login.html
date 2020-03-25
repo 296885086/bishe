@@ -36,6 +36,7 @@
                     <option th:value="admin">管理员</option>
                 </select>
         </div>
+
         <div class="form-group">
             <div class="col-sm-offset-2 col-sm-10"  style="margin-left: 99px;">
                 <div class="checkbox">
@@ -49,7 +50,10 @@
         <div class="form-group">
             <div class="col-sm-offset-2 col-sm-10" id="loginbtn">
                 <button id="fat-btn" class="btn btn-primary" data-loading-text="登录中..."type="submit"> 登录</button>
-                <p th:text="*{msg}"></p>
+                <div style="position: relative;top: 10px;left: 100px;">
+                    <a id="register"  href="login/register">老师注册</a>
+                    <p th:text="*{msg}" style="color: red;"></p></div>
+
             </div>
         </div>
     </form>
