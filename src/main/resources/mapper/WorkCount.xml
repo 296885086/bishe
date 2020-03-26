@@ -22,4 +22,9 @@
       where sl.courseid = c.courseid and stu.stuid=sl.stuid and c.coursename=#{coursename} and c.teaid=#{teaid};
     </if>
   </select>
+
+  <select id="allWorkData" parameterType="String" resultType="ScoreList">
+    select s.state,sc.coursename from score s,selectcourse sc where sc.selectcourseid=s.selectcourseid and sc
+    .teaid=#{teaid};
+  </select>
 </mapper>

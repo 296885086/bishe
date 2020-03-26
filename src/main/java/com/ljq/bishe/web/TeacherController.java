@@ -95,9 +95,9 @@ public class TeacherController {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        List gus = rs.getUploadStudent(course, uploadClass);
+        List gus = rs.getUploadStudent(course, uploadClass,teacherId);
         for (int i = 0; i < gus.size(); i++) {
-            rs.addWork(String.valueOf(gus.get(i)), course, destFileName, uploadClass);//给学生添加作业信息
+            rs.addWork(String.valueOf(gus.get(i)), course, destFileName, uploadClass,teacherId);//给学生添加作业信息
         }
         /*rs.addWork(destFileName);*///给学生添加作业信息
         return new ModelAndView("redirect:/teacher/fragment/" + teacherId);
@@ -127,7 +127,7 @@ public class TeacherController {
         if (fileList1.length == 0) {
             mainFolder.delete();//删除文件
         }
-        List gus = rs.getUploadStudent(homework.getCourse(), homework.getUploadclass());
+        List gus = rs.getUploadStudent(homework.getCourse(), homework.getUploadclass(),teacherId);
         for (int i = 0; i < gus.size(); i++) {
             //删除学生作业信息
             rs.deleteUploadStudent(String.valueOf(gus.get(i)), homework.getCourse(), homework.getUploadclass());
@@ -233,9 +233,11 @@ public class TeacherController {
     public String workcount(@PathVariable("teaid") String teaid, Model model) {
         ArrayList course = wc.courseList(teaid);
         List<Course> courseClass = wc.courseClassList(teaid);
+        List<Score> allWorkData = wc.allWorkData(teaid);
         model.addAttribute("course", course);//科目
         model.addAttribute("courseClass", courseClass);//班级
         model.addAttribute("teaid", teaid);
+        model.addAttribute("allWorkData", allWorkData);
         return "teacher/workcount";
     }
 

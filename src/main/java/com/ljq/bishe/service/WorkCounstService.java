@@ -13,4 +13,5 @@ public interface WorkCounstService {
     public ArrayList<Course> courseClassList(String teaid);
     public int columnCount();
     public List<ScoreList> scoreList(String teaid,String course,String courseClass);
+    public List allWorkData(String teaid);
 }

@@ -10,8 +10,8 @@ public interface ReleaseService {
     public int workinsert(Homework homework);
     public List<Homework> worklist(String teaid);
     public void workdelete(String workid);
-    public void addWork(String stuid,String course,String filePath,String uploadClass);
-    public List getUploadStudent(String course, String courseClass);
+    public void addWork(String stuid,String course,String filePath,String uploadClass,String teaid);
+    public List getUploadStudent(String course, String courseClass,String teaid);
     public void deleteUploadStudent(String stuid,String course,String uploadClass);
 
     public List<Homework> findWork(String course, String courseClass,String teaid);

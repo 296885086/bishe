@@ -8,41 +8,62 @@
     <meta charset="UTF-8">
     <title>Title</title>
     <style>
-        .chart{
+        .flex-container{
             position: relative;
-            left: 50px;
-            width: 550px; height: 400px; margin: 0 auto
+            top: 19px;
+            display: -webkit-flex;
+            display: flex;
+            -webkit-align-items: flex-start;
+            align-items: flex-start;
         }
-        #chartform{
-            position: fixed;
-            width: 180px;
+        .form-group {
+            margin-left: 20px;
         }
         .noupload{
-            width: 600px;
+            top: 31px;
             position: relative;
-            left: 280px;
+            width: 90%;
+            margin-left: 5%;
+        }
+        .charts{
+            width: 90%;
+            left: 4%;
+        }
+        .form{
+            margin-left: 6%;
+        }
+        .chart{
+            width: 48%;
         }
     </style>
 </head>
 
 <body>
-<div class="container">
-    <form role="form">
-        <div id="chartform" class="form-group">
+<div class="">
+    <div class="flex-container form">
+        <div class="form-group flex-item">
             <label for="name">选择科目：</label>
             <select id="selectCourse" class="form-control">
                 <option>请选择</option>
                 <option th:each="wc:${course}" th:text="${wc}"></option>
             </select>
+        </div>
+        <div class="form-group flex-item">
             <label for="name">选择教学班：</label>
             <select id="selectCourseClass" class="form-control">
                 <option>请选择</option>
             </select>
+
+        </div>
+        <div class="form-group flex-item" style="position: relative;top: 20px;">
             <button id="selectclass" type="button" class="btn btn-primary">确定</button>
         </div>
-    </form>
-    <div class="chart" id="container1"></div>
-    <div class="chart" id="container2"></div>
+    </div>
+    <div class="flex-container charts">
+        <div class=" flex-item chart" id="container1"></div>
+        <div class=" flex-item chart" id="container2"></div>
+    </div>
+
     <div class="table-responsive noupload">
         <table class="table">
             <caption>未上交名单</caption>
@@ -62,48 +83,90 @@
 <script language="JavaScript" type="text/javascript" th:inline="javascript">
 
     $(document).ready(function () {
-        draw();
+        var allWorkData = [[${allWorkData}]];
+        var courseList = [[${course}]];
+        var handInData = [];
+        var noHandInData = [];
+        var handIn = [];
+        var noHandIn = [];
+        var noHandInCount = 0;
+        var handInCount = 0;
+        var stripSeriesAll = [];
+        var sactorSeriesAll=[];
+        console.log(allWorkData);
+       for (var j = 0;j < courseList.length;j++){
+            for (var i = 0;i<allWorkData.length;i++) {
+                if (courseList[j] == allWorkData[i].coursename) {
+                    if (allWorkData[i].state == "已上交") handInCount++ ;
+                    else noHandInCount++;
+                }
+            }
+            handInData.push(handInCount);
+            noHandInData.push(noHandInCount);
+
+           var num = new Number(handInCount/(handInCount + noHandInCount) * 100);
+           sactorSeriesAll.push([courseList[j],parseFloat(num.toFixed(2))]);
+           handInCount = 0;
+           noHandInCount = 0;
+        }
+        stripSeriesAll.push({name: "已上交",data:handInData},{name: "未上交",data:noHandInData});
+        console.log(sactorSeriesAll);
+        drawStrip(courseList,stripSeriesAll);
+        drawSactor(sactorSeriesAll);
     });
 
-    function draw() {
+    function drawStrip(courseList,stripSeriesAll) {
         var chart = {
-            type: 'column'
+            type: 'bar'
         };
         var title = {
-            text: name
+            text: 'Historic World Population by Region'
         };
         var subtitle = {
-            text: '作业上交数量'
+            text: 'Source: Wikipedia.org'
         };
         var xAxis = {
-            categories: x,
-            crosshair: true
-        }
+            categories: courseList,
+            title: {
+                text: null
+            }
+        };
         var yAxis = {
             min: 0,
             title: {
-                text: '作业数量 (份)'
+                text: 'Population (millions)',
+                align: 'high'
+            },
+            labels: {
+                overflow: 'justify'
             }
         };
         var tooltip = {
-            headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
-            pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
-            '<td style="padding:0"><b>{point.y:.1f} 份</b></td></tr>',
-            footerFormat: '</table>',
-            shared: true,
-            useHTML: true
+            valueSuffix: ' millions'
         };
         var plotOptions = {
-            column: {
-                pointPadding: 0.2,
-                borderWidth: 0
+            bar: {
+                dataLabels: {
+                    enabled: true
+                }
             }
+        };
+        var legend = {
+            layout: 'vertical',
+            align: 'right',
+            verticalAlign: 'top',
+            x: -40,
+            y: 100,
+            floating: true,
+            borderWidth: 1,
+            backgroundColor: ((Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'),
+            shadow: true
         };
         var credits = {
             enabled: false
         };
 
-        var series = con;
+        var series= stripSeriesAll;
 
         var json = {};
         json.chart = chart;
@@ -114,8 +177,58 @@
         json.yAxis = yAxis;
         json.series = series;
         json.plotOptions = plotOptions;
+        json.legend = legend;
         json.credits = credits;
         $('#container1').highcharts(json);
+    }
+    function drawSactor(sactorSeriesAll){
+        var chart = {
+            plotBackgroundColor: null,
+            plotBorderWidth: null,
+            plotShadow: false
+        };
+        var title = {
+            text: '作业上交率'
+        };
+        var tooltip = {
+            pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+        };
+        var plotOptions = {
+            pie: {
+                allowPointSelect: true,
+                cursor: 'pointer',
+                dataLabels: {
+                    enabled: true,
+                    format: '<b>{point.name}</b>: {point.percentage:.1f} %',
+                    style: {
+                        color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+                    }
+                }
+            }
+        };
+        var series= [{
+            type: 'pie',
+            name: '作业上交率比重',
+            data: sactorSeriesAll
+        }];
+        // Radialize the colors
+        Highcharts.getOptions().colors = Highcharts.map(Highcharts.getOptions().colors, function (color) {
+            return {
+                radialGradient: { cx: 0.5, cy: 0.3, r: 0.7 },
+                stops: [
+                    [0, color],
+                    [1, Highcharts.Color(color).brighten(-0.3).get('rgb')] // darken
+                ]
+            };
+        });
+
+        var json = {};
+        json.chart = chart;
+        json.title = title;
+        json.tooltip = tooltip;
+        json.series = series;
+        json.plotOptions = plotOptions;
+        $('#container2').highcharts(json);
     }
 
     $('#selectCourse').change(function () {
@@ -150,7 +263,8 @@
             },
             dataType: 'json',
             success: function (data) {
-                console.log(data);
+                debugger
+/*                console.log(data);
                 var arrScore = [];//存放班级对应的成绩
 
                 //把成绩列转成数组
@@ -211,61 +325,13 @@
                 console.log(con);
                 name = data[1];//设置标题
                 draw();
-                x = [];
+                x = [];*/
 
             }
         });
     });
 </script>
 <script language="JavaScript">
-    $(document).ready(function() {
-        var chart = {
-            plotBackgroundColor: null,
-            plotBorderWidth: null,
-            plotShadow: false
-        };
-        var title = {
-            text: 'Browser market shares at a specific website, 2014'
-        };
-        var tooltip = {
-            pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
-        };
-        var plotOptions = {
-            pie: {
-                allowPointSelect: true,
-                cursor: 'pointer',
-                dataLabels: {
-                    enabled: false
-                },
-                showInLegend: true
-            }
-        };
-        var series= [{
-            type: 'pie',
-            name: 'Browser share',
-            data: [
-                ['Firefox',   45.0],
-                ['IE',       26.8],
-                {
-                    name: 'Chrome',
-                    y: 12.8,
-                    sliced: true,
-                    selected: true
-                },
-                ['Safari',    8.5],
-                ['Opera',     6.2],
-                ['Others',   0.7]
-            ]
-        }];
-
-        var json = {};
-        json.chart = chart;
-        json.title = title;
-        json.tooltip = tooltip;
-        json.series = series;
-        json.plotOptions = plotOptions;
-        $('#container2').highcharts(json);
-    });
 </script>
 </body>
 </html>

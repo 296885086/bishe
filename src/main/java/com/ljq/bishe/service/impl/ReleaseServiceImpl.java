@@ -34,13 +34,13 @@ public class ReleaseServiceImpl implements ReleaseService {
     }
 
     @Override
-    public void addWork(String stuid, String course, String filePath,String uploadClass) {
-            releaseMapper.addWork(stuid,course,filePath,uploadClass);
+    public void addWork(String stuid, String course, String filePath,String uploadClass,String teaid) {
+            releaseMapper.addWork(stuid,course,filePath,uploadClass,teaid);
     }
 
     @Override
-    public List getUploadStudent(String course, String courseClass) {
-        return releaseMapper.getUploadStudent(course,courseClass);
+    public List getUploadStudent(String course, String courseClass,String teaid) {
+        return releaseMapper.getUploadStudent(course,courseClass,teaid);
     }
 
     @Override

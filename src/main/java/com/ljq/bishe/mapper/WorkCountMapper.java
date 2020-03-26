@@ -16,4 +16,5 @@ public interface WorkCountMapper {
     public ArrayList<Course> courseClassList(String teaid);
     public int columnCount();
     public List<ScoreList> scoreList(@Param("teaid")String teaid, @Param("coursename")String coursename,@Param("courseclass") String courseclass);
+    public List allWorkData(String teaid);
 }

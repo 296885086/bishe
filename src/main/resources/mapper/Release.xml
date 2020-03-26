@@ -17,7 +17,7 @@
         delete from homework where workid=#{workid};
     </delete>
     <select id="getUploadStudent" resultType="String">
-        select stuid from selectcourse where coursename=#{course} and courseclass = #{courseClass};
+        select stuid from selectcourse where coursename=#{course} and courseclass = #{courseClass} and teaid = #{teaid};
     </select>
     <delete id="deleteUploadStudent">
         delete from score where workid in (select workid from homework WHERE course=#{course} and uploadclass=#{uploadClass}) and stuid=#{stuid};
@@ -25,7 +25,7 @@
     <insert id="addWork" parameterType="String">
         insert into score(stuid,score,workid,state,selectcourseid) values (#{stuid},0,(select workid from homework WHERE course
          =#{course} and uploadclass=#{uploadClass} and filepath=#{filePath}),'未上交',(select selectcourseid from selectcourse where stuid=#{stuid}
-         and coursename=#{course} and courseclass=#{uploadClass}));
+         and coursename=#{course} and courseclass=#{uploadClass} and teaid=#{teaid}));
     </insert>
     
     <select id="findWork" parameterType="String" resultType="Homework">
