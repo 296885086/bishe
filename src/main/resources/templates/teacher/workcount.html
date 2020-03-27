@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:v-on="http://www.w3.org/1999/xhtml">
 <head>
-    <script type="text/javascript" src="/js/jquery.min.css" th:src="@{/js/jquery.min.js}"></script>
-    <script type="text/javascript" src="/js/bootstrap.min.css" th:src="@{/js/bootstrap.min.js}"></script>
+    <script type="text/javascript" src="/js/jquery.min.js" th:src="@{/js/jquery.min.js}"></script>
+    <script type="text/javascript" src="/js/bootstrap.min.js" th:src="@{/js/bootstrap.min.js}"></script>
     <script type="text/javascript" src="/js/highcharts.js" th:src="@{/js/highcharts.js}"></script>
     <link rel="stylesheet" href="/webapp/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}">
     <meta charset="UTF-8">
@@ -87,13 +87,10 @@
         var courseList = [[${course}]];
         var handInData = [];
         var noHandInData = [];
-        var handIn = [];
-        var noHandIn = [];
         var noHandInCount = 0;
         var handInCount = 0;
         var stripSeriesAll = [];
         var sactorSeriesAll=[];
-        console.log(allWorkData);
        for (var j = 0;j < courseList.length;j++){
             for (var i = 0;i<allWorkData.length;i++) {
                 if (courseList[j] == allWorkData[i].coursename) {
@@ -110,11 +107,77 @@
            noHandInCount = 0;
         }
         stripSeriesAll.push({name: "已上交",data:handInData},{name: "未上交",data:noHandInData});
-        console.log(sactorSeriesAll);
         drawStrip(courseList,stripSeriesAll);
         drawSactor(sactorSeriesAll);
     });
 
+    $('#selectCourse').change(function () {
+        $('#selectCourseClass').empty();
+        var course = $(this).children('option:selected').val();
+        var courseClass = [[${courseClass}]];
+        $('#selectCourseClass').append('<option value="all">全部</option>');
+        courseClass.forEach(myFunction);
+
+        function myFunction(value, index, array) {
+            if (course === value.coursename) {
+                $('#selectCourseClass').append('<option value="' + value.courseclass + '">' + value.courseclass + '</option>');
+            }
+        }
+    });
+
+    $('#selectclass').click(function () {
+        var course = $('#selectCourse').children('option:selected').val();
+        var courseClass = $('#selectCourseClass').children('option:selected').val();
+        var teaid = [[${teaid}]];
+        $(".noupload table tbody").empty();
+        $.ajax({
+            url: '/teacher/selectclass',
+            type: 'POST',
+            data: {
+                'course': course,
+                'courseClass': courseClass,
+                'teaid': teaid
+            },
+            dataType: 'json',
+            success: function (data) {
+                if (courseClass=="all"){
+                    console.log(data);
+                    var classList=[];
+                    var temp;
+                    for(var i =0;i < data.length;i++){
+                            classList.push(data[i].courseclass);
+                    }
+                    classList = Array.from(new Set(classList))
+                    let handInData = [];
+                    let noHandInData = [];
+                    let noHandInCount = 0;
+                    let handInCount = 0;
+                    let stripSeriesAll = [];
+                    let sactorSeriesAll=[];
+                    for (var j = 0;j < classList.length;j++){
+                        for (var i = 0;i<data.length;i++) {
+                            if (classList[j] == data[i].courseclass) {
+                                if (data[i].state == "已上交") handInCount++ ;
+                                else noHandInCount++;
+                            }
+                        }
+                        handInData.push(handInCount);
+                        noHandInData.push(noHandInCount);
+                        var num = new Number(handInCount/(handInCount + noHandInCount) * 100);
+                        sactorSeriesAll.push([classList[j],parseFloat(num.toFixed(2))]);
+                        handInCount = 0;
+                        noHandInCount = 0;
+                    }
+                    stripSeriesAll.push({name: "已上交",data:handInData},{name: "未上交",data:noHandInData});
+                    drawStrip(classList,stripSeriesAll);
+                    drawSactor(sactorSeriesAll);
+                }else {
+                    console.log(data);
+                }
+
+            }
+        });
+    });
     function drawStrip(courseList,stripSeriesAll) {
         var chart = {
             type: 'bar'
@@ -188,7 +251,7 @@
             plotShadow: false
         };
         var title = {
-            text: '作业上交率'
+            text: '2014 年各浏览器市场占有比例'
         };
         var tooltip = {
             pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
@@ -199,7 +262,7 @@
                 cursor: 'pointer',
                 dataLabels: {
                     enabled: true,
-                    format: '<b>{point.name}</b>: {point.percentage:.1f} %',
+                    format: '<b>{point.name}%</b>: {point.percentage:.1f} %',
                     style: {
                         color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
                     }
@@ -208,19 +271,9 @@
         };
         var series= [{
             type: 'pie',
-            name: '作业上交率比重',
+            name: 'Browser share',
             data: sactorSeriesAll
         }];
-        // Radialize the colors
-        Highcharts.getOptions().colors = Highcharts.map(Highcharts.getOptions().colors, function (color) {
-            return {
-                radialGradient: { cx: 0.5, cy: 0.3, r: 0.7 },
-                stops: [
-                    [0, color],
-                    [1, Highcharts.Color(color).brighten(-0.3).get('rgb')] // darken
-                ]
-            };
-        });
 
         var json = {};
         json.chart = chart;
@@ -230,106 +283,6 @@
         json.plotOptions = plotOptions;
         $('#container2').highcharts(json);
     }
-
-    $('#selectCourse').change(function () {
-        $('#selectCourseClass').empty();
-        var course = $(this).children('option:selected').val();
-        var courseClass = [[${courseClass}]];
-        $('#selectCourseClass').append('<option value="all">全部</option>');
-        courseClass.forEach(myFunction);
-
-        function myFunction(value, index, array) {
-            if (course === value.coursename) {
-                $('#selectCourseClass').append('<option value="' + value.courseclass + '">' + value.courseclass + '</option>');
-            }
-        }
-    });
-
-    var name = '选择科目';
-    var x = [];//作业列表
-    var con = [{}];//班级作业数据
-    $('#selectclass').click(function () {
-        var course = $('#selectCourse').children('option:selected').val();
-        var courseClass = $('#selectCourseClass').children('option:selected').val();
-        var teaid = [[${teaid}]];
-        $(".noupload table tbody").empty();
-        $.ajax({
-            url: '/teacher/selectclass',
-            type: 'GET',
-            data: {
-                'course': course,
-                'courseClass': courseClass,
-                'teaid': teaid
-            },
-            dataType: 'json',
-            success: function (data) {
-                debugger
-/*                console.log(data);
-                var arrScore = [];//存放班级对应的成绩
-
-                //把成绩列转成数组
-                for (var i = 0; i < data[0].length; i++) {
-                    arrScore.push({stuid:data[0][i]["stuid"],name:data[0][i]["stuname"],courseclass: data[0][i]["courseclass"], score: data[0][i]["score"].split(",")});
-                }
-                console.log(arrScore);
-                //未上交名单
-                for (var q = 0; q < arrScore.length;q++){
-                    for (var p = 0; p < arrScore[0]["score"].length; p++){
-                        if (arrScore[q]["score"][p] === "未上交"){
-                            $(".noupload table tbody").append(
-                                "<tr><td>" + arrScore[q]["name"] +"</td>" +
-                                "<td>" + arrScore[q]["stuid"] + "</td>" +
-                                "<td>" + course+"</td>" +
-                                "<td>" + arrScore[q]["courseclass"]  +"</td>" +
-                                "<td>第"+ (p+1) +"次</td></tr>");
-                        }
-                    }
-                }
-                //作业列表
-                for (var k = 0; k < arrScore[0]["score"].length; k++) {
-                    x.push("作业" + (k + 1));
-                }
-                con = [];
-                //全部班级
-                if (courseClass === "all") {
-                    for (var j = 0; j < data[2].length; j++) {//班级遍历
-                        var scoreArr = [];
-                        var scoreData = [];//存放作业上交量
-                        for (var l = 0; l < arrScore.length;l++) {//遍历作业成绩
-                            if (data[2][j] === arrScore[l]["courseclass"]){
-                                scoreArr.push(arrScore[l]["score"]);
-                            }
-                        }
-                        for (var k = 0;k < scoreArr[0].length;k++){
-                            var workTime = 0;
-                            for (var m = 0;m < scoreArr.length;m++ ){
-                                if (scoreArr[m][k] !== "未上交")
-                                    workTime ++;
-                            }
-                                scoreData.push(workTime);
-                        }
-                        con.push({name: data[2][j],data:scoreData});
-                    }
-                } else {
-                    var scoreData1 = [];//存放作业上交量
-                    for (var a = 0; a<arrScore[0]["score"].length;a++){
-                        var workTime1 = 0;
-                        for (var b = 0;b<arrScore.length;b++){
-                            if (arrScore[b]["score"][a] !== "未上交")
-                                workTime1 ++;
-                        }
-                        scoreData1.push(workTime1);
-                    }
-                    con.push({name: courseClass,data:scoreData1});
-                }
-                console.log(con);
-                name = data[1];//设置标题
-                draw();
-                x = [];*/
-
-            }
-        });
-    });
 </script>
 <script language="JavaScript">
 </script>

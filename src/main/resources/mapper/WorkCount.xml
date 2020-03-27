@@ -13,13 +13,14 @@
   <select id="courseClassList" resultType="Course">
     SELECT coursename,courseclass FROM course WHERE teaid=#{teaid};
   </select>
-  <select id="scoreList" resultType="ScoreList">
-    select sl.*,stu.stuname from scorelist sl,course c,student stu
-    <if test="courseclass != 'all'">
-      where sl.courseid = c.courseid and stu.stuid=sl.stuid and c.teaid=#{teaid} and c.courseclass=#{courseclass} and c.coursename=#{coursename};
-    </if>
+
+  <select id="scoreList" resultType="ScoreList" parameterType="String">
+    select s.state,sc.coursename,sc.courseclass,s.score from score s left join selectcourse sc on s.selectcourseid = sc.selectcourseid
     <if test="courseclass == 'all'">
-      where sl.courseid = c.courseid and stu.stuid=sl.stuid and c.coursename=#{coursename} and c.teaid=#{teaid};
+      where sc.teaid = #{teaid} and coursename=#{coursename}
+  </if>
+    <if test="courseclass != 'all'">
+      where sc.teaid =#{teaid} and sc.coursename=#{coursename} and sc.courseclass=#{courseclass}
     </if>
   </select>
 

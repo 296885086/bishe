@@ -292,22 +292,13 @@ public class TeacherController {
     /*
     * 学生作业情况统计
     * */
-    @GetMapping("/selectclass")
+    @PostMapping("/selectclass")
     @ResponseBody
     public List selectclass(@RequestParam String teaid,
                             @RequestParam String course,
-                            @RequestParam String courseClass) throws Exception {
-        String all = "all";
-        ArrayList scoreArr = new ArrayList();
+                            @RequestParam String courseClass){
         List<ScoreList> scoreList = wc.scoreList(teaid, course, courseClass);
-        ArrayList arrayList = new ArrayList();
-        arrayList.add(scoreList);
-        arrayList.add(course);
-        if (courseClass.equals(all)) {
-            List<Course> courseClass1 = wc.courseList1(teaid, course);
-            arrayList.add(courseClass1);
-        }
-        return arrayList;
+        return scoreList;
     }
 
     /*

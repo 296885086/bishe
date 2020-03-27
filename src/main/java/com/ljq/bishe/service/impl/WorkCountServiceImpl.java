@@ -34,7 +34,7 @@ public class WorkCountServiceImpl implements WorkCounstService {
     }
 
     @Override
-    public List<ScoreList> scoreList(String teaid,String course,String courseClass) {
+    public List scoreList(String teaid,String course,String courseClass) {
         return wc.scoreList(teaid,course,courseClass);
     }
 
