@@ -5,16 +5,150 @@
     <title>Title</title>
     <script type="text/javascript" src="/js/jquery.min.css" th:src="@{/js/jquery.min.js}"></script>
     <script type="text/javascript" src="/js/bootstrap.min.css" th:src="@{/js/bootstrap.min.js}"></script>
-    <script type="text/javascript" src="/js/bootstrap.min.css" th:src="@{/js/bootstrap-datetimepicker.min.js}"></script>
-    <script type="text/javascript" src="/js/bootstrap.min.css" th:src="@{/js/bootstrap-datetimepicker.zh-CN.js}"></script>
     <link rel="stylesheet" href="/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}">
-    <link rel="stylesheet" href="/css/bootstrap-datetimepicker.min.css" th:href="@{/css/bootstrap-datetimepicker.min.css}">
-    <link  rel="stylesheet" href="/css/teacher.css" th:href="@{/css/teacher.css}">
 </head>
 <body>
-<a href="../../homework/456/html/MN/交作业了.docx">123</a>
-<a href="../../homework/456/java基础知识/QM/1640129314/毕设数据库.vsd">456</a>
-<a href="../../homework/456/html/MN/1640129313/交作业了.docx">789</a>
-<a href="../../homework/456/html/MN/1640129313/新建%20Microsoft%20Word%20文档.docx">0000</a>
+<div class="container">
+    <div class="audit table">
+        <table class="table table-bordered">
+            <caption>边框表格布局</caption>
+            <thead>
+            <tr>
+                <th>学号</th>
+                <th>科目</th>
+                <th>反馈教学班</th>
+                <th>作业名称</th>
+                <th>反馈时间</th>
+                <th>反馈内容</th>
+                <th>回复内容</th>
+                <th>进度</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+    ​ <!-- 模态框（Modal） -->
+    <div class="modal fade" id="audit" tabindex="-1" role="dialog" aria-labelledby="auditLabel"
+         aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"
+                            aria-hidden="true">×
+                    </button>
+                    <h4 class="modal-title" id="importModalLabel">
+                        作业评分
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="editScorse">修改分数</label>
+                        <input type="text" class="form-control" id="editScorse" placeholder="输入分数">
+                        <label for="replybody">输入审核信息</label>
+                        <input style="display: none;" id="auditid">
+                        <input style="display: none;" id="stuid">
+                        <input style="display: none;" id="workid">
+                        <input type="text" class="form-control" id="replybody" placeholder="输入审核信息">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default"
+                            data-dismiss="modal">关闭
+                    </button>
+                    <button id="sureAudit" type="button" class="btn btn-primary">
+                        确定审核
+                    </button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+</div>
+<script th:inline="javascript">
+    var auditList = [[${auditList}]];
+    auditList.forEach(myFunction);
+    //遍历作业反馈信息
+    function myFunction(value, index, array) {
+        if (value.replybody == null){
+            value.replybody = "无回复"
+        }
+        console.log(value.workid);
+
+        var replybody = "'" + value.replybody + "'";
+        var score = "'" + value.score + "'";
+        var auditid = "'" + value.auditid + "'";
+        var stuid = "'" + value.stuid + "'";
+        var workid = "'" + value.workid + "'";
+        $('.audit .table tbody').append('<tr>' +
+            '<td>' + value.stuid + '</td>' +
+            '<td>' + value.coursename + '</td>' +
+            '<td>' + value.courseclass + '</td>' +
+            '<td>' + value.workname + '</td>' +
+            '<td>' + value.commitdate + '</td>' +
+            '<td>' + value.commitbody + '</td>' +
+            '<td>' + value.replybody + '</td>' +
+            '<td>' +  value.state + '</td>'+
+            '<td><a href="" data-toggle="modal" data-target="#audit"  onclick="goAudit('+
+            auditid + ',' + replybody + ',' + score + ',' + stuid + ',' + workid + ')">审核</a> / <a href="#" onclick="giveBack('+ auditid +')">驳回</a></td></tr>');
+    }
+
+    function goAudit(auditid,replybody,score,stuid,workid) {
+        debugger
+        $("#replybody").val(replybody);
+        $("#auditid").val(auditid);
+        $("#editScorse").val(score);
+        $("#stuid").val(stuid);
+        $("#workid").val(workid);
+    }
+
+    //驳回
+    function giveBack(auditid) {
+        var pd = new FormData();
+        pd.append("auditid",auditid);
+        $.ajax({
+            url:'/teacher/giveBack',
+            type:'POST',
+            processData: false,
+            contentType: false,
+            data: pd,
+            success:function(data){
+                alert("已驳回！");
+                location.reload();
+            },error:function (e) {
+                alert('驳回失败！！');
+            }
+        });
+    }
+
+    //审核
+    $("#sureAudit").click(function () {
+        debugger
+        let auditid=$("#auditid").val();
+        let editScorse = $("#editScorse").val();
+        let replybody = $("#replybody").val();
+        let stuid = $("#stuid").val();
+        let workid = $("#workid").val();
+        var pd = new FormData();
+        pd.append("auditid",auditid);
+        pd.append("editScorse",editScorse);
+        pd.append("replybody",replybody);
+        pd.append("stuid",stuid);
+        pd.append("workid",workid);
+        $.ajax({
+            url:'/teacher/sureAudit',
+            type:'POST',
+            processData: false,
+            contentType: false,
+            data: pd,
+            success:function(data){
+                alert("审核成功！");
+                location.reload();
+            },error:function (e) {
+                alert('审核失败！！');
+            }
+        });
+    });
+</script>
 </body>
 </html>

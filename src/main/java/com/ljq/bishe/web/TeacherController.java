@@ -35,6 +35,9 @@ public class TeacherController {
     CourseManagerService cms;
     @Autowired
     ExchangeService exchangeService;
+    @Autowired
+    AuditService auditService;
+
     String teacherId = null;
     String teacherName = null;
     /*
@@ -245,10 +248,30 @@ public class TeacherController {
     /* 学生作业审核
      **/
     @GetMapping("/workaudit")
-    public String workaudit() {
+    public String workaudit(Model model) {
+        List<Audit> auditList = auditService.teaAllAuditList(teacherId);
+        model.addAttribute("auditList",auditList);
         return "teacher/workaudit";
     }
 
+    //驳回
+    @PostMapping("/giveBack")
+    @ResponseBody
+    public String giveBack(@RequestParam String auditid){
+        auditService.giveBack(auditid);
+        return "success";
+    }
+    //进行审核
+    @PostMapping("/sureAudit")
+    @ResponseBody
+    public String sureAudit(@RequestParam String auditid,
+                            @RequestParam String editScorse,
+                            @RequestParam String replybody,
+                            @RequestParam String stuid,
+                            @RequestParam String workid){
+        auditService.sureAudit(auditid,editScorse,replybody,stuid,workid);
+        return "success";
+    }
     /*
      * 学生作业评分
      */
@@ -272,8 +295,9 @@ public class TeacherController {
     @ResponseBody
     public List findWorkScore(@RequestParam("course") String courseName,
                               @RequestParam("courseClass") String courseClass,
-                              @RequestParam("homeworkState") String state) {
-        List workScoreList = ws.findStudentScore(courseName, courseClass, state, teacherId);
+                              @RequestParam("homeworkState") String state,
+                              @RequestParam("workName") String workName) {
+        List workScoreList = ws.findStudentScore(courseName, courseClass, state, teacherId,workName);
         return workScoreList;
     }
 
@@ -429,7 +453,7 @@ public class TeacherController {
         return "teacher/teaCourseManager";
     }
 
-    /**
+    /*
      *手动增加课程信息
      */
     @PostMapping("/writeAddCourse")

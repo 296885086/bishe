@@ -10,9 +10,10 @@
         left join homework h on h.workid = c.workid
         where c.stuid = #{stuid}
     </select>
-    <update id="saveQuestion">
-        update score set question=#{question} where stuid=#{stuid} and workid=#{workid}
-    </update>
+    <insert id="saveQuestion" parameterType="String">
+        insert into audit (stuid,workid,commitdate,commitbody,state) VALUES
+        (#{stuid},#{workid},#{commitDate},#{question},"等待审核...")
+    </insert>
     <select id="findMyData" resultType="Score">
         select s.stuname,c.*,h.workname from score c
         left join student s on s.stuid = c.stuid

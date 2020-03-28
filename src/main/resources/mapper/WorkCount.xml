@@ -15,7 +15,10 @@
   </select>
 
   <select id="scoreList" resultType="ScoreList" parameterType="String">
-    select s.state,sc.coursename,sc.courseclass,s.score from score s left join selectcourse sc on s.selectcourseid = sc.selectcourseid
+    select s.state,sc.coursename,sc.courseclass,s.score,h.workname
+    from score s
+    left join selectcourse sc on s.selectcourseid = sc.selectcourseid
+    left join homework h on s.workid=h.workid
     <if test="courseclass == 'all'">
       where sc.teaid = #{teaid} and coursename=#{coursename}
   </if>

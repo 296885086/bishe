@@ -18,8 +18,8 @@ public class MyDataServiceImpl implements MyDataService {
     }
 
     @Override
-    public void saveQuestion(String stuid, String workid, String question) {
-        myDataMapper.saveQuestion(stuid,workid,question);
+    public void saveQuestion(String stuid, String workid, String question,String commitDate) {
+        myDataMapper.saveQuestion(stuid,workid,question,commitDate);
     }
 
     @Override

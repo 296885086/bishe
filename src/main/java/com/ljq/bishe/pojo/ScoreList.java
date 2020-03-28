@@ -5,6 +5,7 @@ public class ScoreList {
     private String score;
     private String state;
     private String courseclass;
+    private String workname;
 
     public String getCoursename() {
         return coursename;
@@ -36,5 +37,13 @@ public class ScoreList {
 
     public void setCourseclass(String courseclass) {
         this.courseclass = courseclass;
+    }
+
+    public String getWorkname() {
+        return workname;
+    }
+
+    public void setWorkname(String workname) {
+        this.workname = workname;
     }
 }

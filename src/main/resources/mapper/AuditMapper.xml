@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ljq.bishe.mapper.AuditMapper">
+    <select id="allAuditList" parameterType="String" resultType="Audit">
+        select a.*,h.course as coursename,h.uploadClass as courseclass,h.workname from audit a
+        left join homework h on a.workid = h.workid
+        where stuid=#{stuid} order by commitdate desc
+    </select>
+    <select id="teaAllAuditList" parameterType="String" resultType="Audit">
+        select a.*,h.course as coursename,h.uploadClass as courseclass,h.workname,s.score
+        from audit a
+        left join homework h on a.workid = h.workid
+        left join score s on s.workid = h.workid
+        where h.teaid=#{teaid} and a.stuid=s.stuid order by commitdate desc
+    </select>
+    <update id="giveBack" parameterType="String">
+        update audit set state="已完成",replybody="反馈无效" where auditid=#{auditid}
+    </update>
+    <update id="sureAudit" parameterType="String">
+        update audit a
+         left join score s on s.workid = a.workid
+         set a.state="已完成",a.replybody=#{replybody}, s.score=#{editScorse}
+         where a.auditid=#{auditid} and s.workid=#{workid} and s.stuid =#{stuid}
+    </update>
+    <delete id="deleteAudit" parameterType="String">
+        DELETE  FROM audit where auditid = #{auditid}
+    </delete>
+</mapper>

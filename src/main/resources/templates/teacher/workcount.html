@@ -63,34 +63,20 @@
         <div class=" flex-item chart" id="container1"></div>
         <div class=" flex-item chart" id="container2"></div>
     </div>
-
-    <div class="table-responsive noupload">
-        <table class="table">
-            <caption>未上交名单</caption>
-            <thead>
-            <tr>
-                <th>姓名</th>
-                <th>学号</th>
-                <th>科目</th>
-                <th>教学班</th>
-                <th>第几次</th></tr>
-            </thead>
-            <tbody>
-            </tbody>
-        </table>
-    </div>
 </div>
 <script language="JavaScript" type="text/javascript" th:inline="javascript">
 
     $(document).ready(function () {
-        var allWorkData = [[${allWorkData}]];
-        var courseList = [[${course}]];
-        var handInData = [];
-        var noHandInData = [];
-        var noHandInCount = 0;
-        var handInCount = 0;
-        var stripSeriesAll = [];
-        var sactorSeriesAll=[];
+        let allWorkData = [[${allWorkData}]];
+        let courseList = [[${course}]];
+        let handInData = [];
+        let noHandInData = [];
+        let noHandInCount = 0;
+        let handInCount = 0;
+        let stripSeriesAll = [];
+        let sactorSeriesAll=[];
+        let stripTitle =  "课程作业上交情况";
+        let sactorTitle =  "课程作业已上交的比例";
        for (var j = 0;j < courseList.length;j++){
             for (var i = 0;i<allWorkData.length;i++) {
                 if (courseList[j] == allWorkData[i].coursename) {
@@ -107,22 +93,8 @@
            noHandInCount = 0;
         }
         stripSeriesAll.push({name: "已上交",data:handInData},{name: "未上交",data:noHandInData});
-        drawStrip(courseList,stripSeriesAll);
-        drawSactor(sactorSeriesAll);
-    });
-
-    $('#selectCourse').change(function () {
-        $('#selectCourseClass').empty();
-        var course = $(this).children('option:selected').val();
-        var courseClass = [[${courseClass}]];
-        $('#selectCourseClass').append('<option value="all">全部</option>');
-        courseClass.forEach(myFunction);
-
-        function myFunction(value, index, array) {
-            if (course === value.coursename) {
-                $('#selectCourseClass').append('<option value="' + value.courseclass + '">' + value.courseclass + '</option>');
-            }
-        }
+        drawStrip(courseList,stripSeriesAll,stripTitle);
+        drawSactor(sactorSeriesAll,sactorTitle,sactorTitle);
     });
 
     $('#selectclass').click(function () {
@@ -140,20 +112,21 @@
             },
             dataType: 'json',
             success: function (data) {
+                let handInData = [];
+                let noHandInData = [];
+                let noHandInCount = 0;
+                let handInCount = 0;
+                let stripSeriesAll = [];
+                let sactorSeriesAll=[];
+                let stripTitle ;
+                let sactorTitle ;
+                //按班级画图
                 if (courseClass=="all"){
-                    console.log(data);
-                    var classList=[];
-                    var temp;
+                    let classList=[];
                     for(var i =0;i < data.length;i++){
                             classList.push(data[i].courseclass);
                     }
                     classList = Array.from(new Set(classList))
-                    let handInData = [];
-                    let noHandInData = [];
-                    let noHandInCount = 0;
-                    let handInCount = 0;
-                    let stripSeriesAll = [];
-                    let sactorSeriesAll=[];
                     for (var j = 0;j < classList.length;j++){
                         for (var i = 0;i<data.length;i++) {
                             if (classList[j] == data[i].courseclass) {
@@ -163,30 +136,57 @@
                         }
                         handInData.push(handInCount);
                         noHandInData.push(noHandInCount);
-                        var num = new Number(handInCount/(handInCount + noHandInCount) * 100);
+                        let num = new Number(handInCount/(handInCount + noHandInCount) * 100);
                         sactorSeriesAll.push([classList[j],parseFloat(num.toFixed(2))]);
                         handInCount = 0;
                         noHandInCount = 0;
                     }
                     stripSeriesAll.push({name: "已上交",data:handInData},{name: "未上交",data:noHandInData});
-                    drawStrip(classList,stripSeriesAll);
-                    drawSactor(sactorSeriesAll);
-                }else {
+                    stripTitle = course + '每个班级作业上交情况';
+                    sactorTitle = course + '每个班级作业上交比例';
+                    drawStrip(classList,stripSeriesAll,stripTitle);
+                    drawSactor(sactorSeriesAll,sactorTitle);
+                }else {//按作业画图
+                    let workList=[];//作业列表
                     console.log(data);
+                    for(let i =0;i < data.length;i++){
+                        workList.push(data[i].workname);
+                    }
+                    workList = Array.from(new Set(workList));//去重
+                    for (var j = 0;j < workList.length;j++){
+                        for (var i = 0;i<data.length;i++) {
+                            if (workList[j] == data[i].workname) {
+                                if (data[i].state == "已上交") handInCount++ ;
+                                else noHandInCount++;
+                            }
+                        }
+                        handInData.push(handInCount);
+                        noHandInData.push(noHandInCount);
+                        let num = new Number(handInCount/(handInCount + noHandInCount) * 100);
+                        sactorSeriesAll.push([workList[j],parseFloat(num.toFixed(2))]);
+                        handInCount = 0;
+                        noHandInCount = 0;
+                    }
+
+                    stripSeriesAll.push({name: "已上交",data:handInData},{name: "未上交",data:noHandInData});
+                    stripTitle = course + ' '+courseClass +'班每次作业上交情况';
+                    sactorTitle = course +' '+ courseClass +'班每次作业上交比例';
+                    drawStrip(workList,stripSeriesAll,stripTitle);
+                    drawSactor(sactorSeriesAll,sactorTitle);
                 }
 
             }
         });
     });
-    function drawStrip(courseList,stripSeriesAll) {
+    function drawStrip(courseList,stripSeriesAll,stripTitle) {
         var chart = {
             type: 'bar'
         };
         var title = {
-            text: 'Historic World Population by Region'
+            text: stripTitle
         };
         var subtitle = {
-            text: 'Source: Wikipedia.org'
+            text: ''
         };
         var xAxis = {
             categories: courseList,
@@ -197,7 +197,7 @@
         var yAxis = {
             min: 0,
             title: {
-                text: 'Population (millions)',
+                text: '作业(份)',
                 align: 'high'
             },
             labels: {
@@ -205,7 +205,7 @@
             }
         };
         var tooltip = {
-            valueSuffix: ' millions'
+            valueSuffix: ' 份'
         };
         var plotOptions = {
             bar: {
@@ -244,14 +244,14 @@
         json.credits = credits;
         $('#container1').highcharts(json);
     }
-    function drawSactor(sactorSeriesAll){
+    function drawSactor(sactorSeriesAll,sactorTitle){
         var chart = {
             plotBackgroundColor: null,
             plotBorderWidth: null,
             plotShadow: false
         };
         var title = {
-            text: '2014 年各浏览器市场占有比例'
+            text: sactorTitle
         };
         var tooltip = {
             pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
@@ -271,7 +271,7 @@
         };
         var series= [{
             type: 'pie',
-            name: 'Browser share',
+            name: '作业已上交率比重',
             data: sactorSeriesAll
         }];
 
@@ -283,8 +283,19 @@
         json.plotOptions = plotOptions;
         $('#container2').highcharts(json);
     }
-</script>
-<script language="JavaScript">
+    $('#selectCourse').change(function () {
+        $('#selectCourseClass').empty();
+        var course = $(this).children('option:selected').val();
+        var courseClass = [[${courseClass}]];
+        $('#selectCourseClass').append('<option value="all">全部</option>');
+        courseClass.forEach(myFunction);
+
+        function myFunction(value, index, array) {
+            if (course === value.coursename) {
+                $('#selectCourseClass').append('<option value="' + value.courseclass + '">' + value.courseclass + '</option>');
+            }
+        }
+    });
 </script>
 </body>
 </html>

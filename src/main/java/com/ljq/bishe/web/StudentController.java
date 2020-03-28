@@ -2,10 +2,8 @@ package com.ljq.bishe.web;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.ljq.bishe.pojo.Homework;
-import com.ljq.bishe.pojo.Message;
-import com.ljq.bishe.pojo.Reply;
-import com.ljq.bishe.pojo.Score;
+import com.ljq.bishe.pojo.*;
+import com.ljq.bishe.service.AuditService;
 import com.ljq.bishe.service.ExchangeService;
 import com.ljq.bishe.service.MyDataService;
 import com.ljq.bishe.service.impl.HandInServiceImpl;
@@ -33,6 +31,8 @@ public class StudentController {
     MyDataService myDataService;
     @Autowired
     ExchangeService exchangeService;
+    @Autowired
+    AuditService auditService;
     String stuId;
     String stuName;
     @GetMapping("/handIn/{stuid}")
@@ -43,9 +43,6 @@ public class StudentController {
         stuName = handInService.getStuname(stuid);
         List getLearningCourse = handInService.getLearningCourse(stuid);//在学科目
         List getCourseClass = handInService.getCourseClass(stuid);
-/*      PageHelper.startPage(start, size, "stuid desc");
-        List<Homework> worklist = rs.worklist(teaid);*/
-        /*PageInfo<Homework> page = new PageInfo<>(worklist);*/
         List homeworkList = handInService.workInfo(stuid);//作业列表
         List workNameList = handInService.getWorkName(stuid);
         model.addAttribute("glc",getLearningCourse);
@@ -191,20 +188,35 @@ public class StudentController {
     }
 
 
-
+    //反馈
     @PostMapping("/saveQuestion")
     @ResponseBody
     public String saveQuestion(@RequestParam("workid") String workid,
                                @RequestParam("stuid") String stuid,
                                @RequestParam("question") String question){
-        myDataService.saveQuestion(stuid,workid,question);
+        Date now = new Date();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//可以方便地修改日期格式
+        String commitDate = dateFormat.format( now );
+        myDataService.saveQuestion(stuid,workid,question,commitDate);
         String msg = "success";
         return msg;
     }
 
-    @GetMapping("/workSituation")
-    public String workSituation(){
-        return "student/workSituation";
+    //删除反馈
+    @PostMapping("/deleteAudit")
+    @ResponseBody
+    public String deleteAudit(@RequestParam("auditid") String auditid){
+        auditService.deleteAudit(auditid);
+        return "success";
     }
+    //作业
+    @GetMapping("/workSituation")
+    public String workSituation(Model model){
+        List<Audit> auditList = auditService.allAuditList(stuId);
+        model.addAttribute("auditList",auditList);
+        return "student/audit";
+    }
+
+
 }
 

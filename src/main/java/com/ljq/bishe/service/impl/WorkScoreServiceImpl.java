@@ -13,8 +13,8 @@ public class WorkScoreServiceImpl implements WorkScoreService{
     @Autowired
     WorkScoreMapper ws;
     @Override
-    public List<Score> findStudentScore(String course, String courseClass,String state,String teaid) {
-        return ws.findStudentScore(course,courseClass,state,teaid);
+    public List<Score> findStudentScore(String course, String courseClass,String state,String teaid,String workName) {
+        return ws.findStudentScore(course,courseClass,state,teaid,workName);
     }
 
     @Override

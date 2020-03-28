@@ -121,10 +121,12 @@
             var course = $('#selectCourse').children('option:selected').val();
             var courseClass = $('#selectCourseClass').children('option:selected').val();
             var homeworkState =$('#homeworkState').children('option:selected').val();
+            var workName =$('#selectWorkname').children('option:selected').val();
             var fd = new FormData();
             fd.append("course",course);
             fd.append("courseClass",courseClass);
             fd.append("homeworkState",homeworkState);
+            fd.append("workName",workName);
             $.ajax({
                 url:'/teacher/findWorkScore',
                 type:'POST',
@@ -170,6 +172,7 @@
         $('#selectWorkname').empty();
         var courseClass = $(this).children('option:selected').val();
         var workName = [[${worknameList}]];
+        $('#selectWorkname').append('<option value="all">全部</option>');
         workName.forEach(myFunction);
         function myFunction(value, index, array) {
             if ( courseClass === value.uploadclass) {

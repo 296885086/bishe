@@ -11,7 +11,8 @@ public interface MyDataMapper {
     public List<Score> allMyDdata(String stuid);
     public void saveQuestion(@Param("stuid") String stuid,
                              @Param("workid")String workid,
-                             @Param("question") String question);
+                             @Param("question") String question,
+                             @Param("commitDate") String commitDate);
     public List<Score> findMyData(@Param("stuid") String stuid,
                                   @Param("course") String course,
                                   @Param("courseClass")String courseClass,
