@@ -6,6 +6,7 @@
     <script type="text/javascript" src="/js/jquery.min.css" th:src="@{/js/jquery.min.js}"></script>
     <script type="text/javascript" src="/js/bootstrap.min.css" th:src="@{/js/bootstrap.min.js}"></script>
     <link rel="stylesheet" href="/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}">
+    <link rel="stylesheet" href="/css/teacher.css" th:href="@{/css/teacher.css}">
     <style>
         .flex-container {
             position: relative;
@@ -55,7 +56,8 @@
         </div>
         <div class="flex-item" style="position: relative;top: 25px; left: 10px;">
             <button id="findBtn" class="btn btn-info" data-loading-text="查找中..."
-                    type="button">查找
+                    type="button">
+                <span class="glyphicon glyphicon-search"></span>查找
             </button>
         </div>
     </div>
@@ -202,11 +204,13 @@
             value.stuid + '</td><td>'+
             value.stuname + '</td><td>' + value.workname + '</td><td id="'+ index +'" >'+ value.score + '</td><td>'+value.state+'</td>';
         if (workName !== null){
-            appendChile = appendChile + '<td><a  href="'+ fullPath1+ '">下载</a>  /  <a data-toggle="modal" data-target="#myModal" onclick="goGiveScore('+
+            appendChile = appendChile + '<td><a  href="'+ fullPath1+ '"><button class="btn btn-default btn-sm">' +
+                '<span class="glyphicon glyphicon-save"></span> 下载</button></a>  ' +
+                '<a data-toggle="modal" data-target="#myModal" onclick="goGiveScore('+
                 value.score +','+ value.workid + ',' +value.stuid + ',' + index +
-                ')"  href="">评分</a></td></tr>';
+                ')"  href=""><button class="btn btn-default btn-sm"><span class="glyphicon glyphicon-edit"></span> 评分</button></a></td></tr>';
         }else {
-            appendChile = appendChile + '<td>下载  /  评分</td></tr>';
+            appendChile = appendChile + '<td>作业未上交</td></tr>';
         }
         $('#workInfo tbody').append(appendChile);
     }

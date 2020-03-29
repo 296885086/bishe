@@ -5,7 +5,7 @@
 
 <mapper namespace="com.ljq.bishe.mapper.WorkCountMapper">
   <select id="courseList" resultType="String">
-  SELECT DISTINCT coursename FROM course WHERE teaid=#{teaid};
+    SELECT DISTINCT coursename FROM course WHERE teaid=#{teaid};
   </select>
   <select id="courseList1" resultType="String">
     SELECT courseclass FROM course WHERE teaid=#{teaid} and coursename=#{coursename};
@@ -13,9 +13,8 @@
   <select id="courseClassList" resultType="Course">
     SELECT coursename,courseclass FROM course WHERE teaid=#{teaid};
   </select>
-
   <select id="scoreList" resultType="ScoreList" parameterType="String">
-    select s.state,sc.coursename,sc.courseclass,s.score,h.workname
+    select s.*,sc.coursename,sc.courseclass,h.workname
     from score s
     left join selectcourse sc on s.selectcourseid = sc.selectcourseid
     left join homework h on s.workid=h.workid
@@ -26,9 +25,8 @@
       where sc.teaid =#{teaid} and sc.coursename=#{coursename} and sc.courseclass=#{courseclass}
     </if>
   </select>
-
   <select id="allWorkData" parameterType="String" resultType="ScoreList">
-    select s.state,sc.coursename from score s,selectcourse sc where sc.selectcourseid=s.selectcourseid and sc
+    select s.*,sc.coursename from score s,selectcourse sc where sc.selectcourseid=s.selectcourseid and sc
     .teaid=#{teaid};
   </select>
 </mapper>

@@ -225,14 +225,17 @@
             </select>
         </div>
         <div class="flex-item" style="position: relative;top: 24px;">
-            <button type="button" class="btn btn-primary" v-on:click="findMessage">查看</button>
+            <button type="button" class="btn btn-primary" v-on:click="findMessage">
+                <span class="glyphicon glyphicon-search"></span> 查看</button>
         </div>
 
         <div class="flex-item" style="position: relative;top: 24px;">
-            <button type="button" v-on:click="myMessage" class="btn btn-info">我的留言</button>
+            <button type="button" v-on:click="myMessage" class="btn btn-info">
+                <span class="glyphicon glyphicon-share"></span> 我的留言</button>
         </div>
         <div class="flex-item" style="position: relative;top: 24px;">
-            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#sendMessage">添加留言</button>
+            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#sendMessage">
+                <span class="glyphicon glyphicon-bullhorn"></span> 添加留言</button>
         </div>
     </div>
     <div class="message-container">

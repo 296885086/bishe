@@ -56,12 +56,18 @@
 
         </div>
         <div class="form-group flex-item" style="position: relative;top: 20px;">
-            <button id="selectclass" type="button" class="btn btn-primary">确定</button>
+            <button id="selectclass" type="button" class="btn btn-primary">
+                <span class="glyphicon glyphicon-sort"></span> 确定</button>
         </div>
     </div>
     <div class="flex-container charts">
         <div class=" flex-item chart" id="container1"></div>
         <div class=" flex-item chart" id="container2"></div>
+    </div>
+
+    <div class="flex-container charts">
+        <div class=" flex-item chart" id="container3"></div>
+        <div class=" flex-item chart" id="container4"></div>
     </div>
 </div>
 <script language="JavaScript" type="text/javascript" th:inline="javascript">
@@ -69,32 +75,72 @@
     $(document).ready(function () {
         let allWorkData = [[${allWorkData}]];
         let courseList = [[${course}]];
+        let scoreList=[];
+        for(var i =0;i < allWorkData.length;i++){
+            if(allWorkData[i].state == "已上交"){
+                let num = new Number(allWorkData[i].score);
+                allWorkData[i].score = parseInt(num);
+                scoreList.push(allWorkData[i].score);
+            }
+        }
+        scoreList = Array.from(new Set(scoreList));
+
         let handInData = [];
         let noHandInData = [];
         let noHandInCount = 0;
         let handInCount = 0;
         let stripSeriesAll = [];
-        let sactorSeriesAll=[];
+        let sactorSeriesAll = [];
+        let tempScore = 0;
+        let tempScoreArr = [];
         let stripTitle =  "课程作业上交情况";
         let sactorTitle =  "课程作业已上交的比例";
+        let stripScoreTitle =  "课程作业各分数段人数";
        for (var j = 0;j < courseList.length;j++){
+
+           let score = [];
             for (var i = 0;i<allWorkData.length;i++) {
                 if (courseList[j] == allWorkData[i].coursename) {
-                    if (allWorkData[i].state == "已上交") handInCount++ ;
+                    if (allWorkData[i].state == "已上交") {
+                        handInCount++ ;
+                    }
                     else noHandInCount++;
+                    score.push(allWorkData[i].score);
                 }
             }
-            handInData.push(handInCount);
-            noHandInData.push(noHandInCount);
 
+            //多少分
+            for(let a = 0;a < scoreList.length; a++){
+
+                for (let b = 0;b < score.length; b++){//分的人数
+                    let num = new Number(score[b]);
+                    let tempNum = parseInt(num);
+
+                    if(scoreList[a] == tempNum){
+                        tempScore ++;
+                    }
+                }
+
+                if (tempScoreArr[a] == undefined){
+                    tempScoreArr.push({name:scoreList[a] +"分",data:[tempScore]});
+                }else {
+                    tempScoreArr[a].data.push(tempScore);
+                }
+                tempScore = 0;
+            }
+
+           handInData.push(handInCount);//统计科目已上交的人数
+           noHandInData.push(noHandInCount);//统计科目未上交的人数
            var num = new Number(handInCount/(handInCount + noHandInCount) * 100);
            sactorSeriesAll.push([courseList[j],parseFloat(num.toFixed(2))]);
            handInCount = 0;
            noHandInCount = 0;
+
         }
         stripSeriesAll.push({name: "已上交",data:handInData},{name: "未上交",data:noHandInData});
         drawStrip(courseList,stripSeriesAll,stripTitle);
         drawSactor(sactorSeriesAll,sactorTitle,sactorTitle);
+        drawStripScore(courseList,tempScoreArr,stripScoreTitle);
     });
 
     $('#selectclass').click(function () {
@@ -116,24 +162,58 @@
                 let noHandInData = [];
                 let noHandInCount = 0;
                 let handInCount = 0;
+                let tempScore = 0;
                 let stripSeriesAll = [];
                 let sactorSeriesAll=[];
+                let tempScoreArr = [];
                 let stripTitle ;
                 let sactorTitle ;
+                let stripScoreTitle ;
+                let score = [];
+                let classList=[];
+                let scoreList=[];
+                let workList=[];
                 //按班级画图
                 if (courseClass=="all"){
-                    let classList=[];
                     for(var i =0;i < data.length;i++){
                             classList.push(data[i].courseclass);
                     }
-                    classList = Array.from(new Set(classList))
+                    for(var i =0;i < data.length;i++){
+                        if(data[i].state == "已上交"){
+                            let num = new Number(data[i].score);
+                            data[i].score = parseInt(num);
+                            scoreList.push(data[i].score);
+                        }
+                    }
+                    scoreList = Array.from(new Set(scoreList));
+                    classList = Array.from(new Set(classList));
                     for (var j = 0;j < classList.length;j++){
                         for (var i = 0;i<data.length;i++) {
                             if (classList[j] == data[i].courseclass) {
                                 if (data[i].state == "已上交") handInCount++ ;
                                 else noHandInCount++;
+                                score.push(data[i].score);
                             }
                         }
+                        //多少分
+                        for(let a = 0;a < scoreList.length; a++){
+
+                            for (let b = 0;b < score.length; b++){//分的人数
+                                let num = new Number(score[b]);
+                                let tempNum = parseInt(num);
+
+                                if(scoreList[a] == tempNum){
+                                    tempScore ++;
+                                }
+                            }
+                            if (tempScoreArr[a] == undefined){
+                                tempScoreArr.push({name:scoreList[a] +"分",data:[tempScore]});
+                            }else {
+                                tempScoreArr[a].data.push(tempScore);
+                            }
+                            tempScore = 0;
+                        }
+
                         handInData.push(handInCount);
                         noHandInData.push(noHandInCount);
                         let num = new Number(handInCount/(handInCount + noHandInCount) * 100);
@@ -144,22 +224,54 @@
                     stripSeriesAll.push({name: "已上交",data:handInData},{name: "未上交",data:noHandInData});
                     stripTitle = course + '每个班级作业上交情况';
                     sactorTitle = course + '每个班级作业上交比例';
+                    stripScoreTitle = course + '每个班级分数段人数';
                     drawStrip(classList,stripSeriesAll,stripTitle);
                     drawSactor(sactorSeriesAll,sactorTitle);
+                    drawStripScore(classList,tempScoreArr,stripScoreTitle);
                 }else {//按作业画图
-                    let workList=[];//作业列表
-                    console.log(data);
+
                     for(let i =0;i < data.length;i++){
                         workList.push(data[i].workname);
                     }
+
+                    for(var i =0;i < data.length;i++){
+                        if(data[i].state == "已上交"){
+                            let num = new Number(data[i].score);
+                            data[i].score = parseInt(num);
+                            scoreList.push(data[i].score);
+                        }
+                    }
+                    scoreList = Array.from(new Set(scoreList));
                     workList = Array.from(new Set(workList));//去重
+
                     for (var j = 0;j < workList.length;j++){
                         for (var i = 0;i<data.length;i++) {
                             if (workList[j] == data[i].workname) {
                                 if (data[i].state == "已上交") handInCount++ ;
                                 else noHandInCount++;
+                                score.push(data[i].score);
                             }
                         }
+
+                        //多少分
+                        for(let a = 0;a < scoreList.length; a++){
+
+                            for (let b = 0;b < score.length; b++){//分的人数
+                                let num = new Number(score[b]);
+                                let tempNum = parseInt(num);
+
+                                if(scoreList[a] == tempNum){
+                                    tempScore ++;
+                                }
+                            }
+                            if (tempScoreArr[a] == undefined){
+                                tempScoreArr.push({name:scoreList[a] +"分",data:[tempScore]});
+                            }else {
+                                tempScoreArr[a].data.push(tempScore);
+                            }
+                            tempScore = 0;
+                        }
+
                         handInData.push(handInCount);
                         noHandInData.push(noHandInCount);
                         let num = new Number(handInCount/(handInCount + noHandInCount) * 100);
@@ -171,14 +283,17 @@
                     stripSeriesAll.push({name: "已上交",data:handInData},{name: "未上交",data:noHandInData});
                     stripTitle = course + ' '+courseClass +'班每次作业上交情况';
                     sactorTitle = course +' '+ courseClass +'班每次作业上交比例';
+                    stripScoreTitle = course + courseClass + '班分数段人数';
                     drawStrip(workList,stripSeriesAll,stripTitle);
                     drawSactor(sactorSeriesAll,sactorTitle);
+                    drawStripScore(workList,tempScoreArr,stripScoreTitle);
                 }
 
             }
         });
     });
-    function drawStrip(courseList,stripSeriesAll,stripTitle) {
+
+    function drawStrip(xAxis,stripSeriesAll,stripTitle) {
         var chart = {
             type: 'bar'
         };
@@ -189,7 +304,7 @@
             text: ''
         };
         var xAxis = {
-            categories: courseList,
+            categories: xAxis,
             title: {
                 text: null
             }
@@ -244,6 +359,7 @@
         json.credits = credits;
         $('#container1').highcharts(json);
     }
+
     function drawSactor(sactorSeriesAll,sactorTitle){
         var chart = {
             plotBackgroundColor: null,
@@ -283,6 +399,74 @@
         json.plotOptions = plotOptions;
         $('#container2').highcharts(json);
     }
+
+    function drawStripScore(xAxis,stripSeriesAll,stripTitle) {
+        var chart = {
+            type: 'bar'
+        };
+        var title = {
+            text: stripTitle
+        };
+        var subtitle = {
+            text: ''
+        };
+        var xAxis = {
+            categories: xAxis,
+            title: {
+                text: null
+            }
+        };
+        var yAxis = {
+            min: 0,
+            title: {
+                text: '作业(份)',
+                align: 'high'
+            },
+            labels: {
+                overflow: 'justify'
+            }
+        };
+        var tooltip = {
+            valueSuffix: ' 份'
+        };
+        var plotOptions = {
+            bar: {
+                dataLabels: {
+                    enabled: true
+                }
+            }
+        };
+        var legend = {
+            layout: 'vertical',
+            align: 'right',
+            verticalAlign: 'top',
+            x: -40,
+            y: 100,
+            floating: true,
+            borderWidth: 1,
+            backgroundColor: ((Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'),
+            shadow: true
+        };
+        var credits = {
+            enabled: false
+        };
+
+        var series= stripSeriesAll;
+
+        var json = {};
+        json.chart = chart;
+        json.title = title;
+        json.subtitle = subtitle;
+        json.tooltip = tooltip;
+        json.xAxis = xAxis;
+        json.yAxis = yAxis;
+        json.series = series;
+        json.plotOptions = plotOptions;
+        json.legend = legend;
+        json.credits = credits;
+        $('#container3').highcharts(json);
+    }
+
     $('#selectCourse').change(function () {
         $('#selectCourseClass').empty();
         var course = $(this).children('option:selected').val();

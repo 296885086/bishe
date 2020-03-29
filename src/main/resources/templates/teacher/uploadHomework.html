@@ -52,7 +52,8 @@
             </select>
         </div>
         <div class="flex-item" style="position: relative;top: 24px;">
-            <button type="button" id="findWork" class="btn btn-success">查找</button>
+            <button type="button" id="findWork" class="btn btn-success">
+                <span class="glyphicon glyphicon-search"></span> 查找</button>
         </div>
     </div>
     <table class="table table-bordered" id="homeworkInfo">
@@ -73,8 +74,14 @@
             <td th:text="${c.uploadclass}"> </td>
             <td th:text="${c.uploaddate}"></td>
             <td th:text="${c.enddate}"></td>
-            <td><a th:onclick="deleteWork([[${c.workid}]],[[${c.filepath}]],[[${c.course}]],[[${c.uploadclass}]]);">删除</a> /
-                <a href="#" class="update" data-toggle="modal" data-target="#myModal">修改</a>
+            <td>
+                <button type="button" class="btn btn-default btn-sm update"
+                        th:onclick="deleteWork([[${c.workid}]],[[${c.filepath}]],[[${c.course}]],[[${c.uploadclass}]]);">
+                <span class="glyphicon glyphicon-trash"></span> 删除
+                </button>
+                <button type="button" class="btn btn-default btn-sm update" data-toggle="modal" data-target="#myModal">
+                    <span class="glyphicon glyphicon-edit"></span> 修改
+                </button>
                 </td>
         </tr>
         </tbody>
@@ -199,7 +206,8 @@
                     var course = "'" + value.course + "'";
                     var appendChild = '<tr><td>'+value.workname +'</td><td>'+value.course +'</td><td>'+value.uploadclass +'</td><td>'+value.uploaddate
                         + '</td><td>'+value.enddate +'</td><td><a onclick=" deleteWork('+ workid + ',' + filepath
-                        + ',' + course + ','+ uploadclass + ')">删除</a> / <a class="update" data-toggle="modal" data-target="#myModal">修改</a></td></tr>';
+                        + ',' + course + ','+ uploadclass + ')"><button class="btn btn-default btn-sm"><span class="glyphicon glyphicon-trash"></span>删除</button> </a> ' +
+                        '<a class="update" data-toggle="modal" data-target="#myModal"><button class="btn btn-default btn-sm"><span class="glyphicon glyphicon-edit"></span> 修改</button></a></td></tr>';
                     $("#homeworkInfo tbody").append(appendChild)
                 }
             },

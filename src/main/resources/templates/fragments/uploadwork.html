@@ -7,7 +7,7 @@
     <link>
 </head>
 <body>
-<div th:fragment="uploadwork">
+<div th:fragment="uploadwork" class="uploadtable">
     <form class="uploadform" method="post" th:object="${homework}" th:action="@{/teacher/upload}"
           enctype="multipart/form-data">
         <div class="date upload">
@@ -61,7 +61,9 @@
             <label for="inputfile">作业选择:</label>
             <input type="file" id="inputfile" name="file">
         </div>
-        <button id="submitbtn" type="submit" class="btn btn-primary">发布</button>
+        <button id="submitbtn" type="submit" class="btn btn-primary">
+            <span class="glyphicon glyphicon-cloud-upload"></span> 发布
+        </button>
     </form>
 
 </div>

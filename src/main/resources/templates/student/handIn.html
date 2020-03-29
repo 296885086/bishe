@@ -59,7 +59,8 @@
                         <input type="file" id="selectFile" name="file">
                     </div>
                     <div class="flex-item" style="position: relative;top: 15px;right: 10px">
-                        <button type="button" class="btn btn-info" id="handIn">上交</button>
+                        <button type="button" class="btn btn-info" id="handIn">
+                            <span class="glyphicon glyphicon-cloud-upload"></span> 上交</button>
                     </div>
                 </div>
         </div>
@@ -87,7 +88,8 @@
                     </select>
                 </div>
                 <div class="flex-item" style="position: relative;top: 25px;left: 20px;">
-                    <button type="button" class="btn btn-info" id="findHandIn">查找</button>
+                    <button type="button" class="btn btn-info" id="findHandIn">
+                        <span class="glyphicon glyphicon-search"></span>  查找</button>
                 </div>
             </div>
             <table class="table table-striped">
@@ -234,7 +236,8 @@
             '<td>' + value.uploaddate + '</td>' +
             '<td>' + value.enddate + '</td>' +
             '<td>' + value.state + '</td>' +
-            '<td><a href="../../homework/'+  value.teaid + '/' + value.course+'/'  + value.uploadclass+'/'+ workAllName +'">下载</a></td></tr>');
+            '<td><a href="../../homework/'+  value.teaid + '/' + value.course+'/'  + value.uploadclass+'/'+ workAllName +'">' +
+            '<button class="btn btn-default btn-sm"><span class="glyphicon glyphicon-save"></span> 下载</button></a></td></tr>');
     }
 </script>
 </body>

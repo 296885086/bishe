@@ -15,8 +15,11 @@
     </div>
     <div class="container" style="position: relative;top:13px;">
         <div class="container-fluid">
-            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#importModal">导入数据</button>
-            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exportModal">导出数据</button>
+            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#importModal">
+                <span class="glyphicon glyphicon-import"></span>导入数据</button>
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exportModal">
+                <span class="glyphicon glyphicon-export"></span>导出数据</button>
+
             <div  class="btn-group">
                 <select class="form-control" id="findcon">
                     <option th:value="stuid">学号</option>
@@ -24,12 +27,13 @@
                     <option th:value="stuclass">班级</option>
                 </select>
             </div>
+
             <div id="findgroup">
                 <div class="input-group">
                     <input id="findStuInfoCon" type="text" class="form-control" placeholder="输入查询条件">
                     <span class="input-group-btn">
 						<button class="btn btn-default" type="button" id="findStuInfoBtn">
-							查询
+							<span class="glyphicon glyphicon-search"></span>查询
 						</button>
 					</span>
                 </div><!-- /input-group -->
@@ -109,7 +113,7 @@
                 <th>性别</th>
                 <th>班别</th>
                 <th>联系电话</th>
-                <th>删除/修改</th>
+                <th>操作</th>
             </tr>
             </thead>
             <tbody>
@@ -119,8 +123,10 @@
                 <td th:text="${c.stusex}"></td>
                 <td th:text="${c.stuclass}"></td>
                 <td th:text="${c.stuphone}"></td>
-                <td><a href="#">修改</a>/
-                    <a href="#">删除</a></td>
+                <td> <button class="btn btn-default btn-sm">
+                    <span class="glyphicon glyphicon-trash"></span> 删除</button>
+                    <button class="btn btn-default btn-sm">
+                        <span class="glyphicon glyphicon-edit"></span> 修改</button></td>
             </tr>
             </tbody>
         </table>
@@ -221,7 +227,7 @@
                     var stuclass = "'" + value.stuclass + "'";
                     var stuphone = "'" + value.stuphone + "'";
                     var appendChild = '<tr><td>'+value.stuid +'</td><td>'+ value.stuname +'</td><td>'+ value.stusex +'</td><td>'+ value.stuclass
-                        + '</td><td>'+ value.stuphone +'</td><td><a >删除</a> / <a>修改</a></td></tr>';
+                        + '</td><td>'+ value.stuphone +'</td><td><a ><button class="btn btn-default btn-sm"><span class="glyphicon glyphicon-trash"></span></button> 删除</a> <a><button class="btn btn-default btn-sm"><span class="glyphicon glyphicon-edit"></span> 修改</button></a></td></tr>';
                     $("#stuInfo tbody").append(appendChild);
                 }
             }

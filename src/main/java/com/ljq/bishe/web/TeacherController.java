@@ -487,7 +487,6 @@ public class TeacherController {
         Workbook readBook = WorkbookFactory.create(ins);
         Sheet sheet = readBook.getSheetAt(0);
         int rowNum = sheet.getLastRowNum();//获取最后一行的行数
-        int columnNum = sheet.getPhysicalNumberOfRows();//获取最后一列的列数
         Course course = new Course();
         Row row = null;
         for (int i = 0; i < rowNum; i++) {

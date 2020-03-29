@@ -11,7 +11,7 @@
 <div class="container">
     <div class="audit table">
         <table class="table table-bordered">
-            <caption>边框表格布局</caption>
+            <caption>作业反馈信息表</caption>
             <thead>
             <tr>
                 <th>科目</th>
@@ -48,7 +48,8 @@
             '<td>' + value.commitbody + '</td>' +
             '<td>' + value.replybody + '</td>' +
             '<td>' + value.state + '</td>'+
-            '<td><a href="#" onclick="deleteAudit('+ auditid +')">删除</a></td></tr>');
+            '<td><a href="#" onclick="deleteAudit('+ auditid +')">' +
+            '<button class="btn btn-default btn-sm"><span class="glyphicon glyphicon-trash"></span> 删除</button></a></td></tr>');
     }
     
     function deleteAudit(auditid) {

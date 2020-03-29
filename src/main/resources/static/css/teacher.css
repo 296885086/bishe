@@ -91,9 +91,8 @@
 
 #uploadfile {
     position: relative;
-    left: 12px;
+    left: 6%;
     top: 12px;
-    width: 49%;
 }
 #uploadfile input{
     position: relative;
@@ -112,17 +111,18 @@
 }
 .uploadform {
     position: relative;
-    border-bottom-style: ridge;
     min-width: 103px;
     height: 216px;
     width: 80%;
     border-width: 2px;
-    left: 64px;
-    top: 4px;
+}
+
+.uploadtable{
+    border-bottom-style: ridge;
 }
 .uploadform button{
     position: relative;
-    left: 108px;
+    left: 16%;
     width: 112px;
     top: -20px;
 }
@@ -168,7 +168,7 @@
 }
 #findcon {
     position: relative;
-    left: 49px;
+    left: 19px;
 }
 #stupage {
     position: relative;
@@ -177,3 +177,8 @@
 .glyphicon-list:hover{
     cursor: pointer;
 }
+
+th,td{
+    text-align: center;
+}
+

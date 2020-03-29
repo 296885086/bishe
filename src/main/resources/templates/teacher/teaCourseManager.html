@@ -6,6 +6,7 @@
     <script type="text/javascript" src="/js/jquery.min.css" th:src="@{/js/jquery.min.js}"></script>
     <script type="text/javascript" src="/js/bootstrap.min.css" th:src="@{/js/bootstrap.min.js}"></script>
     <link rel="stylesheet" href="/webapp/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}">
+    <link rel="stylesheet" href="/css/teacher.css" th:href="@{/css/teacher.css}">
     <style>
         .flex-container {
             position: relative;
@@ -35,12 +36,15 @@
                 <span class="caret"></span>
             </button>
             <ul class="dropdown-menu" role="menu">
-                <li><a class="addImport" data-toggle="modal" data-target="#importCourse">导入文件添加</a></li>
-                <li><a class="addWrite" data-toggle="modal" data-target="#addCourse">输入添加</a></li>
+                <li><a class="addImport" data-toggle="modal" data-target="#importCourse">
+                    <span class="glyphicon glyphicon-import"></span> 导入文件添加</a></li>
+                <li><a class="addWrite" data-toggle="modal" data-target="#addCourse">
+                    <span class="glyphicon glyphicon-pencil"></span> 输入添加</a></li>
             </ul>
         </div>
         <div class="flex-item">
-            <button type="button" class="btn btn-success">导出课程信息</button>
+            <button type="button" class="btn btn-success">
+                <span class="glyphicon glyphicon-export"></span>导出课程信息</button>
         </div>
     </div>
     <div class="coursetable">
@@ -167,8 +171,10 @@
         var appendChile = '<tr><td>'+
             value.coursename + '</td><td>'+
             value.courseclass + '</td><td>'+ value.totalstudent +
-            '</td><td><a onclick="deleteCourse('+ value.courseid +')">删除</a>  /  <a data-toggle="modal" data-target="#modifyCourse" onclick="goEditCourse('+ value.courseid +
-            ',' + coursename + ',' + courseclass +')">修改</a></td></tr>';
+            '</td><td><a onclick="deleteCourse('+ value.courseid +')">' +
+            '<button class="btn btn-default btn-sm"><span class="glyphicon glyphicon-trash"></span> 删除</button></a>  ' +
+            '<a data-toggle="modal" data-target="#modifyCourse" onclick="goEditCourse('+ value.courseid +
+            ',' + coursename + ',' + courseclass +')"><button class="btn btn-default btn-sm"><span class="glyphicon glyphicon-edit"></span> 修改</button></a></td></tr>';
         $('.coursetable tbody').append(appendChile);
     }
 
