@@ -29,4 +29,7 @@
             where stuclass = #{conditionInfo}
         </if>
     </select>
+    <update id="editStuData" parameterType="String">
+        UPDATE student SET stuname=#{stuname},stuid=#{stuid},stusex=#{stusex},stuphone=#{stuphone},stuclass=#{stuclass} where stuid=#{initStuid}
+    </update>
 </mapper>

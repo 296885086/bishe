@@ -39,71 +39,6 @@
                 </div><!-- /input-group -->
             </div><!-- /.col-lg-6 -->
         </div>
-        <!-- 模态框（Modal） -->
-        <div class="modal fade" id="exportModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-             aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal"
-                                aria-hidden="true">×
-                        </button>
-                        <h4 class="modal-title" id="myModalLabel">
-                            导出数据
-                        </h4>
-                    </div>
-                    <div class="modal-body">
-                        <div class="download">
-                            选择班级：
-                            <div th:each="cl:${classlist}">
-                                <div><input type="checkbox" name="classlist" th:value="${cl}"><label
-                                        th:text="${cl}"></label></div>
-                            </div>
-                            点击要下载的文件:
-                        </div>
-
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default"
-                                data-dismiss="modal">关闭
-                        </button>
-                        <button id="dataexport" type="button" class="btn btn-primary">
-                            开始导出
-                        </button>
-                    </div>
-                </div><!-- /.modal-content -->
-            </div><!-- /.modal-dialog -->
-        </div><!-- /.modal -->
-        ​ <!-- 模态框（Modal） -->
-        <div class="modal fade" id="importModal" tabindex="-1" role="dialog" aria-labelledby="importModalLabel"
-             aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal"
-                                aria-hidden="true">×
-                        </button>
-                        <h4 class="modal-title" id="importModalLabel">
-                            导入数据
-                        </h4>
-                    </div>
-                    <div class="modal-body">
-                        <div class="form-group">
-                            <label class="sr-only" for="importfile">文件输入</label>
-                            <input type="file" id="importfile">
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default"
-                                data-dismiss="modal">关闭
-                        </button>
-                        <button id="importdata" type="button" class="btn btn-primary">
-                            开始导入
-                        </button>
-                    </div>
-                </div><!-- /.modal-content -->
-            </div><!-- /.modal-dialog -->
-        </div><!-- /.modal -->
         <table class="table table-striped" id="stuInfo">
             <caption>学生信息汇总</caption>
             <thead>
@@ -123,9 +58,11 @@
                 <td th:text="${c.stusex}"></td>
                 <td th:text="${c.stuclass}"></td>
                 <td th:text="${c.stuphone}"></td>
-                <td> <button class="btn btn-default btn-sm">
+                <td> <button class="btn btn-default btn-sm"
+                             th:onclick="deleteStudata([[${c.stuid}]])">
                     <span class="glyphicon glyphicon-trash"></span> 删除</button>
-                    <button class="btn btn-default btn-sm">
+                    <button class="btn btn-default btn-sm edit" data-toggle="modal" data-target="#modifyStudata"
+                            th:onclick="updateStudata([[${c.stuid}]],[[${c.stuname}]],[[${c.stusex}]],[[${c.stuclass}]],[[${c.stuphone}]])">
                         <span class="glyphicon glyphicon-edit"></span> 修改</button></td>
             </tr>
             </tbody>
@@ -141,6 +78,111 @@
         </ul>
     </div>
 </div>
+
+<!-- 模态框（Modal）导出数据 -->
+<div class="modal fade" id="exportModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"
+                        aria-hidden="true">×
+                </button>
+                <h4 class="modal-title" id="myModalLabel">
+                    导出数据
+                </h4>
+            </div>
+            <div class="modal-body">
+                <div class="download">
+                    选择班级：
+                    <div th:each="cl:${classlist}">
+                        <div><input type="checkbox" name="classlist" th:value="${cl}"><label
+                                th:text="${cl}"></label></div>
+                    </div>
+                    点击要下载的文件:
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default"
+                        data-dismiss="modal">关闭
+                </button>
+                <button id="dataexport" type="button" class="btn btn-primary">
+                    开始导出
+                </button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+​ <!-- 模态框（Modal）导入数据 -->
+<div class="modal fade" id="importModal" tabindex="-1" role="dialog" aria-labelledby="importModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"
+                        aria-hidden="true">×
+                </button>
+                <h4 class="modal-title" id="importModalLabel">
+                    导入数据
+                </h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="sr-only" for="importfile">文件输入</label>
+                    <input type="file" id="importfile">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default"
+                        data-dismiss="modal">关闭
+                </button>
+                <button id="importdata" type="button" class="btn btn-primary">
+                    开始导入
+                </button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+<!-- 模态框（Modal）修改学生数据 -->
+<div class="modal fade" id="modifyStudata" tabindex="-1" role="dialog" aria-labelledby="modifyStudataLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"
+                        aria-hidden="true">×
+                </button>
+                <h4 class="modal-title" id="modifyStudataLabel">
+                    修改学生数据
+                </h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <input type="text" style="display: none;" id="initStuid">
+                    <label for="editStuId">输入学生姓名</label>
+                    <input type="text" class="form-control" id="editStuid" placeholder="输入学号" ><br>
+                    <label for="editStuName">输入学生姓名</label>
+                    <input type="text" class="form-control" id="editStuName" placeholder="输入学生姓名"><br>
+                    <label for="editStuSex">选择学生性别</label>
+                    <input type="text" class="form-control" id="editStuSex" placeholder="输入学生性别"><br>
+                    <label for="editClass">班别</label>
+                    <input type="text" class="form-control" id="editClass" placeholder="输入班别"><br>
+                    <label for="editStuPhone">联系电话</label>
+                    <input type="text" class="form-control" id="editStuPhone" placeholder="输入联系电话">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default"
+                        data-dismiss="modal">关闭
+                </button>
+                <button id="editStuData" type="button" class="btn btn-primary">
+                    确定修改
+                </button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
 <script>
     var cl = [];
 
@@ -174,8 +216,7 @@
         }
         var fd = new FormData();
         var importfile = $('#importfile')[0].files[0];
-        fd.append("importfile", importfile)
-        console.log(fd);
+        fd.append("importfile", importfile);
         $.ajax({
             url: '[[@{/teacher/importdata}]]',
             type: 'POST',
@@ -219,20 +260,88 @@
             data: fd,
             success: function (data) {
                 $("#stuInfo tbody").empty();
-                data.forEach(eachHomework);
+                data.forEach(eachStudata);
 
-                function eachHomework(value, index, array) {
+                function eachStudata(value, index, array) {
                     var stuid = "'" + value.stuid + "'";
                     var stuname = "'" + value.stuname + "'";
                     var stuclass = "'" + value.stuclass + "'";
                     var stuphone = "'" + value.stuphone + "'";
-                    var appendChild = '<tr><td>'+value.stuid +'</td><td>'+ value.stuname +'</td><td>'+ value.stusex +'</td><td>'+ value.stuclass
-                        + '</td><td>'+ value.stuphone +'</td><td><a ><button class="btn btn-default btn-sm"><span class="glyphicon glyphicon-trash"></span></button> 删除</a> <a><button class="btn btn-default btn-sm"><span class="glyphicon glyphicon-edit"></span> 修改</button></a></td></tr>';
+                    var stusex = "'" + value.stusex + "'";
+                    var appendChild = '<tr><td>'+value.stuid +'</td><td>'+ value.stuname +'</td><td>'+ value.stusex +'</td><td>'+ value.stuclass +
+                        '</td><td>'+ value.stuphone +
+                        '</td><td><a ><button class="btn btn-default btn-sm"><span class="glyphicon glyphicon-trash"></span> 删除</button></a> ' +
+                        '<a data-toggle="modal" data-target="#modifyStudata"><button class="btn btn-default btn-sm" onclick="updateStudata('+
+                        stuid + ',' + stuname + ',' + stusex + ',' + stuclass + ',' + stuphone +')"><span class="glyphicon glyphicon-edit"></span> 修改</button></a></td></tr>';
                     $("#stuInfo tbody").append(appendChild);
                 }
             }
         });
     });
+
+    function updateStudata(stuid,stuname,stusex,stuclass,stuphone){
+        $("#editStuid").val(stuid);
+        $("#editStuName").val(stuname);
+        $("#editStuSex").val(stusex);
+        $("#editClass").val(stuclass);
+        $("#editStuPhone").val(stuphone);initStuid
+        $("#initStuid").val(stuid);
+    }
+
+    function deleteStudata(stuid) {
+        var stuid =  $("#editStuid").val();
+        var fd = new FormData();
+        fd.append("stuid",stuid);
+        $.ajax({
+            url:'/teacher/deleteStuData',
+            type:"POST",
+            processData: false,
+            contentType: false,
+            data:fd,
+            success:function(data){
+                if(data == "success"){
+                    alert("修改成功！");
+                    location.reload();
+                }
+            },
+            error:function (e) {
+                alert('修改失败！！');
+            }
+        });
+    }
+
+    $("#editStuData").click(function () {
+        var stuid =  $("#editStuid").val();
+        var stuname =  $("#editStuName").val();
+        var stusex = $("#editStuSex").val();
+        var stuclass = $("#editClass").val();
+        var stuphone = $("#editStuPhone").val();
+        var initStuid = $("#initStuid").val();
+        var fd = new FormData();
+        fd.append("stuid",stuid);
+        fd.append("stuname",stuname);
+        fd.append("stusex",stusex);
+        fd.append("stuclass",stuclass);
+        fd.append("stuphone",stuphone);
+        fd.append("initStuid",initStuid);
+        $.ajax({
+            url:'/teacher/editStuData',
+            type:"POST",
+            processData: false,
+            contentType: false,
+            data:fd,
+            success:function(data){
+                if(data == "success"){
+                    alert("修改成功！");
+                    location.reload();
+                }
+            },
+            error:function (e) {
+                alert('修改失败！！');
+            }
+        });
+    })
+
 </script>
 </body>
 </html>

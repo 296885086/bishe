@@ -155,6 +155,26 @@ public class TeacherController {
         return "teacher/studata";
     }
 
+    //修改学生信息
+    @PostMapping("/editStuData")
+    @ResponseBody
+    public  String editStuData(@RequestParam("stuid") String initStuid,
+                               @RequestParam("stuid") String stuid,
+                               @RequestParam("stuname") String stuname,
+                               @RequestParam("stusex") String stusex,
+                               @RequestParam("stuclass") String stuclass,
+                               @RequestParam("stuphone") String stuphone){
+        ss.editStuData(initStuid,stuid,stuname,stusex,stuclass,stuphone);
+        return "success";
+    }
+
+    //删除学生信息
+    @PostMapping("/deleteStuData")
+    @ResponseBody
+    public String deleteStuData(@RequestParam("stuid") String stuid){
+        
+        return "删除成功！";
+    }
     /*
     *查找学生数据
      */
@@ -453,6 +473,77 @@ public class TeacherController {
         return "teacher/teaCourseManager";
     }
 
+    //导出老师教授课程信息
+    @PostMapping("/exportTeacourse")
+    @ResponseBody
+    public String exportTeacourse() throws Exception{
+        //获取项目路径
+        String projectpath = Class.class.getClass().getResource("/").getPath();
+        String projectpath1 = projectpath.substring(1, projectpath.indexOf("/target"));
+        List<Course> courseList = cms.teaCourseManger(teacherId);
+        String filename = "老师教授课程信息" + ".xlsx";
+        String destFileName = projectpath1 + "/src/main/resources/static/upload/" + filename;
+
+        //判断文件是否存在
+        File testFile = new File(destFileName);
+        if (testFile.exists()) {
+            testFile.delete();
+        }
+        File file = new File(destFileName);
+        Workbook book = new XSSFWorkbook();
+        Sheet sheet = book.createSheet("老师教授课程信息");//创建表格
+        int totalRow = sheet.getPhysicalNumberOfRows();//表头
+        Row total = sheet.createRow(totalRow);//表头
+        total.createCell(0).setCellValue("课程名称");
+        total.createCell(1).setCellValue("教学班");
+        for (int j = 0; j < courseList.size(); j++) {
+            Course course = courseList.get(j);
+            Row row = sheet.createRow(j + 1);
+            FileOutputStream fos = new FileOutputStream(file.getAbsolutePath());//开始写入
+            row.createCell(0).setCellValue(course.getCoursename());
+            row.createCell(1).setCellValue(course.getCourseclass());
+            book.write(fos);
+            fos.close();
+        }
+        return filename;
+    }
+
+    //导出学生课程信息
+    @PostMapping("/exportStucourse")
+    @ResponseBody
+    public String exportStucourse() throws Exception{
+        //获取项目路径
+        String projectpath = Class.class.getClass().getResource("/").getPath();
+        String projectpath1 = projectpath.substring(1, projectpath.indexOf("/target"));
+        List<SelectCourse> selectCourseList = cms.stuCourseManger(teacherId);
+        String filename = "学生课程信息" + ".xlsx";
+        String destFileName = projectpath1 + "/src/main/resources/static/upload/" + filename;
+
+        //判断文件是否存在
+        File testFile = new File(destFileName);
+        if (testFile.exists()) {
+            testFile.delete();
+        }
+        File file = new File(destFileName);
+        Workbook book = new XSSFWorkbook();
+        Sheet sheet = book.createSheet("学生课程信息");//创建表格
+        int totalRow = sheet.getPhysicalNumberOfRows();//表头
+        Row total = sheet.createRow(totalRow);//表头
+        total.createCell(0).setCellValue("学号");
+        total.createCell(3).setCellValue("教学班");
+        total.createCell(2).setCellValue("课程名称");
+        for (int j = 0; j < selectCourseList.size(); j++) {
+            SelectCourse selectCourse = selectCourseList.get(j);
+            Row row = sheet.createRow(j + 1);
+            FileOutputStream fos = new FileOutputStream(file.getAbsolutePath());//开始写入
+            row.createCell(0).setCellValue(selectCourse.getStuid());
+            row.createCell(1).setCellValue(selectCourse.getCourseclass());
+            row.createCell(2).setCellValue(selectCourse.getCoursename());
+            book.write(fos);
+            fos.close();
+        }
+        return filename;
+    }
     /*
      *手动增加课程信息
      */
@@ -504,7 +595,7 @@ public class TeacherController {
     }
 
     /*
-   * 导入添加课程信息*/
+   * 导入添加学生课程信息*/
     @PostMapping("/importAddStuCourse")
     @ResponseBody
     public String importAddStuCourse(@RequestParam("importFile") MultipartFile importFile) throws Exception {
@@ -539,11 +630,34 @@ public class TeacherController {
     }
 
     /*
+    * 删除课程 */
+    @PostMapping("/deleteSomeCourse")
+    @ResponseBody
+    public String deleteSomeCourse(@RequestParam String someCourse){
+        String[] someCourseArr = someCourse.split(",");
+        for (int a = 0;a<someCourseArr.length;a++){
+            cms.deleteCourse(someCourseArr[a]);
+        }
+        return "success";
+    }
+    /*
     * 删除学生选课 */
     @PostMapping("/deletestucourse")
     @ResponseBody
     public String deleteStuCourse(@RequestParam String selectcourseid){
         cms.deleteStuCourse(selectcourseid);
+        return "success";
+    }
+
+    /*
+* 删除学生选课 */
+    @PostMapping("/deleteSomeStuCourse")
+    @ResponseBody
+    public String deleteSomeStuCourse(@RequestParam String someStuCourse){
+        String[] someStuCourseArr = someStuCourse.split(",");
+        for (int a = 0;a<someStuCourseArr.length;a++){
+            cms.deleteStuCourse(someStuCourseArr[a]);
+        }
         return "success";
     }
 

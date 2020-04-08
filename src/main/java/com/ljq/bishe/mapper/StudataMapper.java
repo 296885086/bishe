@@ -12,4 +12,10 @@ public interface StudataMapper {
     public ArrayList<Student> exportdata(String courseclass);
     public void importdata(Student student);
     public List<Student> findStuInfo(@Param("conditionInfo") String conditionInfo,@Param("condition")String condition);
+    public void editStuData(@Param("initStuid") String initStuid,
+                            @Param("stuid") String stuid,
+                            @Param("stuname")String stuname,
+                            @Param("stusex") String stusex,
+                            @Param("stuclass")String stuclass,
+                            @Param("stuphone") String stuphone);
 }

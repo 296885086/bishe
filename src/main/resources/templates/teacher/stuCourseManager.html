@@ -46,7 +46,7 @@
             </ul>
         </div>
         <div class="flex-item">
-            <button type="button" class="btn btn-success">
+            <button type="button" class="btn btn-success" id="exportStucourse">
                 <span class="glyphicon glyphicon-export"></span> 导出学生课程</button>
         </div>
 
@@ -68,10 +68,16 @@
                 <span class="glyphicon glyphicon-search"></span> 查找</button>
         </div>
     </div>
+    <div style="margin-top: 23px;margin-left: 14px;">
+        <button class="btn btn-default btn-sm" onclick="deleteSome()"><span class="glyphicon glyphicon-trash"></span> 删除</button>
+    </div>
+
     <div class="coursetable">
         <table class="table table-striped">
             <thead>
             <tr>
+                <th>
+                    <input type="checkbox" name="fhcheckbox" id="zcheckbox"></th>
                 <th>学号</th>
                 <th>姓名</th>
                 <th>课程名称</th>
@@ -85,6 +91,7 @@
     </div>
 
 </div>
+
 ​ <!-- 模态框（Modal） -->
 <div class="modal fade" id="addCourse" tabindex="-1" role="dialog" aria-labelledby="importModalLabel"
      aria-hidden="true">
@@ -189,7 +196,6 @@
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
-
 <script th:inline="javascript">
     var selectCourseList = [[${selectCourseList}]];
     selectCourseList.forEach(eachStuSelectCourse);
@@ -389,13 +395,70 @@
         var stuname = "'" + value.stuname + "'";
         var courseclass = "'" + value.courseclass + "'";
         var coursename = "'" + value.coursename + "'";
-        var appendChile = '<tr><td>'+
+        var appendChile = '<tr><td><input type="checkbox" name="ids" id="'+ value.selectcourseid + '"></td><td>'+
             value.stuid + '</td><td>'+
             value.stuname + '</td><td>'+ value.coursename + '</td><td>'+
             value.courseclass + '</td><td><a onclick="deleteStuCourse('+ value.selectcourseid  + ')"><button class="btn btn-default btn-sm"><span class="glyphicon glyphicon-trash"></span> 删除</button></a>  ' +
             '<a data-toggle="modal" data-target="#modifyCourse" onclick="goEditStuCourse('+
-            value.stuid+ ','+ value.selectcourseid + ',' + stuname + ',' + coursename + ',' + courseclass +')"><button class="btn btn-default btn-sm"><span class="glyphicon glyphicon-edit"></span> 修改</button></a></td></tr>';
+            value.stuid + ','+ value.selectcourseid + ',' + stuname + ',' + coursename + ',' + courseclass +')"><button class="btn btn-default btn-sm"><span class="glyphicon glyphicon-edit"></span> 修改</button></a></td></tr>';
         $('.coursetable tbody').append(appendChile);
+    }
+
+    //导出数据
+    $('#exportStucourse').click(function () {
+        var r=confirm("确定导出吗？");
+        if (r==true){
+            $.ajax({
+                url:'/teacher/exportStucourse',
+                enctype: "multipart/form-data",
+                type:'POST',
+                processData: false,
+                contentType: false,
+                success:function(data){
+                    var href = '../../upload/' + data.trim();
+                    window.location.href = href;
+                },
+                error:function (e) {
+                    alert("导出失败！");
+                }
+            });
+        }
+    });
+
+    //多选
+    $('#zcheckbox').click(function(){
+        $("input[name='ids']").prop("checked",this.checked);
+    });
+    //多选操作
+    function deleteSome() {
+        var r=confirm("确定删除吗？");
+        if (r==true){
+            var someStuCourse = [];
+            $("input[name='ids']").each(function () {
+                debugger
+                if ($(this).is(':checked')){
+                    console.log($(this).attr("id"));
+                    someStuCourse.push($(this).attr("id"));
+                }
+            });
+            var fd = new FormData();
+            fd.append("someStuCourse", someStuCourse);
+            $.ajax({
+                url:'/teacher/deleteSomeStuCourse',
+                enctype: "multipart/form-data",
+                type:'POST',
+                processData: false,
+                contentType: false,
+                data:fd ,
+                success:function(data){
+                    alert("删除成功！");
+                    location.reload();
+                },
+                error:function (e) {
+                    alert("删除失败！！");
+                }
+            });
+        }
     }
 </script>
 </body>

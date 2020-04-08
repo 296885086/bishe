@@ -11,4 +11,5 @@ public interface StudataService {
     public ArrayList<Student> exportdata(String cl);
     public void importdata(Student student);
     public List<Student> findStuInfo(String conditionInfo,String condition);
+    public void editStuData(String initStuid,String stuid,String stuname, String stusex,String stuclass,String stuphone);
 }

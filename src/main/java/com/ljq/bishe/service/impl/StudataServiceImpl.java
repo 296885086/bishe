@@ -36,4 +36,9 @@ public class StudataServiceImpl implements StudataService {
     public List<Student> findStuInfo(String conditionInfo, String condition) {
         return sm.findStuInfo(conditionInfo,condition);
     }
+
+    @Override
+    public void editStuData(String initStuid,String stuid, String stuname, String stusex, String stuclass, String stuphone) {
+        sm.editStuData(initStuid,stuid,stuname,stusex,stuclass,stuphone);
+    }
 }
