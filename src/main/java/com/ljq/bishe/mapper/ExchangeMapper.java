@@ -43,4 +43,7 @@ public interface ExchangeMapper {
                              @Param("stuid") String stuid);
     public List<Message> teaMyMessage(String teaid);
     public List<Message> myMessage(String stuid);
+
+    public void deleteMsg(String messageid);
+    public void deleteReply(String messageid);
 }

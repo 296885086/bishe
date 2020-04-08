@@ -39,10 +39,16 @@
                 </div><!-- /input-group -->
             </div><!-- /.col-lg-6 -->
         </div>
+
+        <div style="margin-top: 23px;margin-left: 14px;">
+            <button class="btn btn-default btn-sm" onclick="deleteSome()"><span class="glyphicon glyphicon-trash"></span> 删除</button>
+        </div>
         <table class="table table-striped" id="stuInfo">
             <caption>学生信息汇总</caption>
             <thead>
             <tr>
+                <th>
+                    <input type="checkbox" name="fhcheckbox" id="zcheckbox"></th>
                 <th>学号</th>
                 <th>姓名</th>
                 <th>性别</th>
@@ -53,6 +59,7 @@
             </thead>
             <tbody>
             <tr th:each="c:${page.list}">
+                <td><input type="checkbox" name="ids" th:id="${c.stuid}"></td>
                 <td th:text="${c.stuid}"></td>
                 <td th:text="${c.stuname}"></td>
                 <td th:text="${c.stusex}"></td>
@@ -224,8 +231,9 @@
             processData: false,
             contentType: false,
             data: fd,
-            success: function (obj) {
-                console.log(obj);
+            success: function () {
+                alert("导入成功！");
+                location.reload();
             }
         });
     });
@@ -289,25 +297,27 @@
     }
 
     function deleteStudata(stuid) {
-        var stuid =  $("#editStuid").val();
         var fd = new FormData();
         fd.append("stuid",stuid);
-        $.ajax({
-            url:'/teacher/deleteStuData',
-            type:"POST",
-            processData: false,
-            contentType: false,
-            data:fd,
-            success:function(data){
-                if(data == "success"){
-                    alert("修改成功！");
-                    location.reload();
+        var r=confirm("确定删除吗？");
+        if (r==true){
+            $.ajax({
+                url:'/teacher/deleteStuData',
+                type:"POST",
+                processData: false,
+                contentType: false,
+                data:fd,
+                success:function(data){
+                    if(data == "success"){
+                        alert("删除成功！");
+                        location.reload();
+                    }
+                },
+                error:function (e) {
+                    alert('修改失败！！');
                 }
-            },
-            error:function (e) {
-                alert('修改失败！！');
-            }
-        });
+            });
+        }
     }
 
     $("#editStuData").click(function () {
@@ -340,8 +350,43 @@
                 alert('修改失败！！');
             }
         });
-    })
+    });
+    //多选
+    $('#zcheckbox').click(function(){
+        $("input[name='ids']").prop("checked",this.checked);
+    });
 
+    //多选操作
+    function deleteSome() {
+        var r=confirm("确定删除吗？");
+        if (r==true){
+            var someStuData = [];
+            $("input[name='ids']").each(function () {
+                debugger
+                if ($(this).is(':checked')){
+                    console.log($(this).attr("id"));
+                    someStuData.push($(this).attr("id"));
+                }
+            });
+            var fd = new FormData();
+            fd.append("someStuData", someStuData);
+            $.ajax({
+                url:'/teacher/deleteSomeStuData',
+                enctype: "multipart/form-data",
+                type:'POST',
+                processData: false,
+                contentType: false,
+                data:fd ,
+                success:function(data){
+                    alert("删除成功！");
+                    location.reload();
+                },
+                error:function (e) {
+                    alert("删除失败！！");
+                }
+            });
+        }
+    }
 </script>
 </body>
 </html>

@@ -18,4 +18,5 @@ public interface StudataMapper {
                             @Param("stusex") String stusex,
                             @Param("stuclass")String stuclass,
                             @Param("stuphone") String stuphone);
+    public void deleteStuData(String stuid);
 }

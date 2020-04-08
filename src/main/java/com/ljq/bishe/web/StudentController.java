@@ -158,6 +158,15 @@ public class StudentController {
         return myMessageList;
     }
 
+    //删除留言
+    @PostMapping("/deleteMsg")
+    @ResponseBody
+    public String deleteMsg(@RequestParam("msgid") String msgid){
+        exchangeService.deleteMsg(msgid);
+        exchangeService.deleteReply(msgid);
+        return "success";
+    }
+
     /*
     * 学生作业数据*/
     @GetMapping("/myData")

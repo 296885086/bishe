@@ -32,4 +32,7 @@
     <update id="editStuData" parameterType="String">
         UPDATE student SET stuname=#{stuname},stuid=#{stuid},stusex=#{stusex},stuphone=#{stuphone},stuclass=#{stuclass} where stuid=#{initStuid}
     </update>
+    <delete id="deleteStuData" parameterType="String">
+        DELETE FROM student where stuid=#{stuid}
+    </delete>
 </mapper>

@@ -73,4 +73,14 @@ public class ExchangeServiceImpl implements ExchangeService {
     public List<Message> myMessage(String stuid) {
         return exchangeMapper.myMessage(stuid);
     }
+
+    @Override
+    public void deleteMsg(String messageid) {
+        exchangeMapper.deleteMsg(messageid);
+    }
+
+    @Override
+    public void deleteReply(String messageid) {
+        exchangeMapper.deleteReply(messageid);
+    }
 }

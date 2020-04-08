@@ -18,4 +18,6 @@ public interface ExchangeService {
     public List<Message> findMessage(String coursename,String courseclass, String stuid);
     public List<Message> teaMyMessage(String teaid);
     public List<Message> myMessage(String stuid);
+    public void deleteMsg(String messageid);
+    public void deleteReply(String messageid);
 }

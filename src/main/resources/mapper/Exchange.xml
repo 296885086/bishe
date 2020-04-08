@@ -51,4 +51,10 @@
     <select id="myMessage" parameterType="String" resultType="Message">
         select * from message where leaveid = #{stuid}
     </select>
+    <delete id="deleteMsg" parameterType="String">
+        DELETE FROM message where messageid=#{messageid}
+    </delete>
+    <delete id="deleteReply" parameterType="String">
+        DELETE FROM reply where messageid=#{messageid}
+    </delete>
 </mapper>

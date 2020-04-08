@@ -205,6 +205,9 @@
         .padleft20 {
             padding-left: 20px;
         }
+        a{
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
@@ -242,8 +245,8 @@
         <template v-for="(message,index) in messagelist">
             <div class="fr oneRight" v-bind:id="'message'+message.messageid">
                 <div class="oneTop">
-                    <div class="fr operation">
-                        <li class="sturep"><a href="" onclick="">举报</a>
+                    <div class="fr operation"  v-show="del">
+                        <li class="deleteMessage"><a v-bind:id="message.messageid" v-on:click="deleteMsg($event)" >删除</a>
                         </li>
                     </div>
                     <p>
@@ -340,6 +343,7 @@
     var vm = new Vue({
         el: '#app',
         data: {
+            del:false,
             leavename: '',
             leaveid: '',
             messagebody: '',
@@ -417,6 +421,7 @@
 
             //查找留言
             findMessage:function () {
+                vm.del=false;
                 var course = $('#selectCourse').children('option:selected').val();
                 var courseClass = $('#selectCourseClass').children('option:selected').val();
                 var fd = new FormData();
@@ -430,6 +435,9 @@
                     contentType: false,
                     data: fd,
                     success:function(data){
+                        $(".ReplyList .clearfix").each(function () {
+                            $(this).empty();
+                        });
                         vm.messagelist = data;
                     },
                     error:function (e) {
@@ -447,18 +455,60 @@
                     processData: false,
                     contentType: false,
                     success:function(data){
+                        $(".ReplyList .clearfix").each(function () {
+                            $(this).empty();
+                        });
                         vm.messagelist = data;
+                        vm.del=true;
                     },
                     error:function (e) {
                         alert('查找失败！！');
                     }
                 })
+            },
+
+            deleteMsg:function (e) {
+                debugger
+                var msgid = $(e.currentTarget).attr("id");
+                var fd = new FormData();
+                fd.append("msgid",msgid);
+                var r=confirm("确定删除吗？");
+                if (r==true){
+                    $.ajax({
+                        url:'/teacher/deleteMsg',
+                        type:'POST',
+                        enctype: "multipart/form-data",
+                        processData: false,
+                        contentType: false,
+                        data: fd,
+                        success:function(data){
+                            vm.myMessage();
+                        },
+                        error:function (e) {
+                            alert('删除失败！！');
+                        }
+                    });
+                }
             }
 
         },
         mounted()
         {
             this.messageList();
+        },
+        watch: {
+            messagelist: function () {
+                var _this = this;
+                _this.$nextTick(function () {
+                    for (var i = 0; i < vm.replylist.length; i++) {
+                        var appendChild = '<div class="replyCt"><div class="replayTit"><span class="hf_name">' + vm.replylist[i].replyname +
+                            '</span><span class="hf_time">' + vm.replylist[i].replydate +
+                            '</span></div><div class="padleft20"><p class="hf_pct">' + vm.replylist[i].replybody + '</p></div>';
+                        var replyid = '#message' + vm.replylist[i].messageid + ' .ReplyList .clearfix';
+                        $(replyid).append(appendChild);
+                    }
+                });
+            }
         }
     });
 
@@ -494,7 +544,7 @@
 
     //vue渲染完成后
     //回复列表
-    Vue.nextTick(function () {
+/*    Vue.nextTick(function () {
         for (var i = 0; i < vm.replylist.length; i++) {
             var appendChild = '<div class="replyCt"><div class="replayTit"><span class="hf_name">' + vm.replylist[i].replyname +
                 '</span><span class="hf_time">' + vm.replylist[i].replydate +
@@ -502,7 +552,7 @@
             var replyid = '#message' + vm.replylist[i].messageid + ' .ReplyList .clearfix';
             $(replyid).append(appendChild);
         }
-    })
+    })*/
 </script>
 </body>
 </html>

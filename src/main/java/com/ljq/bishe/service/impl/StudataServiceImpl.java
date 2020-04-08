@@ -41,4 +41,9 @@ public class StudataServiceImpl implements StudataService {
     public void editStuData(String initStuid,String stuid, String stuname, String stusex, String stuclass, String stuphone) {
         sm.editStuData(initStuid,stuid,stuname,stusex,stuclass,stuphone);
     }
+
+    @Override
+    public void deleteStuData(String stuid) {
+        sm.deleteStuData(stuid);
+    }
 }

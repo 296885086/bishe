@@ -172,8 +172,20 @@ public class TeacherController {
     @PostMapping("/deleteStuData")
     @ResponseBody
     public String deleteStuData(@RequestParam("stuid") String stuid){
-        
-        return "删除成功！";
+        ss.deleteStuData(stuid);
+        return "success";
+    }
+
+    /*
+* 删除学生信息 */
+    @PostMapping("/deleteSomeStuData")
+    @ResponseBody
+    public String deleteSomeStuData(@RequestParam String someStuData){
+        String[] someStuDataeArr = someStuData.split(",");
+        for (int a = 0;a<someStuDataeArr.length;a++){
+            ss.deleteStuData(someStuDataeArr[a]);
+        }
+        return "success";
     }
     /*
     *查找学生数据
@@ -249,6 +261,14 @@ public class TeacherController {
         return myMessageList;
     }
 
+    //删除留言
+    @PostMapping("/deleteMsg")
+    @ResponseBody
+    public String deleteMsg(@RequestParam("msgid") String msgid){
+        exchangeService.deleteMsg(msgid);
+        exchangeService.deleteReply(msgid);
+        return "success";
+    }
 
     /*
     * 作业情况统计*/
@@ -544,6 +564,7 @@ public class TeacherController {
         }
         return filename;
     }
+
     /*
      *手动增加课程信息
      */
@@ -650,7 +671,7 @@ public class TeacherController {
     }
 
     /*
-* 删除学生选课 */
+    * 删除学生选课 */
     @PostMapping("/deleteSomeStuCourse")
     @ResponseBody
     public String deleteSomeStuCourse(@RequestParam String someStuCourse){
