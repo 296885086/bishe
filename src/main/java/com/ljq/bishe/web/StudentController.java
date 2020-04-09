@@ -36,9 +36,7 @@ public class StudentController {
     String stuId;
     String stuName;
     @GetMapping("/handIn/{stuid}")
-    public String handIn(@PathVariable("stuid") String stuid,Model model,
-                         @RequestParam(value = "start", defaultValue = "0") int start,
-                         @RequestParam(value = "size", defaultValue = "5") int size){
+    public String handIn(@PathVariable("stuid") String stuid,Model model){
         stuId = stuid;
         stuName = handInService.getStuname(stuid);
         List getLearningCourse = handInService.getLearningCourse(stuid);//在学科目

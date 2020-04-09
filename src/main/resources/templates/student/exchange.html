@@ -434,6 +434,9 @@
                     contentType: false,
                     data: fd,
                     success:function(data){
+                        $(".ReplyList .clearfix").each(function () {
+                            $(this).empty();
+                        });
                         vm.messagelist = data;
                     },
                     error:function (e) {

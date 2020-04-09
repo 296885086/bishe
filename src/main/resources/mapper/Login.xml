@@ -5,10 +5,10 @@
 
 <mapper namespace="com.ljq.bishe.mapper.LoginMapper">
     <select id="getstu" resultType="Student">
-        SELECT * FROM student WHERE stuname = #{stuname}
+        SELECT * FROM student WHERE stuid = #{stuname}
     </select>
     <select id="gettea" resultType="Teacher">
-        SELECT * FROM teacher WHERE teaname = #{teaname}
+        SELECT * FROM teacher WHERE teaid = #{teaname}
     </select>
     <insert id="register" parameterType="String">
         INSERT INTO teacher (teaid,teaname,teapassword,teasex,teaphone) VALUES

@@ -119,6 +119,7 @@
 
 .uploadtable{
     border-bottom-style: ridge;
+    border-bottom-width: 1px;
 }
 .uploadform button{
     position: relative;

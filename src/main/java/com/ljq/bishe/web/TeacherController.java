@@ -51,9 +51,7 @@ public class TeacherController {
         Homework homework = new Homework();
         ArrayList course = wc.courseList(teaid);
         List<Course> courseClass = wc.courseClassList(teaid);
-        PageHelper.startPage(start, size, "workid desc");
-        List<Homework> worklist = rs.worklist(teaid);
-        PageInfo<Homework> page = new PageInfo<>(worklist);
+        List<Homework> page = rs.worklist(teaid);
         m.addAttribute("homework", homework);
         m.addAttribute("page", page);
         m.addAttribute("course", course);//科目
@@ -146,10 +144,8 @@ public class TeacherController {
                           @PathVariable("teaid") int teaid,
                           Model m, @RequestParam(value = "start", defaultValue = "0") int start,
                           @RequestParam(value = "size", defaultValue = "9") int size) {
-        PageHelper.startPage(start, size, "stuid desc");
         List<Student> worklist = ss.stulist(teaid);
-        PageInfo<Student> page = new PageInfo<>(worklist);
-        m.addAttribute("page", page);
+        m.addAttribute("page", worklist);
         ArrayList al = ss.classlist(teaid);
         m.addAttribute("classlist", al);
         return "teacher/studata";

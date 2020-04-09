@@ -64,11 +64,11 @@
             <th>发布班级</th>
             <th>发布时间</th>
             <th>截止上交时间</th>
-            <th>修改/删除</th>
+            <th>删除</th>
         </tr>
         </thead>
         <tbody>
-        <tr th:each="c:${page.list}">
+        <tr th:each="c:${page}">
             <td th:text="${c.workname}"></td>
             <td th:text="${c.course}"></td>
             <td th:text="${c.uploadclass}"> </td>
@@ -79,14 +79,14 @@
                         th:onclick="deleteWork([[${c.workid}]],[[${c.filepath}]],[[${c.course}]],[[${c.uploadclass}]]);">
                 <span class="glyphicon glyphicon-trash"></span> 删除
                 </button>
-                <button type="button" class="btn btn-default btn-sm update" data-toggle="modal" data-target="#myModal">
+<!--                <button type="button" class="btn btn-default btn-sm update" data-toggle="modal" data-target="#myModal">
                     <span class="glyphicon glyphicon-edit"></span> 修改
-                </button>
+                </button>-->
                 </td>
         </tr>
         </tbody>
     </table>
-<div class="page">
+<!--<div class="page">
     <ul class="pagination">
         <li><a th:href="@{/teacher/fragment(start=${page.pageNum-1})}">&laquo;</a></li>
         <li class="active"><a href="#">1</a></li>
@@ -96,7 +96,7 @@
         <li><a href="#">5</a></li>
         <li><a th:href="@{/teacher/fragment(start=${page.pageNum+1})}">&raquo;</a></li>
     </ul>
-</div>
+</div>-->
 <!-- 模态框（Modal） -->
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -110,7 +110,28 @@
                 </h4>
             </div>
             <div class="modal-body">
-                <div th:replace="~{fragments/uploadwork :: uploadwork}"></div>
+                <div>
+                    <label for="">发布时间：</label>
+                    </span>
+                    <input type="date">
+                    <label for="">截止时间：</label>
+                    </span>
+                    <input type="date">
+                </div>
+                <div>
+                    <div>
+                        <select id="selectCourse" class="form-control" th:field="*{course}">
+                            <option th:value="select">请选择科目</option>
+                            <option th:each="wc:${course}" th:value="${wc}"  th:text="${wc}"></option>
+                        </select>
+                    </div>
+                    <div>
+                        <select id="selectCourseClass" class="form-control" th:field="*{uploadclass}">
+                            <option th:value="select">请选择班级</option>
+                        </select>
+                    </div>
+                </div>
+
             </div>
             <div class="modal-footer">
             <button type="button" class="btn btn-default" data-dismiss="modal">关闭

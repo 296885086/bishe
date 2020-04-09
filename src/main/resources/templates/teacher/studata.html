@@ -58,7 +58,7 @@
             </tr>
             </thead>
             <tbody>
-            <tr th:each="c:${page.list}">
+            <tr th:each="c:${page}">
                 <td><input type="checkbox" name="ids" th:id="${c.stuid}"></td>
                 <td th:text="${c.stuid}"></td>
                 <td th:text="${c.stuname}"></td>
@@ -74,15 +74,6 @@
             </tr>
             </tbody>
         </table>
-        <ul class="pagination" id="stupage">
-            <li><a href="#">&laquo;</a></li>
-            <li class="active"><a href="#">1</a></li>
-            <li class="disabled"><a href="#">2</a></li>
-            <li><a href="#">3</a></li>
-            <li><a href="#">4</a></li>
-            <li><a href="#">5</a></li>
-            <li><a href="#">&raquo;</a></li>
-        </ul>
     </div>
 </div>
 

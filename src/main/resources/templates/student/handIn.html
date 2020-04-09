@@ -138,7 +138,6 @@
         $('#selectWorkname').empty();
         var courseClass = $(this).children('option:selected').val();
         var workName = [[${gwn}]];
-        $('#selectWorkname').append('<option value="all">全部</option>');
         workName.forEach(myFunction);
         function myFunction(value, index, array) {
             if ( courseClass === value.uploadclass) {
@@ -224,7 +223,7 @@
 
     //遍历作业信息
     function myFunction1(value, index, array) {
-        debugger
+
         var path = value.filepath;
         var index = path.lastIndexOf("\\");
         var workAllName=path.slice((index+1));

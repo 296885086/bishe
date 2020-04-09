@@ -38,12 +38,23 @@
     </insert>
     <select id="teaFindMessage" parameterType="String" resultType="Message">
         SELECT m.* from message m left join course c on m.courseid = c.courseid
-        where c.teaid=#{teaid} and c.coursename=#{coursename} and c.courseclass=#{courseclass};
+        <if test=" courseclass == 'all'">
+            where c.teaid=#{teaid} and c.coursename=#{coursename};
+        </if>
+        <if test="courseclass != 'all'">
+            where c.teaid=#{teaid} and c.coursename=#{coursename} and c.courseclass=#{courseclass};
+        </if>
     </select>
     <select id="findMessage" parameterType="String" resultType="Message">
         select m.* from message m left join course c on m.courseid = c.courseid
-        where c.coursename=#{coursename} and c.courseclass=#{courseclass} and c.teaid in
-       (select teaid from selectcourse where stuid = #{stuid} and coursename=#{coursename} and courseclass=#{courseclass});
+        <if test=" courseclass == 'all'">
+            where c.coursename=#{coursename} and c.teaid in
+            (select teaid from selectcourse where stuid = #{stuid} and coursename=#{coursename});
+        </if>
+        <if test="courseclass != 'all'">
+            where c.coursename=#{coursename} and c.courseclass=#{courseclass} and c.teaid in
+            (select teaid from selectcourse where stuid = #{stuid} and coursename=#{coursename} and courseclass=#{courseclass});
+        </if>
     </select>
     <select id="teaMyMessage" parameterType="String" resultType="Message">
         select * from message where leaveid = #{teaid}

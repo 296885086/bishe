@@ -7,15 +7,85 @@
     <link rel="stylesheet" href="/css/teacher.css" th:href="@{/css/teacher.css}">
     <meta charset="UTF-8">
     <title>学生端</title>
+    <style>
+        a {
+            cursor: pointer;
+        }
+    </style>
 </head>
 <body>
 <div th:replace="~{fragments/header_stu :: header}"></div>
 <div th:replace="~{fragments/menu_stu::menu}"></div>
+​ <!-- 修改个人信息模态框（Modal） -->
+<!-- 模态框（Modal）修改学生数据 -->
+<div class="modal fade" id="editMydata" tabindex="-1" role="dialog" aria-labelledby="editMydataLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"
+                        aria-hidden="true">×
+                </button>
+                <h4 class="modal-title" id="modifyStudataLabel">
+                    修改学生数据
+                </h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <input type="text" style="display: none;" id="initStuid">
+                    <label for="ediMytStuid">输入学生学号</label>
+                    <input type="text" class="form-control" id="ediMytStuid" placeholder="输入学号" >
+                    <label for="editMyStuName">输入学生姓名</label>
+                    <input type="text" class="form-control" id="editMyStuName" placeholder="输入学生姓名">
+                    <label for="editMyStuSex">选择学生性别</label>
+                    <input type="text" class="form-control" id="editMyStuSex" placeholder="输入学生性别">
+                    <label for="editMyClass">班别</label>
+                    <input type="text" class="form-control" id="editMyClass" placeholder="输入班别">
+                    <label for="editMyStuPhone">联系电话</label>
+                    <input type="text" class="form-control" id="editMyStuPhone" placeholder="输入联系电话">
+                    <label for="oldPassword">原始密码</label>
+                    <input type="password" class="form-control" id="oldPassword" placeholder="输入联系电话">
+                    <label for="newPassword">新密码</label>
+                    <input type="password" class="form-control" id="newPassword" placeholder="输入联系电话">
+                    <label for="againPassword">确定密码</label>
+                    <input type="password" class="form-control" id="againPassword" placeholder="输入联系电话">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default"
+                        data-dismiss="modal">关闭
+                </button>
+                <button id="sureEdit" type="button" class="btn btn-primary">
+                    确定修改
+                </button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
 <div class="lab-content">
     <iframe src="/student/handIn/" scrolling="yes" class="right-iframe" frameborder="0">
     </iframe>
 </div>
 <script th:inline="javascript">
+    console.log([[${userModel.stuinfo}]]);
+    debugger
+    var ediMytStuid= [[${userModel.stuinfo.stuid}]];
+    var editMyStuName= [[${userModel.stuinfo.stuname}]];
+    var editMyStuSex= [[${userModel.stuinfo.stusex}]];
+    var editMyClass= [[${userModel.stuinfo.stuclass}]];
+    var editMyStuPhone= [[${userModel.stuinfo.stuphone}]];
+    var oldPassword= [[${userModel.stuinfo.stupassword}]];
+    var newPassword= [[${userModel.stuinfo.stupassword}]];
+    var againPassword= [[${userModel.stuinfo.stupassword}]];
+    $("#ediMytStuid").val(ediMytStuid);
+    $("#editMyStuName").val(editMyStuName);
+    $("#editMyStuSex").val(editMyStuSex);
+    $("#editMyClass").val(editMyClass);
+    $("#editMyStuPhone").val(editMyStuPhone);
+    $("#oldPassword").val(editMyStuPhone);
+    $("#newPassword").val(newPassword);
+    $("#againPassword").val(againPassword);
+
     var framecontent = $('.right-iframe');
     $('.handIn').css({"background-color":"cadetblue"});
     framecontent.attr('src', '/student/handIn/' + [[${userModel.stuinfo.stuid}]]);
@@ -50,6 +120,33 @@
         brotherLi.each(function () {
             $(this).css({"background-color":""});
         });
+    });
+
+    $("#loginOut").click(function () {
+        window.location.href = "/login";
+    });
+
+    $("#sureEdit").click(function () {
+        var ediMytStuid= $("#ediMytStuid").val();
+        var editMyStuName= $("#editMyStuName").val();
+        var editMyStuSex= $("#editMyStuSex").val();
+        var editMyClass= $("#editMyClass").val();
+        var editMyStuPhone= $("#editMyStuPhone").val();
+        var newPassword=  $("#newPassword").val();
+        var againPassword= $("#againPassword").val();
+        if (newPassword !== againPassword){
+            alert("两次密码不正确，请重新输入！");
+        }else {
+            var fd = new FormData();
+            fd.append("ediMytStuid",ediMytStuid);
+            fd.append("editMyStuName",editMyStuName);
+            fd.append("editMyStuSex",editMyStuSex);
+            fd.append("editMyClass",editMyClass);
+            fd.append("editMyStuPhone",editMyStuPhone);
+            fd.append("oldPassword",oldPassword);
+            fd.append("newPassword",newPassword);
+            fd.append("againPassword",againPassword);
+        }
     });
 </script>
 </body>
